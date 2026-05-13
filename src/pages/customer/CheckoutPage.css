@@ -1,0 +1,258 @@
+.checkout-shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 20px;
+  align-items: start;
+}
+
+.checkout-main {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+}
+
+.checkout-header {
+  display: grid;
+  gap: 6px;
+}
+
+.checkout-subtitle {
+  color: var(--text-light);
+  font-size: 14px;
+}
+
+.checkout-section {
+  display: grid;
+  gap: 10px;
+  padding: 16px;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  background: #ffffff;
+}
+
+.checkout-section-warning {
+  border-color: #f1c16b;
+  background: #fffaf0;
+}
+
+.checkout-section-title {
+  margin: 0;
+  font-size: 18px;
+}
+
+.checkout-item-list,
+.checkout-issue-list {
+  display: grid;
+  gap: 10px;
+}
+
+.checkout-line-item {
+  display: grid;
+  grid-template-columns: 88px minmax(0, 1fr);
+  gap: 16px;
+  padding: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.checkout-line-item-image-wrap {
+  width: 88px;
+  height: 88px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  background: #f7f7f7;
+}
+
+.checkout-line-item-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.checkout-line-item-image-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: var(--text-light);
+}
+
+.checkout-line-item-body {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+  align-content: center;
+}
+
+.checkout-line-item-title {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.35;
+}
+
+.checkout-line-item-title-link {
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.checkout-line-item-title-link .checkout-line-item-title {
+  transition: color 0.15s ease, text-decoration-color 0.15s ease;
+}
+
+.checkout-line-item-title-link:hover .checkout-line-item-title {
+  color: var(--primary-color);
+  text-decoration: underline;
+}
+
+.checkout-line-item-price-line {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.checkout-line-item-subtotal {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-light);
+}
+
+.checkout-line-item-meta {
+  font-size: 14px;
+  color: var(--text-light);
+  margin-bottom: 4px;
+}
+
+.checkout-issue-item {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid #f1c16b;
+  border-radius: 8px;
+  background: #fffdf5;
+}
+
+.checkout-issue-item-badge {
+  align-self: start;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #fce7c3;
+  color: #8a4b00;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.checkout-issue-item-title {
+  margin: 0 0 4px;
+  font-size: 14px;
+}
+
+.checkout-issue-item-message {
+  color: var(--text-light);
+  font-size: 13px;
+}
+
+.checkout-warning-text,
+.checkout-message,
+.checkout-summary-helper,
+.checkout-summary-note,
+.checkout-summary-blocker p {
+  color: var(--text-light);
+  font-size: 14px;
+}
+
+.checkout-blocking-list {
+  padding-left: 18px;
+  color: #8a4b00;
+  font-size: 13px;
+}
+
+.checkout-error {
+  color: var(--error-color);
+}
+
+.checkout-summary {
+  position: sticky;
+  top: 88px;
+  display: grid;
+  gap: 10px;
+  padding: 16px;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  background: #ffffff;
+}
+
+.checkout-summary-title {
+  margin: 0;
+  font-size: 18px;
+}
+
+.checkout-summary-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 14px;
+}
+
+.checkout-summary-panel {
+  padding: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: #fafafa;
+  display: grid;
+  gap: 4px;
+}
+
+.checkout-summary-label {
+  font-size: 12px;
+  color: var(--text-light);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.checkout-summary-value {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.checkout-summary-note {
+  margin: 0;
+  font-size: 12px;
+}
+
+.checkout-summary-blocker {
+  padding: 12px;
+  border-radius: 8px;
+  background: #fff4f4;
+  color: #9e2d2d;
+  border: 1px solid #f0b8b8;
+}
+
+.checkout-continue-button {
+  width: 100%;
+  margin-top: 2px;
+}
+
+@media (max-width: 960px) {
+  .checkout-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .checkout-summary {
+    position: static;
+  }
+
+  .checkout-line-item {
+    grid-template-columns: 1fr;
+  }
+}

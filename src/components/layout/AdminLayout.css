@@ -1,0 +1,29 @@
+/* ── Layout Shell ── */
+.admin-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-light, #f9fafb);
+}
+
+/* ── Main Content ── */
+.admin-main {
+  flex: 1;
+  padding: 32px;
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+@media (max-width: 1024px) {
+  .admin-main {
+    padding: 24px 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-main {
+    padding: 20px 16px;
+  }
+}

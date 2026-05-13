@@ -1,0 +1,29 @@
+/* Page title block — same rhythm as Home (.home-header) / Cart (.cart-header) */
+.orders-page-header {
+  margin-bottom: 20px;
+}
+
+.orders-page-header h2 {
+  margin: 0 0 6px 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.orders-page-subtitle {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-light);
+  line-height: 1.5;
+  max-width: 640px;
+}
+
+@media (max-width: 768px) {
+  .orders-page-header h2 {
+    font-size: 20px;
+  }
+
+  .orders-page-subtitle {
+    font-size: 13px;
+  }
+}

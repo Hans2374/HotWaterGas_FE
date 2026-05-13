@@ -1,0 +1,146 @@
+.footer {
+  margin-top: 60px;
+  border-top: 1px solid var(--border-color);
+  background-color: #ffffff;
+  color: var(--text-color);
+}
+
+.footer-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px 16px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 32px;
+}
+
+.footer-column {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Brand Column */
+.footer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.footer-brand-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-color);
+  letter-spacing: -0.5px;
+}
+
+.footer-brand-description {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-light);
+  line-height: 1.5;
+}
+
+.footer-copyright {
+  margin: 0;
+  font-size: 12px;
+  color: var(--text-light);
+  line-height: 1.4;
+}
+
+/* Column Titles */
+.footer-column-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-color);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Links */
+.footer-links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.footer-link {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-light);
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  text-align: left;
+  font-family: inherit;
+}
+
+.footer-link:hover {
+  color: var(--primary-color);
+}
+
+/* Bottom Section */
+.footer-bottom {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 16px 16px 24px;
+  border-top: 1px solid var(--border-color);
+  text-align: center;
+}
+
+.footer-bottom-text {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-light);
+}
+
+/* Tablet Responsive (2 columns) */
+@media (max-width: 768px) {
+  .footer-container {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+    padding: 32px 16px;
+  }
+
+  .footer {
+    margin-top: 48px;
+  }
+}
+
+/* Mobile Responsive (stacked) */
+@media (max-width: 480px) {
+  .footer-container {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 24px 16px;
+  }
+
+  .footer {
+    margin-top: 40px;
+  }
+
+  .footer-column-title {
+    font-size: 14px;
+  }
+
+  .footer-link {
+    font-size: 13px;
+  }
+
+  .footer-brand-title {
+    font-size: 16px;
+  }
+
+  .footer-brand-description {
+    font-size: 13px;
+  }
+}

@@ -1,0 +1,141 @@
+/* ── Overlay — mobile/tablet only ── */
+.admin-sidebar-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 950;
+  animation: overlayFadeIn 0.15s ease;
+  cursor: pointer;
+}
+
+.admin-sidebar-overlay.visible {
+  display: block;
+}
+
+/* ── Tablet: no overlay — sidebar floats beside content ── */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .admin-sidebar-overlay {
+    display: none !important;
+  }
+}
+
+/* ── Desktop: no overlay under any circumstances ── */
+@media (min-width: 1025px) {
+  .admin-sidebar-overlay {
+    display: none !important;
+  }
+}
+
+@keyframes overlayFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ── Sidebar Panel ── */
+.admin-sidebar {
+  position: fixed;
+  top: 64px;
+  left: 0;
+  width: 260px;
+  height: calc(100vh - 64px);
+  background: #ffffff;
+  border-right: 1px solid var(--border-color, #e5e7eb);
+  z-index: 900;
+  display: flex;
+  flex-direction: column;
+
+  /* Hidden by default */
+  transform: translateX(-100%);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.2s ease;
+  box-shadow: none;
+}
+
+.admin-sidebar.open {
+  transform: translateX(0);
+  opacity: 1;
+  pointer-events: auto;
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.08);
+}
+
+/* ── Navigation ── */
+.admin-sidebar-nav {
+  flex: 1;
+  padding: 20px 12px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.admin-sidebar-menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* ── Nav Item ── */
+.admin-sidebar-item {
+  margin: 0;
+}
+
+/* ── Nav Link ── */
+.admin-sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--text-secondary, #6b7280);
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+
+.admin-sidebar-link:hover {
+  background-color: #f5f5f5;
+  color: var(--text-color, #374151);
+}
+
+/* ── Active State ── */
+.admin-sidebar-link.active {
+  background-color: #eff6ff;
+  color: #2563eb;
+}
+
+.admin-sidebar-link.active .admin-sidebar-icon {
+  color: #2563eb;
+}
+
+/* ── Icon ── */
+.admin-sidebar-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+}
+
+/* ── Label ── */
+.admin-sidebar-label {
+  transition: opacity 0.15s;
+}
+
+/* ── Mobile ── */
+@media (max-width: 768px) {
+  .admin-sidebar {
+    width: 280px;
+  }
+}

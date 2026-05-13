@@ -1,0 +1,181 @@
+/* ============================================
+   Admin Product Form Pages — Synchronized with Admin Categories Page
+   ============================================ */
+
+/* ── Page Container ── */
+.admin-form-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ── Page Header ── */
+.admin-form-header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.admin-form-header-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 30px;
+  padding: 0 10px;
+  border-radius: 7px;
+  border: 1px solid var(--cat-border);
+  background: var(--cat-bg-card);
+  color: var(--cat-text-secondary);
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  line-height: 1;
+  text-decoration: none;
+}
+
+.back-button:hover {
+  background: var(--cat-bg-page);
+  border-color: var(--cat-border-hover);
+  color: var(--cat-text-primary);
+}
+
+.admin-form-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--cat-text-primary);
+  margin: 0;
+  letter-spacing: -0.3px;
+  line-height: 1.2;
+}
+
+.admin-form-subtitle {
+  font-size: 13px;
+  color: var(--cat-text-muted);
+  margin: 2px 0 0;
+  line-height: 1.4;
+}
+
+/* ── Feedback / Error ── */
+.admin-form-feedback {
+  margin-bottom: 16px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--cat-border);
+  background: var(--cat-bg-card);
+  font-size: 13px;
+}
+
+.admin-form-feedback.error {
+  color: #dc2626;
+  background: #fef2f2;
+  border-color: #fecaca;
+}
+
+/* ── Steam Key Card ── */
+.steam-key-card {
+  background: var(--cat-bg-card);
+  border: 1px solid var(--cat-border);
+  border-radius: 10px;
+  padding: 16px;
+}
+
+.steam-key-card-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.steam-key-card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.steam-key-card-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--cat-text-primary);
+  margin: 0;
+}
+
+.steam-key-card-subtitle {
+  font-size: 12.5px;
+  color: var(--cat-text-muted);
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Metrics grid uses the same component CSS from SteamKeySummaryMetrics */
+.steam-key-summary-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.steam-key-summary-item {
+  background: var(--cat-bg-page);
+  border: 1px solid var(--cat-border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.steam-key-summary-label {
+  margin: 0;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--cat-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.steam-key-summary-value {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--cat-text-primary);
+}
+
+/* ── Responsive ── */
+@media (max-width: 720px) {
+  .steam-key-card-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .steam-key-summary-metrics {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .admin-form-header-row {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 480px) {
+  .steam-key-summary-metrics {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .steam-key-summary-item {
+    padding: 12px;
+  }
+
+  .steam-key-summary-value {
+    font-size: 20px;
+  }
+}

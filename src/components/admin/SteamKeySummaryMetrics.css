@@ -1,0 +1,52 @@
+.steam-key-summary-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.steam-key-summary-item {
+  background: #ffffff;
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: 10px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.steam-key-summary-label {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-light, #6b7280);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.steam-key-summary-value {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--text-color, #1f2937);
+}
+
+@media (max-width: 900px) {
+  .steam-key-summary-metrics {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .steam-key-summary-metrics {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .steam-key-summary-item {
+    padding: 12px;
+  }
+
+  .steam-key-summary-value {
+    font-size: 22px;
+  }
+}
