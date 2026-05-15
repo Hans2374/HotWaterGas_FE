@@ -7,17 +7,21 @@ export const CartButton = () => {
   const navigate = useNavigate();
   const { cart } = useCart();
 
-  const itemCount = cart?.items?.length || 0;
+  const items = cart?.items;
+
+  // Badge shows unique cart item count (number of different products)
+  // NOT sum of quantities (that is for cart totals display)
+  const uniqueItemCount = Array.isArray(items) ? items.length : 0;
 
   return (
     <button
       className="cart-button"
       onClick={() => navigate('/cart')}
-      aria-label={`Shopping cart with ${itemCount} items`}
+      aria-label={`Shopping cart with ${uniqueItemCount} items`}
     >
       <span className="cart-button-icon">🛒</span>
-      {itemCount > 0 && (
-        <span className="cart-button-badge">{itemCount}</span>
+      {uniqueItemCount > 0 && (
+        <span className="cart-button-badge">{uniqueItemCount}</span>
       )}
     </button>
   );

@@ -4,10 +4,9 @@ import { useAuth } from '../../hooks/useAuth';
 
 export const HeaderWishlistButton = () => {
   const navigate = useNavigate();
-  const { isAdmin } = useAuth();
+  const { token, isAdmin } = useAuth();
 
-  // Hide for admin users
-  if (isAdmin) {
+  if (!token || isAdmin) {
     return null;
   }
 
@@ -19,11 +18,11 @@ export const HeaderWishlistButton = () => {
     <button
       onClick={handleWishlistClick}
       className="header-wishlist-button"
-      aria-label="View wishlist"
-      title="View wishlist"
+      aria-label="Xem danh sách yêu thích"
+      title="Yêu thích"
     >
       <span className="header-wishlist-icon">♥</span>
-      <span className="header-wishlist-label">Wishlist</span>
+      <span className="header-wishlist-label">Yêu thích</span>
     </button>
   );
 };

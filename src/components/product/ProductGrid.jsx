@@ -5,10 +5,17 @@ import './ProductGrid.css';
 const getProductId = (product) => product?.id || product?.productId || product?.Id || product?.ProductId || '';
 
 const isOutOfStock = (product) => {
-  if (product?.inStock === false || product?.isInStock === false || product?.IsInStock === false || product?.InStock === false) {
+  // Canonical check: inStock is the authoritative field from backend
+  if (product?.inStock === false) {
     return true;
   }
 
+  // Legacy fallback checks (for other API sources that may use these)
+  if (product?.isInStock === false || product?.IsInStock === false || product?.InStock === false) {
+    return true;
+  }
+
+  // Legacy fallback: stock count (only if explicitly provided)
   const stockValue = product?.stock ?? product?.Stock;
   return stockValue != null && Number(stockValue) <= 0;
 };

@@ -102,12 +102,28 @@
   color: #2563eb;
 }
 
+/* ── Header Right / Actions ───────────────────────────────────────────────────── */
+
 .customer-header-right {
   display: flex;
   align-items: center;
   gap: 8px;
   flex-shrink: 0;
 }
+
+.customer-header-auth-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.customer-header-guest-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ── Wishlist Button ──────────────────────────────────────────────────────────── */
 
 .header-wishlist-button {
   background: none;
@@ -136,6 +152,63 @@
   font-size: 13px;
 }
 
+/* ── Guest Auth Buttons ───────────────────────────────────────────────────────── */
+
+.customer-header-guest-btn {
+  padding: 6px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+  white-space: nowrap;
+}
+
+.customer-header-guest-btn--outline {
+  background: transparent;
+  border: 1px solid #d1d5db;
+  color: #374151;
+}
+
+.customer-header-guest-btn--outline:hover {
+  background-color: #f9fafb;
+  border-color: #9ca3af;
+  color: #111827;
+}
+
+.customer-header-guest-btn--primary {
+  background: #2563eb;
+  border: 1px solid #2563eb;
+  color: #ffffff;
+}
+
+.customer-header-guest-btn--primary:hover {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
+}
+
+/* ── Loading Skeleton ─────────────────────────────────────────────────────────── */
+
+.customer-header-skeleton {
+  width: 140px;
+  height: 36px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%);
+  background-size: 200% 100%;
+  animation: header-skeleton-shimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes header-skeleton-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* ── Responsive ───────────────────────────────────────────────────────────────── */
+
 @media (max-width: 768px) {
   .customer-header {
     padding: 10px 16px;
@@ -158,14 +231,49 @@
     padding: 6px;
     gap: 0;
   }
+
+  .customer-header-guest-btn--outline,
+  .customer-header-guest-btn--primary {
+    padding: 6px 12px;
+    font-size: 13px;
+  }
 }
 
 @media (max-width: 480px) {
+  .customer-header {
+    padding: 10px 16px;
+    gap: 12px;
+  }
+
   .customer-header-center {
     display: none;
   }
 
   .customer-header-brand {
     font-size: 16px;
+  }
+
+  .header-wishlist-label {
+    display: none;
+  }
+
+  .header-wishlist-button {
+    padding: 6px;
+    gap: 0;
+  }
+
+  .customer-header-guest-actions {
+    gap: 6px;
+  }
+
+  .customer-header-guest-btn {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+
+  .customer-header-guest-btn--outline,
+  .customer-header-guest-btn--primary {
+    padding: 6px 10px;
+    font-size: 12px;
   }
 }

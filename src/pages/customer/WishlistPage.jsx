@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 import { ProductGrid } from '../../components/product/ProductGrid';
 import { Button } from '../../components/common/Button';
 import { Loader } from '../../components/common/Loader';
@@ -10,10 +11,17 @@ import './WishlistPage.css';
 const getProductId = (item) => item?.productId || item?.id || '';
 
 const isOutOfStock = (item) => {
+  // Canonical check: inStock is the authoritative field from backend
+  if (item?.inStock === false) {
+    return true;
+  }
+
+  // Legacy fallback checks (for other API sources that may use these)
   if (item?.isInStock === false || item?.IsInStock === false) {
     return true;
   }
 
+  // Legacy fallback: stock count (only if explicitly provided)
   const stockValue = item?.stock ?? item?.Stock;
   return stockValue != null && Number(stockValue) <= 0;
 };
@@ -48,8 +56,8 @@ export const WishlistPage = () => {
       discountPrice: item.discountPrice,
       discountPercentage: item.discountPercentage,
       primaryImageUrl: item.headerImageUrl,
-      stock: item.stock || (item.isInStock ? 1 : 0),
-      isInStock: item.isInStock
+      // Canonical stock field from backend
+      inStock: item.inStock
     }));
   }, [wishlist]);
 
@@ -120,6 +128,7 @@ export const WishlistPage = () => {
     try {
       await addToCart(productId, 1);
       setPageError('');
+      toast.success('Đã thêm vào giỏ hàng');
     } catch (apiError) {
       if (apiError?.status === 401) {
         navigate('/login', { replace: true });
@@ -127,6 +136,7 @@ export const WishlistPage = () => {
       }
 
       setPageError(apiError.message || 'Không thể thêm vào giỏ hàng.');
+      toast.error('Không thể thêm vào giỏ hàng');
     } finally {
       setPendingCartProductIds((prev) => {
         const next = new Set(prev);

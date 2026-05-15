@@ -6,9 +6,36 @@ import { ProfileMenu } from './ProfileMenu';
 import { useAuth } from '../../hooks/useAuth';
 import './CustomerHeader.css';
 
+const GuestHeaderActions = ({ onLogin, onRegister }) => (
+  <div className="customer-header-guest-actions">
+    <button
+      className="customer-header-guest-btn customer-header-guest-btn--outline"
+      onClick={onLogin}
+      type="button"
+    >
+      Đăng nhập
+    </button>
+    <button
+      className="customer-header-guest-btn customer-header-guest-btn--primary"
+      onClick={onRegister}
+      type="button"
+    >
+      Đăng ký
+    </button>
+  </div>
+);
+
+const AuthHeaderActions = ({ onLogout }) => (
+  <div className="customer-header-auth-actions">
+    <HeaderWishlistButton />
+    <CartButton />
+    <ProfileMenu onLogout={onLogout} />
+  </div>
+);
+
 export const CustomerHeader = () => {
   const navigate = useNavigate();
-  const { logout } = useAuth();
+  const { token, isInitializing, logout } = useAuth();
   const [searchParams] = useSearchParams();
   const [searchInput, setSearchInput] = useState(searchParams.get('q') || '');
 
@@ -29,6 +56,9 @@ export const CustomerHeader = () => {
     logout();
     navigate('/login', { replace: true });
   };
+
+  const handleLogin = () => navigate('/login');
+  const handleRegister = () => navigate('/register');
 
   return (
     <nav className="customer-header">
@@ -70,9 +100,13 @@ export const CustomerHeader = () => {
       </div>
 
       <div className="customer-header-right">
-        <HeaderWishlistButton />
-        <CartButton />
-        <ProfileMenu onLogout={handleLogout} />
+        {isInitializing ? (
+          <div className="customer-header-skeleton" aria-hidden="true" />
+        ) : token ? (
+          <AuthHeaderActions onLogout={handleLogout} />
+        ) : (
+          <GuestHeaderActions onLogin={handleLogin} onRegister={handleRegister} />
+        )}
       </div>
     </nav>
   );

@@ -9,7 +9,7 @@ export const ProfileMenu = ({ onLogout }) => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef(null);
 
-  const displayName = username || email || 'User';
+  const displayName = username || email || 'Người dùng';
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -39,7 +39,7 @@ export const ProfileMenu = ({ onLogout }) => {
       <button
         className="profile-menu-trigger"
         onClick={() => setIsOpen(!isOpen)}
-        aria-label="User profile menu"
+        aria-label="Menu hồ sơ người dùng"
       >
         <div className="profile-menu-avatar">
           {displayName.charAt(0).toUpperCase()}
@@ -55,7 +55,7 @@ export const ProfileMenu = ({ onLogout }) => {
           </div>
           <div className="profile-menu-divider" />
           <div className="profile-menu-role">
-            {isAdmin ? '👔 Admin' : '🛍️ Customer'}
+            {isAdmin ? '👔 Quản trị viên' : '🛍️ Khách hàng'}
           </div>
           {!isAdmin && (
             <>
@@ -73,7 +73,7 @@ export const ProfileMenu = ({ onLogout }) => {
             className="profile-menu-logout"
             onClick={handleLogout}
           >
-            Logout
+            Đăng xuất
           </button>
         </div>
       )}

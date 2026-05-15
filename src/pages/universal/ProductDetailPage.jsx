@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "sonner";
 import { Loader } from "../../components/common/Loader";
 import { MainLayout } from "../../components/layout/MainLayout";
 import { ReviewSection } from "../../components/product/ReviewSection";
@@ -293,11 +294,12 @@ export const ProductDetailPage = () => {
     setIsCartPending(true);
     try {
       await addToCart(productId, quantity);
+      toast.success("Đã thêm vào giỏ hàng");
     } catch (apiError) {
       if (apiError?.status === 401) {
         navigate("/login", { replace: true });
       } else {
-        console.error("Add to cart failed:", apiError);
+        toast.error("Không thể thêm vào giỏ hàng");
       }
     } finally {
       setIsCartPending(false);
@@ -723,12 +725,9 @@ export const ProductDetailPage = () => {
 
                       try {
                         await addToCart(pid, 1);
+                        toast.success("Đã thêm vào giỏ hàng");
                       } catch (e) {
-                        // eslint-disable-next-line no-console
-                        console.error(
-                          "[Recommendations] Add to cart failed",
-                          e,
-                        );
+                        toast.error("Không thể thêm vào giỏ hàng");
                       }
                     }}
                   />

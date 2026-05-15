@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { toast } from 'sonner';
 import { getProducts } from '../../api/productApi';
 import { getCategories } from '../../api/categoriesApi';
 import { getTags } from '../../api/tagsApi';
@@ -279,12 +280,13 @@ export const SearchResultsPage = () => {
 
     try {
       await addToCart(productId, 1);
+      toast.success('Đã thêm vào giỏ hàng');
     } catch (apiError) {
       if (apiError?.status === 401) {
         navigate('/login', { replace: true });
         return;
       }
-      console.error('Add to cart failed:', apiError);
+      toast.error('Không thể thêm vào giỏ hàng');
     } finally {
       setPendingCartProductIds((prev) => {
         const next = new Set(prev);
