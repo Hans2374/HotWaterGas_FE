@@ -4,9 +4,9 @@
 }
 
 .error-banner {
-  background-color: #f8d7da;
-  border: 1px solid #f5c6cb;
-  color: #721c24;
+  background-color: var(--customer-accent-light);
+  border: 1px solid var(--customer-accent);
+  color: var(--customer-accent-hover);
   padding: 12px;
   border-radius: 4px;
   margin-bottom: 16px;
@@ -14,9 +14,9 @@
 }
 
 .session-message-banner {
-  background-color: #fff3cd;
-  border: 1px solid #ffeeba;
-  color: #856404;
+  background-color: #3d2e00;
+  border: 1px solid #7a5c00;
+  color: #f0c040;
   padding: 12px;
   border-radius: 4px;
   margin-bottom: 16px;
@@ -27,11 +27,11 @@
   text-align: center;
   margin-top: 24px;
   font-size: 14px;
-  color: #666;
+  color: var(--customer-text-secondary);
 }
 
 .auth-link {
-  color: #007bff;
+  color: var(--customer-accent);
   text-decoration: none;
   font-weight: 600;
 }
@@ -43,7 +43,7 @@
 .forgot-password-link {
   background: none;
   border: none;
-  color: #007bff;
+  color: var(--customer-accent);
   text-decoration: none;
   font-weight: 500;
   padding: 0;
@@ -54,11 +54,11 @@
 
 .forgot-password-link:hover {
   text-decoration: underline;
-  color: #0056b3;
+  color: var(--customer-accent-hover);
 }
 
 .forgot-password-link:focus {
-  outline: 2px solid #007bff;
+  outline: 2px solid var(--customer-accent);
   outline-offset: 2px;
   border-radius: 2px;
 }

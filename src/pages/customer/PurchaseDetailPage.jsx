@@ -77,45 +77,41 @@ export default function PurchaseDetailPage() {
 
   if (loading) {
     return (
-      <MainLayout>
+      <div className="order-detail-loading">
         <Loader text="Đang tải đơn hàng..." />
-      </MainLayout>
+      </div>
     );
   }
 
   if (notFound) {
     return (
-      <MainLayout>
-        <div className="orders-state-card orders-state-card--muted">
-          <div className="orders-state-icon" aria-hidden>🔍</div>
-          <h2 className="orders-state-title">Không tìm thấy đơn hàng</h2>
-          <p className="orders-state-hint">
-            Đơn hàng này không tồn tại hoặc bạn không có quyền truy cập.
-          </p>
-          <button type="button" className="orders-btn-secondary" onClick={() => navigate('/account/orders')}>
-            Quay lại lịch sử
-          </button>
-        </div>
-      </MainLayout>
+      <div className="orders-state-card orders-state-card--muted">
+        <div className="orders-state-icon" aria-hidden>🔍</div>
+        <h2 className="orders-state-title">Không tìm thấy đơn hàng</h2>
+        <p className="orders-state-hint">
+          Đơn hàng này không tồn tại hoặc bạn không có quyền truy cập.
+        </p>
+        <button type="button" className="orders-btn-secondary" onClick={() => navigate('/account/orders')}>
+          Quay lại lịch sử
+        </button>
+      </div>
     );
   }
 
   if (error) {
     return (
-      <MainLayout>
-        <div className="orders-state-card orders-state-card--error">
-          <div className="orders-state-icon orders-state-icon--error" aria-hidden>⚠️</div>
-          <p className="orders-state-message">{error}</p>
-          <div className="orders-state-actions">
-            <button type="button" className="orders-btn-primary" onClick={handleRetry}>
-              Thử lại
-            </button>
-            <button type="button" className="orders-btn-secondary" onClick={() => navigate('/account/orders')}>
-              Quay lại
-            </button>
-          </div>
+      <div className="orders-state-card orders-state-card--error">
+        <div className="orders-state-icon orders-state-icon--error" aria-hidden>⚠️</div>
+        <p className="orders-state-message">{error}</p>
+        <div className="orders-state-actions">
+          <button type="button" className="orders-btn-primary" onClick={handleRetry}>
+            Thử lại
+          </button>
+          <button type="button" className="orders-btn-secondary" onClick={() => navigate('/account/orders')}>
+            Quay lại
+          </button>
         </div>
-      </MainLayout>
+      </div>
     );
   }
 

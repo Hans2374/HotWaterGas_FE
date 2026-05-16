@@ -7,6 +7,19 @@
   --text-color: #333;
   --text-light: #666;
   --bg-light: #f5f5f5;
+
+  /* === Customer Theme Tokens === */
+  --customer-bg: #111827;
+  --customer-surface: #1F2937;
+  --customer-surface-hover: #293548;
+  --customer-accent: #DC2626;
+  --customer-accent-hover: #EF4444;
+  --customer-accent-active: #991B1B;
+  --customer-accent-light: #2d1515;
+  --customer-text-primary: #F9FAFB;
+  --customer-text-secondary: #9CA3AF;
+  --customer-border: #374151;
+  --customer-border-hover: #4B5563;
 }
 
 * {
@@ -28,8 +41,8 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: var(--text-color);
-  background-color: var(--bg-light);
+  color: var(--customer-text-primary);
+  background-color: var(--customer-bg);
 }
 
 code {

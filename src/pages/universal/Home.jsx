@@ -167,21 +167,32 @@ export const Home = () => {
   }, [addToCart, navigate, pendingCartProductIds, token]);
 
   return (
-    <section className="home-header">
-      <h2>Danh mục sản phẩm</h2>
+    <div className="home-page">
+      <section className="home-section">
+        <div className="home-section-header">
+          <h2 className="home-section-title">Steam Key Chính Hãng</h2>
+          <button
+            type="button"
+            className="home-view-all-link"
+            onClick={handleViewAllProducts}
+            aria-label="Xem tất cả sản phẩm"
+          >
+            Xem tất cả
+            <span className="home-view-all-arrow" aria-hidden>→</span>
+          </button>
+        </div>
 
-      {isLoading && <Loader text="Đang tải sản phẩm..." />}
+        {isLoading && <Loader text="Đang tải sản phẩm..." />}
 
-      {!isLoading && error && <p className="home-message home-error">{error}</p>}
+        {!isLoading && error && <p className="home-message home-error">{error}</p>}
 
-      {!isLoading && !error && products.length === 0 && (
-        <p className="home-message">
-          {searchQuery ? 'Không tìm thấy sản phẩm phù hợp.' : 'Không có sản phẩm nào.'}
-        </p>
-      )}
+        {!isLoading && !error && products.length === 0 && (
+          <p className="home-message">
+            {searchQuery ? 'Không tìm thấy sản phẩm phù hợp.' : 'Không có sản phẩm nào.'}
+          </p>
+        )}
 
-      {!isLoading && !error && products.length > 0 && (
-        <>
+        {!isLoading && !error && products.length > 0 && (
           <ProductGrid
             products={products}
             wishlistProductIds={wishlistProductIds}
@@ -191,17 +202,8 @@ export const Home = () => {
             onAddToCart={handleAddToCart}
             columns={4}
           />
-          <div className="home-products-footer">
-            <button
-              type="button"
-              className="home-view-all-btn"
-              onClick={handleViewAllProducts}
-            >
-              Xem thêm
-            </button>
-          </div>
-        </>
-      )}
-    </section>
+        )}
+      </section>
+    </div>
   );
 };

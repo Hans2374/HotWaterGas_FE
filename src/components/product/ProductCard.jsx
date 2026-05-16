@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './ProductCard.css';
 
@@ -39,6 +39,14 @@ const CartIcon = () => (
   </svg>
 );
 
+const MAX_ROTATE_X = 8;
+const MAX_ROTATE_Y = 10;
+const LIFT_TRANSITION_MS = 200;
+const TILT_TRANSITION_MS = 0;
+const GLOW_TRANSITION_MS = 200;
+const OVERLAY_TRANSITION_MS = 60;
+const IS_MOBILE_QUERY = '(hover: none), (pointer: coarse)';
+
 export const ProductCard = ({
   product,
   isWishlisted = false,
@@ -49,6 +57,10 @@ export const ProductCard = ({
   onAddToCart
 }) => {
   const navigate = useNavigate();
+  const cardRef = useRef(null);
+  const rafRef = useRef(null);
+  const prefersNoHover = useRef(false);
+
   const basePrice = Number(product.price || 0);
   const discountPrice = Number(product.discountPrice ?? product.finalPrice ?? 0) || 0;
   const hasDiscount = Boolean(product.discountPercentage || (discountPrice > 0 && discountPrice < basePrice));
@@ -57,30 +69,89 @@ export const ProductCard = ({
     ? `-${Number(product.discountPercentage)}%`
     : null;
   const productSlug = product.slug || product.productSlug || product.Slug || product.ProductSlug || '';
-  const cardClassName = `product-card${productSlug ? ' is-clickable' : ''}${isOutOfStock ? ' is-out-of-stock' : ''}`;
+  const cardClassName = `product-card${productSlug ? ' is-clickable' : ''}${isOutOfStock ? ' is-out-of-stock' : ''}${prefersNoHover.current ? ' prefers-no-hover' : ''}`;
 
   const handleNavigateToDetail = () => {
-    if (!productSlug) {
-      return;
-    }
-
+    if (!productSlug) return;
     navigate(`/products/${productSlug}`);
   };
 
   const handleCardKeyDown = (event) => {
-    if (!productSlug) {
-      return;
-    }
-
+    if (!productSlug) return;
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
       handleNavigateToDetail();
     }
   };
 
+  const applyTilt = useCallback((clientX, clientY) => {
+    const card = cardRef.current;
+    if (!card) return;
+
+    const rect = card.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    const normX = (clientX - centerX) / (rect.width / 2);
+    const normY = (clientY - centerY) / (rect.height / 2);
+
+    const rotateY = normX * MAX_ROTATE_Y;
+    const rotateX = normY * -MAX_ROTATE_X;
+    const glowX = ((clientX - rect.left) / rect.width) * 100;
+    const glowY = ((clientY - rect.top) / rect.height) * 100;
+
+    card.style.setProperty('--tilt-rotate-x', `${rotateX}deg`);
+    card.style.setProperty('--tilt-rotate-y', `${rotateY}deg`);
+    card.style.setProperty('--glow-origin-x', `${glowX}%`);
+    card.style.setProperty('--glow-origin-y', `${glowY}%`);
+  }, []);
+
+  const handleMouseMove = useCallback((event) => {
+    if (prefersNoHover.current) return;
+
+    if (rafRef.current) {
+      cancelAnimationFrame(rafRef.current);
+    }
+    rafRef.current = requestAnimationFrame(() => {
+      applyTilt(event.clientX, event.clientY);
+    });
+  }, [applyTilt]);
+
+  const handleMouseEnter = useCallback(() => {
+    if (prefersNoHover.current) return;
+    const card = cardRef.current;
+    if (!card) return;
+    card.classList.add('is-tilted');
+    card.style.transition = `transform ${TILT_TRANSITION_MS}ms ease-out, box-shadow ${GLOW_TRANSITION_MS}ms ease-out`;
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    const card = cardRef.current;
+    if (!card) return;
+    card.classList.remove('is-tilted');
+    card.style.setProperty('--tilt-rotate-x', '0deg');
+    card.style.setProperty('--tilt-rotate-y', '0deg');
+    card.style.setProperty('--glow-origin-x', '50%');
+    card.style.setProperty('--glow-origin-y', '50%');
+    card.style.transition = `transform ${LIFT_TRANSITION_MS}ms ease-out, box-shadow ${GLOW_TRANSITION_MS}ms ease-out`;
+  }, []);
+
+  const handleButtonMouseDown = useCallback((event) => {
+    event.stopPropagation();
+  }, []);
+
   return (
     <article
+      ref={cardRef}
       className={cardClassName}
+      style={{
+        '--tilt-rotate-x': '0deg',
+        '--tilt-rotate-y': '0deg',
+        '--glow-origin-x': '50%',
+        '--glow-origin-y': '50%',
+      }}
+      onMouseEnter={handleMouseEnter}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
       role={productSlug ? 'link' : undefined}
       tabIndex={productSlug ? 0 : undefined}
       onClick={handleNavigateToDetail}
@@ -92,6 +163,7 @@ export const ProductCard = ({
           className={`product-action product-action-wishlist${isWishlisted ? ' is-active' : ''}`}
           aria-label={isWishlisted ? 'Xóa khỏi yêu thích' : 'Thêm vào yêu thích'}
           disabled={isWishlistPending}
+          onMouseDown={handleButtonMouseDown}
           onClick={(event) => {
             event.preventDefault();
             event.stopPropagation();
@@ -129,6 +201,7 @@ export const ProductCard = ({
           aria-label="Thêm vào giỏ hàng"
           disabled={isCartPending || isOutOfStock}
           title={isOutOfStock ? 'Hết hàng' : 'Thêm vào giỏ hàng'}
+          onMouseDown={handleButtonMouseDown}
           onClick={(event) => {
             event.preventDefault();
             event.stopPropagation();

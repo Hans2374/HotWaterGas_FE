@@ -7,13 +7,13 @@
   margin: 0 0 6px 0;
   font-size: 24px;
   font-weight: 600;
-  color: var(--text-color);
+  color: var(--customer-text-primary);
 }
 
 .orders-page-subtitle {
   margin: 0;
   font-size: 14px;
-  color: var(--text-light);
+  color: var(--customer-text-secondary);
   line-height: 1.5;
   max-width: 640px;
 }

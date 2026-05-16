@@ -3,14 +3,14 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background-color: #f5f5f5;
+  background-color: var(--customer-bg);
 }
 
 .auth-card {
-  background: white;
+  background: var(--customer-surface);
   padding: 40px;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   width: 100%;
   max-width: 400px;
 }
@@ -19,6 +19,6 @@
   font-size: 24px;
   font-weight: 700;
   margin-bottom: 24px;
-  color: #333;
+  color: var(--customer-text-primary);
   text-align: center;
 }

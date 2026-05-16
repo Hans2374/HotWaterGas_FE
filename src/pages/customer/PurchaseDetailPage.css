@@ -1,4 +1,10 @@
 /* Shared with Purchase History — matches Home / Cart page title rhythm */
+.order-detail-loading {
+  min-height: 280px;
+  display: grid;
+  place-items: center;
+}
+
 .orders-page-header {
   margin-bottom: 20px;
 }
@@ -7,7 +13,7 @@
   margin: 0 0 6px 0;
   font-size: 24px;
   font-weight: 600;
-  color: var(--text-color);
+  color: var(--customer-text-primary);
 }
 
 .order-detail-page {
@@ -29,20 +35,21 @@
   font: inherit;
   font-size: 14px;
   font-weight: 500;
-  color: var(--primary-color);
+  color: var(--customer-accent);
   cursor: pointer;
   text-decoration: none;
   text-align: left;
 }
 
 .order-detail-back:hover {
+  color: var(--customer-accent-hover);
   text-decoration: underline;
 }
 
 .order-detail-meta {
   margin: 0;
   font-size: 14px;
-  color: var(--text-light);
+  color: var(--customer-text-secondary);
   line-height: 1.5;
   display: flex;
   flex-wrap: wrap;
@@ -51,20 +58,20 @@
 }
 
 .order-detail-meta-sep {
-  color: var(--border-color);
+  color: var(--customer-border);
   user-select: none;
 }
 
 .order-detail-status {
   font-weight: 600;
-  color: var(--text-color);
+  color: var(--customer-text-primary);
 }
 
 .order-license-card {
   margin-top: 16px;
   padding: 24px;
-  background: #ffffff;
-  border: 1px solid var(--border-color);
+  background: var(--customer-surface);
+  border: 1px solid var(--customer-border);
   border-radius: 8px;
 }
 
@@ -72,7 +79,7 @@
   margin: 0 0 16px 0;
   font-size: 16px;
   font-weight: 600;
-  color: var(--text-color);
+  color: var(--customer-text-primary);
 }
 
 .order-license-card .license-table-container {
@@ -83,28 +90,28 @@
 
 .order-license-card .license-table-empty {
   margin: 0;
-  border: 1px dashed var(--border-color);
-  background: var(--bg-light);
+  border: 1px dashed var(--customer-border);
+  background: var(--customer-surface-hover);
 }
 
 /* Empty / error — same family as Home .home-message */
 .orders-state-card {
   text-align: center;
   padding: 40px 24px;
-  background: #ffffff;
-  border: 1px solid var(--border-color);
+  background: var(--customer-surface);
+  border: 1px solid var(--customer-border);
   border-radius: 8px;
   max-width: 480px;
   margin: 0 auto;
 }
 
 .orders-state-card--error {
-  border-color: #ffc9c9;
-  background: #fff5f5;
+  border-color: var(--customer-accent);
+  background: var(--customer-accent-light);
 }
 
 .orders-state-card--muted {
-  color: var(--text-color);
+  color: var(--customer-text-primary);
 }
 
 .orders-state-icon {
@@ -121,13 +128,13 @@
   margin: 0 0 8px 0;
   font-size: 18px;
   font-weight: 600;
-  color: var(--text-color);
+  color: var(--customer-text-primary);
 }
 
 .orders-state-hint {
   margin: 0 0 20px 0;
   font-size: 14px;
-  color: var(--text-light);
+  color: var(--customer-text-secondary);
   line-height: 1.5;
 }
 
@@ -135,7 +142,7 @@
   margin: 0 0 20px 0;
   font-size: 15px;
   font-weight: 600;
-  color: var(--error-color);
+  color: var(--customer-accent-hover);
 }
 
 .orders-state-actions {
@@ -152,28 +159,30 @@
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--customer-border);
   transition: background-color 0.15s ease, border-color 0.15s ease;
 }
 
 .orders-btn-primary {
-  background: var(--error-color);
+  background: var(--customer-accent);
   color: #fff;
-  border-color: var(--error-color);
+  border-color: var(--customer-accent);
 }
 
 .orders-btn-primary:hover {
-  filter: brightness(0.92);
+  background: var(--customer-accent-hover);
+  border-color: var(--customer-accent-hover);
 }
 
 .orders-btn-secondary {
-  background: #ffffff;
-  color: var(--text-color);
+  background: var(--customer-surface);
+  color: var(--customer-text-primary);
+  border-color: var(--customer-border);
 }
 
 .orders-btn-secondary:hover {
-  background: var(--bg-light);
-  border-color: #bbb;
+  background: var(--customer-surface-hover);
+  border-color: var(--customer-border-hover);
 }
 
 @media (max-width: 768px) {

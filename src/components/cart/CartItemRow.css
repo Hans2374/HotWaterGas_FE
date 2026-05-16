@@ -4,9 +4,9 @@
   gap: 14px;
   padding: 16px;
   padding-right: 44px;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--customer-border);
   border-radius: 8px;
-  background: #ffffff;
+  background: var(--customer-surface);
   align-items: center;
   position: relative;
 }
@@ -26,8 +26,8 @@
   height: 88px;
   border-radius: 10px;
   overflow: hidden;
-  border: 1px solid var(--border-color);
-  background: #f7f7f7;
+  border: 1px solid var(--customer-border);
+  background: var(--customer-surface-hover);
   flex-shrink: 0;
 }
 
@@ -44,7 +44,7 @@
   align-items: center;
   justify-content: center;
   font-size: 12px;
-  color: var(--text-light);
+  color: var(--customer-text-secondary);
 }
 
 .cart-item-product {
@@ -67,6 +67,7 @@
   font-size: 16px;
   margin: 0;
   line-height: 1.35;
+  color: var(--customer-text-primary);
 }
 
 .cart-item-name-link {
@@ -87,7 +88,7 @@
 }
 
 .cart-item-name-link:hover .cart-item-name {
-  color: var(--primary-color);
+  color: var(--customer-accent);
   text-decoration: underline;
 }
 
@@ -101,10 +102,10 @@
   right: 12px;
   width: 28px;
   height: 28px;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--customer-border);
   border-radius: 999px;
-  background: #ffffff;
-  color: var(--text-light);
+  background: var(--customer-surface-hover);
+  color: var(--customer-text-secondary);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -115,8 +116,8 @@
 }
 
 .cart-item-remove-icon-button:hover {
-  color: var(--error-color);
-  border-color: var(--error-color);
+  color: var(--customer-accent);
+  border-color: var(--customer-accent);
 }
 
 .cart-item-remove-icon-button:disabled {
@@ -138,27 +139,28 @@
   font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: var(--text-light);
+  color: var(--customer-text-secondary);
 }
 
 .cart-item-column-value {
   font-size: 16px;
-  color: var(--text-dark);
+  color: var(--customer-text-primary);
 }
 
 .cart-quantity-input {
   width: 88px;
   height: 32px;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--customer-border);
   border-radius: 8px;
   text-align: center;
   font-size: 14px;
-  color: var(--text-dark);
+  color: var(--customer-text-primary);
+  background: var(--customer-surface-hover);
 }
 
 .cart-item-warning {
   margin: 0;
-  color: var(--error-color);
+  color: var(--customer-accent-hover);
   font-size: 13px;
 }
 

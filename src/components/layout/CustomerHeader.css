@@ -4,9 +4,9 @@
   justify-content: space-between;
   gap: 24px;
   padding: 12px 32px;
-  background: #fff;
-  border-bottom: 1px solid #e5e7eb;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  background: var(--customer-surface);
+  border-bottom: 1px solid var(--customer-border);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
   position: sticky;
   top: 0;
   z-index: 100;
@@ -19,7 +19,7 @@
 .customer-header-brand {
   font-size: 20px;
   font-weight: 700;
-  color: #111827;
+  color: var(--customer-text-primary);
   text-decoration: none;
   letter-spacing: -0.3px;
   transition: color 0.15s;
@@ -27,7 +27,7 @@
 }
 
 .customer-header-brand:hover {
-  color: #2563eb;
+  color: var(--customer-accent);
 }
 
 .customer-header-center {
@@ -40,17 +40,17 @@
   display: flex;
   align-items: center;
   gap: 0;
-  background: #f3f4f6;
-  border: 1px solid #e5e7eb;
+  background: var(--customer-surface-hover);
+  border: 1px solid var(--customer-border);
   border-radius: 8px;
   padding: 6px 10px;
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .customer-header-search-box:focus-within {
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-  background: #fff;
+  border-color: var(--customer-accent);
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15);
+  background: var(--customer-surface);
 }
 
 .customer-header-search-input {
@@ -59,13 +59,13 @@
   background: transparent;
   outline: none;
   font-size: 14px;
-  color: #111827;
+  color: var(--customer-text-primary);
   padding: 4px 6px;
   min-width: 0;
 }
 
 .customer-header-search-input::placeholder {
-  color: #9ca3af;
+  color: var(--customer-text-secondary);
 }
 
 .customer-header-search-clear {
@@ -73,7 +73,7 @@
   border: none;
   cursor: pointer;
   font-size: 12px;
-  color: #9ca3af;
+  color: var(--customer-text-secondary);
   padding: 4px 6px;
   transition: color 0.15s;
   display: flex;
@@ -82,7 +82,7 @@
 }
 
 .customer-header-search-clear:hover {
-  color: #6b7280;
+  color: var(--customer-text-primary);
 }
 
 .customer-header-search-button {
@@ -90,7 +90,7 @@
   border: none;
   cursor: pointer;
   font-size: 14px;
-  color: #6b7280;
+  color: var(--customer-text-secondary);
   padding: 4px 6px;
   transition: color 0.15s;
   display: flex;
@@ -99,7 +99,7 @@
 }
 
 .customer-header-search-button:hover {
-  color: #2563eb;
+  color: var(--customer-accent);
 }
 
 /* ── Header Right / Actions ───────────────────────────────────────────────────── */
@@ -137,11 +137,11 @@
   transition: background-color 0.2s;
   font-size: 14px;
   font-weight: 600;
-  color: #374151;
+  color: var(--customer-text-secondary);
 }
 
 .header-wishlist-button:hover {
-  background-color: #f3f4f6;
+  background-color: var(--customer-surface-hover);
 }
 
 .header-wishlist-icon {
@@ -166,25 +166,25 @@
 
 .customer-header-guest-btn--outline {
   background: transparent;
-  border: 1px solid #d1d5db;
-  color: #374151;
+  border: 1px solid var(--customer-border);
+  color: var(--customer-text-secondary);
 }
 
 .customer-header-guest-btn--outline:hover {
-  background-color: #f9fafb;
-  border-color: #9ca3af;
-  color: #111827;
+  background-color: var(--customer-surface-hover);
+  border-color: var(--customer-border-hover);
+  color: var(--customer-text-primary);
 }
 
 .customer-header-guest-btn--primary {
-  background: #2563eb;
-  border: 1px solid #2563eb;
+  background: var(--customer-accent);
+  border: 1px solid var(--customer-accent);
   color: #ffffff;
 }
 
 .customer-header-guest-btn--primary:hover {
-  background: #1d4ed8;
-  border-color: #1d4ed8;
+  background: var(--customer-accent-hover);
+  border-color: var(--customer-accent-hover);
 }
 
 /* ── Loading Skeleton ─────────────────────────────────────────────────────────── */
@@ -193,7 +193,7 @@
   width: 140px;
   height: 36px;
   border-radius: 6px;
-  background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%);
+  background: linear-gradient(90deg, var(--customer-surface) 25%, var(--customer-surface-hover) 50%, var(--customer-surface) 75%);
   background-size: 200% 100%;
   animation: header-skeleton-shimmer 1.5s ease-in-out infinite;
 }

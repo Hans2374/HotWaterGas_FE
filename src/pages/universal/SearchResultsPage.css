@@ -12,8 +12,8 @@
 .search-filters-panel {
   position: sticky;
   top: 20px;
-  background: #ffffff;
-  border: 1px solid var(--border-color);
+  background: var(--customer-surface);
+  border: 1px solid var(--customer-border);
   border-radius: 10px;
   padding: 14px;
 }
@@ -28,13 +28,14 @@
 .search-filters-header h3 {
   margin: 0;
   font-size: 16px;
+  color: var(--customer-text-primary);
 }
 
 .search-filters-clear,
 .search-filter-clear-small {
-  border: 1px solid var(--border-color);
-  background: #ffffff;
-  color: var(--text-color);
+  border: 1px solid var(--customer-border);
+  background: var(--customer-surface-hover);
+  color: var(--customer-text-primary);
   border-radius: 8px;
   padding: 6px 10px;
   cursor: pointer;
@@ -44,7 +45,7 @@
 .search-filter-group {
   margin-top: 12px;
   padding-top: 12px;
-  border-top: 1px solid var(--border-color);
+  border-top: 1px solid var(--customer-border);
 }
 
 .search-filter-group:first-of-type {
@@ -56,7 +57,7 @@
 .search-filter-group h4 {
   margin: 0 0 8px;
   font-size: 14px;
-  color: var(--text-color);
+  color: var(--customer-text-primary);
 }
 
 .search-filter-group-title-row {
@@ -79,7 +80,7 @@
   align-items: center;
   gap: 8px;
   font-size: 14px;
-  color: var(--text-color);
+  color: var(--customer-text-secondary);
 }
 
 .search-filter-option input {
@@ -94,22 +95,24 @@
 
 .search-price-inputs label {
   font-size: 12px;
-  color: var(--text-light);
+  color: var(--customer-text-secondary);
 }
 
 .search-price-inputs input {
   width: 100%;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--customer-border);
   border-radius: 8px;
   padding: 8px 10px;
   font-size: 14px;
+  background: var(--customer-surface-hover);
+  color: var(--customer-text-primary);
 }
 
 .search-filter-apply {
   margin-top: 10px;
-  border: 1px solid var(--border-color);
-  background: #f5f7fa;
-  color: var(--text-color);
+  border: 1px solid var(--customer-border);
+  background: var(--customer-surface-hover);
+  color: var(--customer-text-primary);
   border-radius: 8px;
   padding: 8px 10px;
   cursor: pointer;
@@ -124,7 +127,7 @@
 
 .search-filters-error,
 .search-price-error {
-  color: var(--error-color);
+  color: var(--customer-accent-hover);
 }
 
 .search-results-main {
@@ -137,14 +140,14 @@
 
 .search-results-title {
   font-size: 24px;
-  color: var(--text-color);
+  color: var(--customer-text-primary);
   margin: 0 0 8px;
   word-break: break-word;
 }
 
 .search-results-count {
   font-size: 14px;
-  color: var(--text-light);
+  color: var(--customer-text-secondary);
   margin: 0;
 }
 
@@ -163,15 +166,15 @@
 
 .search-results-sort label {
   font-size: 14px;
-  color: var(--text-color);
+  color: var(--customer-text-primary);
   font-weight: 500;
 }
 
 .sort-select {
   padding: 8px 12px;
-  background-color: #ffffff;
-  color: var(--text-color);
-  border: 1px solid var(--border-color);
+  background-color: var(--customer-surface);
+  color: var(--customer-text-primary);
+  border: 1px solid var(--customer-border);
   border-radius: 8px;
   font-size: 14px;
   cursor: pointer;
@@ -179,27 +182,27 @@
 
 .sort-select:focus {
   outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.12);
+  border-color: var(--customer-accent);
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15);
 }
 
 .search-error,
 .search-empty {
   text-align: center;
   padding: 24px;
-  background: #ffffff;
-  border: 1px solid var(--border-color);
+  background: var(--customer-surface);
+  border: 1px solid var(--customer-border);
   border-radius: 8px;
 }
 
 .search-error p {
-  color: var(--error-color);
+  color: var(--customer-accent-hover);
   margin: 0;
   font-size: 16px;
 }
 
 .search-empty p {
-  color: var(--text-light);
+  color: var(--customer-text-secondary);
   margin: 0;
   font-size: 16px;
 }
@@ -217,9 +220,9 @@
 .pagination-number {
   min-height: 38px;
   padding: 8px 12px;
-  background-color: #ffffff;
-  color: var(--text-color);
-  border: 1px solid var(--border-color);
+  background-color: var(--customer-surface);
+  color: var(--customer-text-primary);
+  border: 1px solid var(--customer-border);
   border-radius: 8px;
   font-size: 14px;
   cursor: pointer;
@@ -227,7 +230,7 @@
 
 .pagination-btn:hover:not(:disabled),
 .pagination-number:hover {
-  border-color: var(--primary-color);
+  border-color: var(--customer-accent);
 }
 
 .pagination-btn:disabled {
@@ -248,8 +251,8 @@
 }
 
 .pagination-number.active {
-  background-color: var(--primary-color);
-  border-color: var(--primary-color);
+  background-color: var(--customer-accent);
+  border-color: var(--customer-accent);
   color: #ffffff;
 }
 

@@ -1,23 +1,52 @@
+/* ─── Base card ─────────────────────────────────────────────────────────────── */
+
 .product-card {
   background: linear-gradient(135deg, #1a1a1f 0%, #0f0f14 100%);
   border-radius: 12px;
   padding: 0;
   overflow: hidden;
   color: #e8e8e8;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
   display: flex;
   flex-direction: column;
   height: 100%;
+
+  /* 3D tilt — perspective on the card itself */
+  transform-style: preserve-3d;
+  transform: translateY(0) rotateX(var(--tilt-rotate-x, 0deg)) rotateY(var(--tilt-rotate-y, 0deg));
+  will-change: transform;
+  transition:
+    transform 200ms ease-out,
+    box-shadow 200ms ease-out;
+}
+
+/* Mobile/touch — disable tilt class applied via JS media-query check */
+@media (hover: none), (pointer: coarse) {
+  .product-card {
+    transform: none !important;
+  }
+}
+
+/* Reset tilt when card is focused (don't let tilt persist) */
+.product-card:focus-visible {
+  transform: none !important;
+  outline: 2px solid rgba(220, 38, 38, 0.7);
+  outline-offset: 2px;
+}
+
+/* ─── 3D tilt active state ──────────────────────────────────────────────────── */
+
+.product-card.is-tilted {
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(220, 38, 38, 0.12),
+    0 0 24px rgba(220, 38, 38, 0.08);
 }
 
 .product-card.is-clickable {
   cursor: pointer;
 }
 
-.product-card:focus-visible {
-  outline: 2px solid rgba(255, 255, 255, 0.85);
-  outline-offset: 2px;
-}
+/* ─── Image wrap — perspective container ───────────────────────────────────── */
 
 .product-card-image-wrap {
   aspect-ratio: 1 / 1;
@@ -27,40 +56,25 @@
   overflow: hidden;
 }
 
+/* ─── Image zoom on hover ──────────────────────────────────────────────────── */
+
 .product-card-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  transition: transform 280ms ease-out, filter 280ms ease-out;
+  transform-origin: center center;
+  backface-visibility: hidden;
 }
 
-.product-card-image-link {
-  appearance: none;
-  border: 0;
-  display: block;
-  width: 100%;
-  height: 100%;
-  padding: 0;
-  background: transparent;
-  text-align: left;
-  text-decoration: none;
-  color: inherit;
+.product-card:hover .product-card-image,
+.product-card.is-tilted .product-card-image {
+  transform: scale(1.04);
 }
 
-.product-card-image-link.is-clickable {
-  cursor: pointer;
-}
-
-.product-card-image-placeholder {
-  width: 100%;
-  height: 100%;
-  display: grid;
-  place-items: center;
-  color: rgba(255, 255, 255, 0.35);
-  font-size: 13px;
-  background: linear-gradient(135deg, #252530 0%, #14141b 100%);
-}
+/* ─── Out of stock overlay ─────────────────────────────────────────────────── */
 
 .product-card-out-of-stock-overlay {
   position: absolute;
@@ -80,6 +94,8 @@
   pointer-events: none;
 }
 
+/* ─── Product name ─────────────────────────────────────────────────────────── */
+
 .product-card .product-name {
   margin: 12px 10px 0;
   font-size: 15px;
@@ -92,7 +108,15 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
   min-height: auto;
+
+  transition: color 200ms ease;
 }
+
+.product-card:hover .product-card .product-name {
+  color: #fff;
+}
+
+/* ─── Price band ───────────────────────────────────────────────────────────── */
 
 .product-price-band {
   margin-top: auto;
@@ -112,6 +136,8 @@
   padding: 0;
   flex-shrink: 0;
 }
+
+/* ─── Discount badge ──────────────────────────────────────────────────────── */
 
 .product-discount-badge {
   display: inline-flex;
@@ -140,74 +166,7 @@
   text-align: right;
 }
 
-.product-action {
-  border: 0;
-  padding: 0;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  color: #fff;
-  transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
-}
-
-.product-action:disabled {
-  cursor: not-allowed;
-  opacity: 0.55;
-  transform: none;
-}
-
-.product-action:focus-visible {
-  outline: 2px solid rgba(255, 255, 255, 0.85);
-  outline-offset: 2px;
-}
-
-.product-action-icon {
-  width: 18px;
-  height: 18px;
-}
-
-.product-action-wishlist {
-  position: absolute;
-  top: 11px;
-  right: 11px;
-  z-index: 2;
-  width: 32px;
-  height: 32px;
-  border-radius: 999px;
-  background: rgba(9, 12, 18, 0.56);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  color: rgba(255, 255, 255, 0.96);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3), inset 0 0 0 1px rgba(255, 255, 255, 0.26);
-}
-
-.product-action-wishlist:hover {
-  transform: scale(1.06);
-  background: rgba(16, 20, 28, 0.72);
-}
-
-.product-action-wishlist.is-active {
-  color: #ff5b88;
-  background: rgba(24, 12, 18, 0.72);
-  box-shadow: 0 8px 18px rgba(255, 57, 120, 0.26), inset 0 0 0 1px rgba(255, 146, 181, 0.56);
-}
-
-.product-action-cart {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  flex-shrink: 0;
-  background: linear-gradient(160deg, #2f3a49 0%, #232b37 100%);
-  color: #ffffff;
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.34), inset 0 0 0 1px rgba(255, 255, 255, 0.14);
-}
-
-.product-action-cart:hover {
-  transform: translateY(-1px);
-  background: linear-gradient(160deg, #3a475b 0%, #2b3442 100%);
-  box-shadow: 0 10px 18px rgba(0, 0, 0, 0.38), inset 0 0 0 1px rgba(175, 205, 255, 0.3);
-}
+/* ─── Price text ───────────────────────────────────────────────────────────── */
 
 .product-original-price {
   color: rgba(255, 255, 255, 0.45);
@@ -224,4 +183,137 @@
   color: #e8e8e8;
   letter-spacing: -0.3px;
   align-self: flex-end;
+}
+
+/* ─── Action buttons (wishlist + cart) ───────────────────────────────────── */
+
+.product-action {
+  border: 0;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #fff;
+  transition:
+    transform 200ms ease,
+    background-color 200ms ease,
+    box-shadow 200ms ease,
+    color 200ms ease;
+}
+
+.product-action:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+  transform: none !important;
+}
+
+.product-action:focus-visible {
+  outline: 2px solid rgba(220, 38, 38, 0.7);
+  outline-offset: 2px;
+}
+
+.product-action-icon {
+  width: 18px;
+  height: 18px;
+}
+
+/* ─── Wishlist button ─────────────────────────────────────────────────────── */
+
+.product-action-wishlist {
+  position: absolute;
+  top: 11px;
+  right: 11px;
+  z-index: 2;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: rgba(9, 12, 18, 0.56);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  color: rgba(255, 255, 255, 0.96);
+  box-shadow:
+    0 6px 16px rgba(0, 0, 0, 0.3),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.26);
+  transition:
+    transform 200ms ease,
+    background-color 200ms ease,
+    box-shadow 200ms ease,
+    color 200ms ease;
+}
+
+.product-action-wishlist:hover {
+  transform: scale(1.1) !important;
+  background: rgba(16, 20, 28, 0.72);
+}
+
+.product-action-wishlist.is-active {
+  color: #ff5b88;
+  background: rgba(24, 12, 18, 0.72);
+  box-shadow:
+    0 8px 18px rgba(255, 57, 120, 0.26),
+    inset 0 0 0 1px rgba(255, 146, 181, 0.56);
+}
+
+/* ─── Cart button ─────────────────────────────────────────────────────────── */
+
+.product-action-cart {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  flex-shrink: 0;
+  background: linear-gradient(160deg, #2f3a49 0%, #232b37 100%);
+  color: #ffffff;
+  box-shadow:
+    0 6px 14px rgba(0, 0, 0, 0.34),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+  transition:
+    transform 200ms ease,
+    background-color 200ms ease,
+    box-shadow 200ms ease;
+}
+
+.product-action-cart:hover {
+  transform: translateY(-1px) !important;
+  background: linear-gradient(160deg, #3a475b 0%, #2b3442 100%);
+  box-shadow:
+    0 10px 18px rgba(0, 0, 0, 0.38),
+    inset 0 0 0 1px rgba(175, 205, 255, 0.3);
+}
+
+.product-action-cart:active {
+  transform: translateY(0) scale(0.95) !important;
+}
+
+/* ─── Reflective glow overlay — cursor-following ──────────────────────────── */
+
+.product-card-image-wrap::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at var(--glow-origin-x, 50%) var(--glow-origin-y, 50%),
+    rgba(220, 38, 38, 0.1) 0%,
+    rgba(220, 38, 38, 0.04) 40%,
+    transparent 65%
+  );
+  opacity: 0;
+  transition: opacity 80ms ease;
+  pointer-events: none;
+  z-index: 1;
+  border-radius: inherit;
+}
+
+.product-card.is-tilted .product-card-image-wrap::after {
+  opacity: 1;
+  transition: opacity 80ms ease;
+}
+
+/* ─── Card lift on hover (non-tilt, fallback) ─────────────────────────────── */
+
+@media (hover: hover) and (pointer: fine) {
+  .product-card:hover:not(.is-tilted) {
+    transform: translateY(-6px);
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.45);
+  }
 }

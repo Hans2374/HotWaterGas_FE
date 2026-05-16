@@ -20,7 +20,7 @@
   font-size: 20px;
   padding: 4px 8px;
   transition: transform 0.2s, color 0.2s;
-  color: #999;
+  color: var(--customer-text-secondary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -28,11 +28,11 @@
 
 .wishlist-button:hover:not(:disabled) {
   transform: scale(1.1);
-  color: #ff6b6b;
+  color: var(--customer-accent-hover);
 }
 
 .wishlist-button.is-wishlisted {
-  color: #ff6b6b;
+  color: var(--customer-accent);
 }
 
 .wishlist-button:disabled {
@@ -42,7 +42,7 @@
 
 .wishlist-message {
   font-size: 12px;
-  color: #666;
+  color: var(--customer-text-secondary);
   white-space: nowrap;
   max-width: 100px;
   text-overflow: ellipsis;

@@ -1,6 +1,6 @@
 .history-table-container {
-  background-color: #fff;
-  border: 1px solid var(--border-color);
+  background-color: var(--customer-surface);
+  border: 1px solid var(--customer-border);
   border-radius: 8px;
   overflow: hidden;
   margin: 0;
@@ -12,8 +12,8 @@
 }
 
 .history-table thead {
-  background-color: #f5f5f5;
-  border-bottom: 1px solid var(--border-color);
+  background-color: var(--customer-surface-hover);
+  border-bottom: 1px solid var(--customer-border);
 }
 
 .history-table th {
@@ -21,17 +21,17 @@
   text-align: left;
   font-weight: 600;
   font-size: 13px;
-  color: var(--text-light);
+  color: var(--customer-text-secondary);
   text-transform: uppercase;
 }
 
 .history-table tbody tr {
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--customer-border);
   transition: background-color 0.2s ease;
 }
 
 .history-table tbody tr:hover {
-  background-color: #fafafa;
+  background-color: var(--customer-surface-hover);
 }
 
 .history-table tbody tr:last-child {
@@ -71,20 +71,20 @@
 
 .order-number {
   font-weight: 600;
-  color: #333;
+  color: var(--customer-text-primary);
   font-size: 15px;
 }
 
 .order-date {
-  color: var(--text-light);
+  color: var(--customer-text-secondary);
   font-size: 14px;
 }
 
 .status-badge {
   display: inline-block;
   padding: 6px 12px;
-  background-color: #e7f1ff;
-  color: var(--primary-color);
+  background-color: var(--customer-accent-light);
+  color: var(--customer-accent-hover);
   border-radius: 4px;
   font-size: 12px;
   font-weight: 500;
@@ -92,29 +92,30 @@
 }
 
 .order-total {
-  color: #333;
+  color: var(--customer-text-primary);
   font-weight: 500;
   font-size: 14px;
 }
 
 .view-btn {
   padding: 8px 16px;
-  background-color: var(--primary-color);
+  background-color: var(--customer-accent);
   color: #fff;
   border: none;
   border-radius: 6px;
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
-  transition: filter 0.15s ease;
+  transition: background-color 0.15s ease;
   white-space: nowrap;
 }
 
 .view-btn:hover {
-  filter: brightness(0.92);
+  background-color: var(--customer-accent-hover);
 }
 
 .view-btn:active {
+  background-color: var(--customer-accent-active);
   transform: scale(0.98);
 }
 
@@ -125,7 +126,7 @@
 
 .skeleton {
   display: inline-block;
-  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background: linear-gradient(90deg, var(--customer-surface) 25%, var(--customer-surface-hover) 50%, var(--customer-surface) 75%);
   background-size: 200% 100%;
   animation: skeleton-loading 1.5s infinite;
 }
@@ -155,9 +156,9 @@
 .history-empty-state {
   text-align: center;
   padding: 48px 24px;
-  background-color: #ffffff;
+  background-color: var(--customer-surface);
   border-radius: 8px;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--customer-border);
   margin: 0;
 }
 
@@ -169,12 +170,12 @@
 .empty-message {
   font-size: 18px;
   font-weight: 600;
-  color: #333;
+  color: var(--customer-text-primary);
   margin-bottom: 8px;
 }
 
 .empty-hint {
-  color: var(--text-light);
+  color: var(--customer-text-secondary);
   font-size: 14px;
   margin: 0;
 }
@@ -183,9 +184,9 @@
 .history-error-state {
   text-align: center;
   padding: 48px 24px;
-  background-color: #fff5f5;
+  background-color: var(--customer-accent-light);
   border-radius: 8px;
-  border: 1px solid #ffc9c9;
+  border: 1px solid var(--customer-accent);
   margin: 0;
 }
 
@@ -197,13 +198,13 @@
 .error-message {
   font-size: 16px;
   font-weight: 600;
-  color: #d32f2f;
+  color: var(--customer-accent-hover);
   margin-bottom: 16px;
 }
 
 .error-retry-btn {
   padding: 10px 20px;
-  background-color: #d32f2f;
+  background-color: var(--customer-accent);
   color: #fff;
   border: none;
   border-radius: 4px;
@@ -214,7 +215,7 @@
 }
 
 .error-retry-btn:hover {
-  background-color: #b71c1c;
+  background-color: var(--customer-accent-hover);
 }
 
 @media (max-width: 1024px) {

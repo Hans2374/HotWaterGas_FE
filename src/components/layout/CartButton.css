@@ -10,7 +10,7 @@
 }
 
 .cart-button:hover {
-  background-color: #f0f0f0;
+  background-color: var(--customer-surface-hover);
 }
 
 .cart-button-icon {
@@ -22,7 +22,7 @@
   position: absolute;
   top: 0;
   right: 0;
-  background-color: #d32f2f;
+  background-color: var(--customer-accent);
   color: white;
   border-radius: 50%;
   width: 18px;
