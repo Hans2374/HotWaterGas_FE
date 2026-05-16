@@ -5,11 +5,11 @@ import './ProfileMenu.css';
 
 export const ProfileMenu = ({ onLogout }) => {
   const navigate = useNavigate();
-  const { username, email, role, isAdmin } = useAuth();
+  const { username, email, role, isAdmin, displayName } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef(null);
 
-  const displayName = username || email || 'Người dùng';
+  const profileDisplayName = displayName || username || email?.split('@')[0] || 'Người dùng';
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -42,15 +42,15 @@ export const ProfileMenu = ({ onLogout }) => {
         aria-label="Menu hồ sơ người dùng"
       >
         <div className="profile-menu-avatar">
-          {displayName.charAt(0).toUpperCase()}
+          {profileDisplayName.charAt(0).toUpperCase()}
         </div>
-        <span className="profile-menu-username">{displayName}</span>
+        <span className="profile-menu-username">{profileDisplayName}</span>
       </button>
 
       {isOpen && (
         <div className="profile-menu-dropdown">
           <div className="profile-menu-header">
-            <div className="profile-menu-display-name">{displayName}</div>
+            <div className="profile-menu-display-name">{profileDisplayName}</div>
             {email && <div className="profile-menu-email">{email}</div>}
           </div>
           <div className="profile-menu-divider" />

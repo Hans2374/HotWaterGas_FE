@@ -4,8 +4,8 @@
   gap: 24px;
   align-items: start;
   padding: 20px;
-  background: #fff;
-  border: 1px solid var(--border-color);
+  background: var(--customer-surface);
+  border: 1px solid var(--customer-border);
   border-radius: 8px;
   margin-bottom: 24px;
 }
@@ -25,13 +25,13 @@
 .review-summary-rating-value {
   font-size: 48px;
   font-weight: 800;
-  color: var(--text-color);
+  color: var(--customer-text-primary);
   line-height: 1;
 }
 
 .review-summary-rating-sub {
   font-size: 20px;
-  color: var(--text-light);
+  color: var(--customer-text-secondary);
   font-weight: 600;
 }
 
@@ -42,13 +42,13 @@
 }
 
 .review-summary-stars {
-  color: #f39c12;
+  color: #f59e0b;
   font-size: 18px;
   letter-spacing: 2px;
 }
 
 .review-summary-count {
-  color: var(--text-light);
+  color: var(--customer-text-secondary);
   font-size: 14px;
   font-weight: 600;
 }
@@ -66,36 +66,39 @@
   font-size: 14px;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
   white-space: nowrap;
-}
-
-.review-summary-btn {
-  background: var(--primary-color);
+  background: var(--customer-accent);
   color: #fff;
+  border-color: var(--customer-accent);
 }
 
 .review-summary-btn:hover:not(:disabled) {
-  filter: brightness(0.92);
+  background: var(--customer-accent-hover);
+  border-color: var(--customer-accent-hover);
+}
+
+.review-summary-btn:active:not(:disabled) {
+  background: var(--customer-accent-active);
+  border-color: var(--customer-accent-active);
 }
 
 .review-summary-btn.edit {
-  background: #f5f7fb;
-  color: var(--primary-color);
-  border-color: var(--primary-color);
+  background: transparent;
+  color: var(--customer-accent);
+  border-color: var(--customer-accent);
 }
 
 .review-summary-btn.edit:hover:not(:disabled) {
-  background: var(--primary-color);
-  color: #fff;
+  background: var(--customer-accent-light);
 }
 
 .review-summary-btn.disabled,
 .review-summary-btn:disabled {
-  background: #b6c2cf;
-  color: #fff;
+  background: var(--customer-surface-hover);
+  color: var(--customer-text-secondary);
   cursor: not-allowed;
-  border-color: #b6c2cf;
+  border-color: var(--customer-border);
 }
 
 @media (max-width: 768px) {

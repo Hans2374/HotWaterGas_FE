@@ -94,6 +94,7 @@ export const shouldRefreshToken = (token, refreshThresholdSeconds = 120) => {
 export const decodeToken = (token) => {
   const payload = parsePayload(token);
   if (!payload) return {};
+  const emailValue = payload[EMAIL_CLAIM] || payload.email || payload.Email || '';
   return {
     role: payload[ROLE_CLAIM] || payload.role || payload.Role || '',
     userId: payload[USER_ID_CLAIM] || payload.userId || payload.sub || '',
@@ -101,9 +102,10 @@ export const decodeToken = (token) => {
       payload[NAME_CLAIM] ||
       payload.name ||
       payload.Name ||
-      (payload[EMAIL_CLAIM] || payload.email || payload.Email
-        ? (payload[EMAIL_CLAIM] || payload.email || payload.Email).split('@')[0]
+      (emailValue
+        ? emailValue.split('@')[0]
         : ''),
-    email: payload[EMAIL_CLAIM] || payload.email || payload.Email || ''
+    email: emailValue,
+    displayName: payload.displayName || payload.displayName || payload.DisplayName || ''
   };
 };

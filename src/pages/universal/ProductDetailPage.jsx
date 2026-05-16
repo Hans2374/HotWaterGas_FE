@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { Loader } from "../../components/common/Loader";
-import { MainLayout } from "../../components/layout/MainLayout";
 import { ReviewSection } from "../../components/product/ReviewSection";
 import { ProductCard } from "../../components/product/ProductCard";
 import { useAuth } from "../../hooks/useAuth";
@@ -386,59 +385,53 @@ export const ProductDetailPage = () => {
 
   if (loading) {
     return (
-      <MainLayout>
-        <div className="product-detail-loading">
-          <Loader text="Loading product details..." />
-        </div>
-      </MainLayout>
+      <div className="product-detail-loading">
+        <Loader text="Loading product details..." />
+      </div>
     );
   }
 
   if (notFound) {
     return (
-      <MainLayout>
-        <section className="product-detail-state">
-          <h2>Product not found</h2>
-          <p>
-            The product you are looking for does not exist or is no longer
-            available.
-          </p>
-          <button
-            type="button"
-            className="product-detail-link-btn"
-            onClick={() => navigate("/")}
-          >
-            Back to homepage
-          </button>
-        </section>
-      </MainLayout>
+      <section className="product-detail-state">
+        <h2>Product not found</h2>
+        <p>
+          The product you are looking for does not exist or is no longer
+          available.
+        </p>
+        <button
+          type="button"
+          className="product-detail-link-btn"
+          onClick={() => navigate("/")}
+        >
+          Back to homepage
+        </button>
+      </section>
     );
   }
 
   if (error) {
     return (
-      <MainLayout>
-        <section className="product-detail-state">
-          <h2>Unable to load product</h2>
-          <p>{error}</p>
-          <div className="product-detail-state-actions">
-            <button
-              type="button"
-              className="product-detail-link-btn"
-              onClick={fetchProduct}
-            >
-              Retry
-            </button>
-            <button
-              type="button"
-              className="product-detail-link-btn ghost"
-              onClick={() => navigate("/")}
-            >
-              Back
-            </button>
-          </div>
-        </section>
-      </MainLayout>
+      <section className="product-detail-state">
+        <h2>Unable to load product</h2>
+        <p>{error}</p>
+        <div className="product-detail-state-actions">
+          <button
+            type="button"
+            className="product-detail-link-btn"
+            onClick={fetchProduct}
+          >
+            Retry
+          </button>
+          <button
+            type="button"
+            className="product-detail-link-btn ghost"
+            onClick={() => navigate("/")}
+          >
+            Back
+          </button>
+        </div>
+      </section>
     );
   }
 

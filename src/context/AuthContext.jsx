@@ -43,7 +43,8 @@ const deriveStateFromToken = (token) => {
     role: parsed.role || '',
     userId: parsed.userId || '',
     username: parsed.username || '',
-    email: parsed.email || ''
+    email: parsed.email || '',
+    displayName: parsed.displayName || ''
   };
 };
 
@@ -55,6 +56,7 @@ export const AuthProvider = ({ children }) => {
   const [userId, setUserId] = useState('');
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
+  const [displayName, setDisplayName] = useState('');
   /**
    * True during the initial session-restoration handshake on app mount.
    * Protected routes use this to avoid premature redirects on browser-refresh.
@@ -133,6 +135,7 @@ export const AuthProvider = ({ children }) => {
       setUserId(derived.userId);
       setUsername(derived.username);
       setEmail(derived.email);
+      setDisplayName(derived.displayName);
       setIsInitializing(false);
       scheduleProactiveRefresh();
       return;
@@ -151,6 +154,7 @@ export const AuthProvider = ({ children }) => {
           setUserId(derived.userId);
           setUsername(derived.username);
           setEmail(derived.email);
+          setDisplayName(derived.displayName);
         }
       })
       .catch(() => {
@@ -176,6 +180,7 @@ export const AuthProvider = ({ children }) => {
       setUserId('');
       setUsername('');
       setEmail('');
+      setDisplayName('');
     });
 
     const unsubTokenUpdated = subscribeToAuthEvent('tokenUpdated', () => {
@@ -187,6 +192,7 @@ export const AuthProvider = ({ children }) => {
       setUserId(derived.userId);
       setUsername(derived.username);
       setEmail(derived.email);
+      setDisplayName(derived.displayName);
       scheduleProactiveRefresh();
     });
 
@@ -199,6 +205,7 @@ export const AuthProvider = ({ children }) => {
       setUserId('');
       setUsername('');
       setEmail('');
+      setDisplayName('');
     };
 
     window.addEventListener(AUTH_EXPIRED_LISTENER, handleExpired);
@@ -212,6 +219,7 @@ export const AuthProvider = ({ children }) => {
       setUserId(derived.userId);
       setUsername(derived.username);
       setEmail(derived.email);
+      setDisplayName(derived.displayName);
       scheduleProactiveRefresh();
     };
 
@@ -250,6 +258,7 @@ export const AuthProvider = ({ children }) => {
       setUserId(derived.userId);
       setUsername(derived.username);
       setEmail(derived.email);
+      setDisplayName(derived.displayName);
       scheduleProactiveRefresh();
       broadcastTokenUpdated();
     },
@@ -269,6 +278,7 @@ export const AuthProvider = ({ children }) => {
       setUserId(derived.userId);
       setUsername(derived.username);
       setEmail(derived.email);
+      setDisplayName(derived.displayName);
       scheduleProactiveRefresh();
     },
     [scheduleProactiveRefresh]
@@ -287,6 +297,7 @@ export const AuthProvider = ({ children }) => {
     setUserId('');
     setUsername('');
     setEmail('');
+    setDisplayName('');
     broadcastLogout();
 
     try {
@@ -302,6 +313,7 @@ export const AuthProvider = ({ children }) => {
     userId,
     username,
     email,
+    displayName,
     isAdmin: role === 'Admin',
     setToken,
     setAccessTokenOnly,

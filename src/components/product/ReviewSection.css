@@ -6,14 +6,14 @@
 .review-section-title {
   font-size: 24px;
   font-weight: 700;
-  color: var(--text-color);
+  color: var(--customer-text-primary);
   margin: 0 0 24px 0;
 }
 
 .review-section-error {
-  background: #fdeeee;
-  border: 1px solid #fcc2c3;
-  color: #c0392b;
+  background: var(--customer-accent-light);
+  border: 1px solid var(--customer-accent);
+  color: var(--customer-accent-hover);
   padding: 12px 16px;
   border-radius: 6px;
   margin-bottom: 16px;
@@ -23,10 +23,11 @@
 .review-section-empty {
   text-align: center;
   padding: 40px 20px;
-  background: #f8f9fb;
-  border: 1px solid var(--border-color);
+  background: var(--customer-surface);
+  border: 1px solid var(--customer-border);
   border-radius: 8px;
-  color: var(--text-light);
+  color: var(--customer-text-secondary);
+  font-size: 14px;
 }
 
 .review-list {
@@ -36,7 +37,7 @@
 .review-list-title {
   font-size: 16px;
   font-weight: 700;
-  color: var(--text-color);
+  color: var(--customer-text-primary);
   margin: 0 0 16px 0;
 }
 
@@ -47,36 +48,36 @@
   gap: 12px;
   margin-top: 24px;
   padding-top: 24px;
-  border-top: 1px solid var(--border-color);
+  border-top: 1px solid var(--customer-border);
 }
 
 .review-pagination-btn {
   padding: 8px 14px;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--customer-border);
   border-radius: 6px;
-  background: #fff;
-  color: var(--primary-color);
+  background: var(--customer-surface);
+  color: var(--customer-accent);
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
 
 .review-pagination-btn:hover {
-  background: var(--primary-color);
+  background: var(--customer-accent);
   color: #fff;
-  border-color: var(--primary-color);
+  border-color: var(--customer-accent);
 }
 
 .review-pagination-btn:disabled {
-  background: #f5f7fb;
-  color: var(--text-light);
+  background: var(--customer-surface-hover);
+  color: var(--customer-text-secondary);
   cursor: not-allowed;
-  border-color: var(--border-color);
+  border-color: var(--customer-border);
 }
 
 .review-pagination-info {
-  color: var(--text-light);
+  color: var(--customer-text-secondary);
   font-size: 13px;
   font-weight: 600;
 }
