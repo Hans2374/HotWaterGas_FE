@@ -1,6 +1,10 @@
 /* Page title block — same rhythm as Home (.home-header) / Cart (.cart-header) */
+.purchase-history-page {
+  padding-bottom: 48px;
+}
+
 .orders-page-header {
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 
 .orders-page-header h2 {

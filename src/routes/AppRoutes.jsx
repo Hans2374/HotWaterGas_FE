@@ -218,6 +218,14 @@ export const AppRoutes = () => {
 
       {/* Public payment routes (no layout needed) */}
       <Route
+        path="/purchase/success"
+        element={<PaymentSuccessPage />}
+      />
+      <Route
+        path="/purchase/cancel"
+        element={<PaymentCancelPage />}
+      />
+      <Route
         path="/checkout/payment-success"
         element={<PaymentSuccessPage />}
       />

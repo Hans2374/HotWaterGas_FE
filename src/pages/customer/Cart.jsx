@@ -254,7 +254,7 @@ export const Cart = () => {
                   onChange={handleSelectAll}
                   disabled={selectableItemIds.length === 0}
                 />
-                <span>{allSelected ? 'Bỏ chọn tất cả' : 'Chọn tất cả các mục hợp lệ'}</span>
+                <span>{allSelected ? 'Bỏ chọn tất cả' : 'Chọn tất cả'}</span>
               </label>
             </div>
 

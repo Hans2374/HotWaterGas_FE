@@ -212,3 +212,298 @@
     width: 100%;
   }
 }
+
+/* Payment Success Page */
+.payment-success-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 200px);
+  padding: 40px 20px;
+  background-color: var(--customer-bg);
+}
+
+.payment-success-container {
+  max-width: 560px;
+  width: 100%;
+  padding: 48px 40px;
+  border-radius: 12px;
+  text-align: center;
+  background-color: var(--customer-surface);
+  border: 1px solid var(--customer-border);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.payment-success-icon {
+  margin-bottom: 24px;
+}
+
+.payment-success-title {
+  margin: 0 0 12px;
+  font-size: 28px;
+  font-weight: 700;
+  color: #22c55e;
+}
+
+.payment-success-subtitle {
+  margin: 0 0 24px;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--customer-text-secondary);
+}
+
+.payment-success-details {
+  margin: 24px 0;
+  padding: 20px;
+  background-color: var(--customer-surface-hover);
+  border-radius: 8px;
+  text-align: left;
+}
+
+.payment-success-detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.payment-success-detail-label {
+  font-size: 14px;
+  color: var(--customer-text-secondary);
+}
+
+.payment-success-detail-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--customer-text-primary);
+  word-break: break-all;
+}
+
+.payment-success-detail-value.status-badge {
+  padding: 4px 12px;
+  background-color: #0a2a1a;
+  color: #4ade80;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.payment-success-info {
+  margin: 24px 0;
+  text-align: left;
+}
+
+.payment-success-info-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 12px 0;
+  font-size: 15px;
+  color: var(--customer-text-primary);
+}
+
+.payment-success-check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: #0a2a1a;
+  color: #4ade80;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.payment-success-note {
+  margin: 16px 0 24px;
+  padding: 16px;
+  background-color: var(--customer-surface-hover);
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--customer-text-secondary);
+  text-align: left;
+}
+
+.payment-success-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.payment-success-btn {
+  width: 100%;
+  padding: 14px 24px;
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.payment-success-btn.primary {
+  background-color: #22c55e;
+  color: white;
+  border: none;
+}
+
+.payment-success-btn.primary:hover {
+  background-color: #16a34a;
+}
+
+.payment-success-btn.secondary {
+  background-color: transparent;
+  color: var(--customer-text-primary);
+  border: 1px solid var(--customer-border);
+}
+
+.payment-success-btn.secondary:hover {
+  background-color: var(--customer-surface-hover);
+  border-color: var(--customer-text-secondary);
+}
+
+/* Payment Cancel Page */
+.payment-cancel-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 200px);
+  padding: 40px 20px;
+  background-color: var(--customer-bg);
+}
+
+.payment-cancel-container {
+  max-width: 560px;
+  width: 100%;
+  padding: 48px 40px;
+  border-radius: 12px;
+  text-align: center;
+  background-color: var(--customer-surface);
+  border: 1px solid var(--customer-border);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.payment-cancel-icon {
+  margin-bottom: 24px;
+}
+
+.payment-cancel-title {
+  margin: 0 0 12px;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--customer-text-primary);
+}
+
+.payment-cancel-subtitle {
+  margin: 0 0 24px;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--customer-text-secondary);
+}
+
+.payment-cancel-info {
+  margin: 24px 0;
+  text-align: left;
+}
+
+.payment-cancel-info-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 12px 0;
+  font-size: 15px;
+  color: var(--customer-text-primary);
+}
+
+.payment-cancel-check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: var(--customer-surface-hover);
+  color: var(--customer-text-secondary);
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.payment-cancel-note {
+  margin: 16px 0 24px;
+  padding: 16px;
+  background-color: var(--customer-surface-hover);
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--customer-text-secondary);
+  text-align: left;
+}
+
+.payment-cancel-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.payment-cancel-btn {
+  width: 100%;
+  padding: 14px 24px;
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.payment-cancel-btn.primary {
+  background-color: var(--customer-accent);
+  color: white;
+  border: none;
+}
+
+.payment-cancel-btn.primary:hover {
+  background-color: var(--customer-accent-hover);
+}
+
+.payment-cancel-btn.secondary {
+  background-color: transparent;
+  color: var(--customer-text-primary);
+  border: 1px solid var(--customer-border);
+}
+
+.payment-cancel-btn.secondary:hover {
+  background-color: var(--customer-surface-hover);
+  border-color: var(--customer-text-secondary);
+}
+
+.payment-cancel-btn.tertiary {
+  background-color: transparent;
+  color: var(--customer-text-secondary);
+  border: none;
+  font-weight: 500;
+}
+
+.payment-cancel-btn.tertiary:hover {
+  color: var(--customer-text-primary);
+}
+
+/* Responsive for success/cancel pages */
+@media (max-width: 600px) {
+  .payment-success-container,
+  .payment-cancel-container {
+    padding: 32px 24px;
+  }
+
+  .payment-success-title,
+  .payment-cancel-title {
+    font-size: 24px;
+  }
+
+  .payment-success-detail-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+}
