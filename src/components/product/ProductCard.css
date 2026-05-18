@@ -122,9 +122,8 @@
   margin-top: auto;
   padding: 10px 10px 12px;
   display: flex;
-  align-items: flex-end;
-  justify-content: flex-start;
-  gap: 10px;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .product-price-row {
@@ -135,6 +134,15 @@
   gap: 6px;
   padding: 0;
   flex-shrink: 0;
+}
+
+/* ─── Bottom row: cart button + price stack ─────────────────────────────── */
+
+.product-price-bottom {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 8px;
 }
 
 /* ─── Discount badge ──────────────────────────────────────────────────────── */
@@ -261,7 +269,6 @@
   width: 36px;
   height: 36px;
   border-radius: 10px;
-  flex-shrink: 0;
   background: linear-gradient(160deg, #2f3a49 0%, #232b37 100%);
   color: #ffffff;
   box-shadow:
@@ -271,6 +278,7 @@
     transform 200ms ease,
     background-color 200ms ease,
     box-shadow 200ms ease;
+  flex-shrink: 0;
 }
 
 .product-action-cart:hover {
@@ -315,5 +323,72 @@
   .product-card:hover:not(.is-tilted) {
     transform: translateY(-6px);
     box-shadow: 0 16px 32px rgba(0, 0, 0, 0.45);
+  }
+}
+
+/* ─── Action Button Reveal Animation ─────────────────────────────────────── */
+/*
+ * Buttons are hidden by default and fade/slide into view when the card is
+ * hovered, tilted, or receives keyboard focus. GPU-only properties (opacity,
+ * transform) are used to keep the animation smooth and prevent layout shift.
+ *
+ * The 3D tilt transform lives on .product-card itself, so both buttons inherit
+ * it naturally through the DOM hierarchy — no extra nesting is needed.
+ */
+
+/* Wishlist — hidden default: slightly above final position */
+.product-action-wishlist {
+  opacity: 0;
+  transform: translateY(-8px) scale(0.9);
+  pointer-events: none;
+  will-change: opacity, transform;
+}
+
+/* Cart — hidden default: slightly below final position */
+.product-action-cart {
+  opacity: 0;
+  transform: translateY(6px);
+  pointer-events: none;
+  will-change: opacity, transform;
+}
+
+/* Reveal when the card is hovered (desktop) or tilted */
+.product-card:hover .product-action-wishlist,
+.product-card:hover .product-action-cart,
+.product-card.is-tilted .product-action-wishlist,
+.product-card.is-tilted .product-action-cart {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+  transition:
+    opacity 200ms ease-out,
+    transform 200ms ease-out,
+    background-color 200ms ease,
+    box-shadow 200ms ease,
+    color 200ms ease;
+}
+
+/* Reveal when the card receives keyboard focus (:focus-within) */
+.product-card:focus-within .product-action-wishlist,
+.product-card:focus-within .product-action-cart {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+  transition:
+    opacity 200ms ease-out,
+    transform 200ms ease-out,
+    background-color 200ms ease,
+    box-shadow 200ms ease,
+    color 200ms ease;
+}
+
+/* Always visible on touch/mobile — override hidden state */
+@media (hover: none), (pointer: coarse) {
+  .product-action-wishlist,
+  .product-action-cart {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+    will-change: auto;
   }
 }

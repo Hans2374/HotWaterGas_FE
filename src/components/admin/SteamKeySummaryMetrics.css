@@ -5,8 +5,8 @@
 }
 
 .steam-key-summary-item {
-  background: #ffffff;
-  border: 1px solid var(--border-color, #e5e7eb);
+  background: var(--cat-bg-card, #1F2937);
+  border: 1px solid var(--cat-border, #374151);
   border-radius: 10px;
   padding: 14px 16px;
   display: flex;
@@ -18,7 +18,7 @@
   margin: 0;
   font-size: 12px;
   font-weight: 500;
-  color: var(--text-light, #6b7280);
+  color: var(--cat-text-muted, #4B5563);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -28,7 +28,7 @@
   font-size: 26px;
   font-weight: 700;
   line-height: 1;
-  color: var(--text-color, #1f2937);
+  color: var(--cat-text-primary, #F9FAFB);
 }
 
 @media (max-width: 900px) {

@@ -20,6 +20,38 @@
   --customer-text-secondary: #9CA3AF;
   --customer-border: #374151;
   --customer-border-hover: #4B5563;
+
+  /* === Admin Theme Tokens === */
+  --admin-bg: #111827;
+  --admin-surface: #1F2937;
+  --admin-elevated: #273449;
+  --admin-border: #374151;
+  --admin-text-primary: #F9FAFB;
+  --admin-text-secondary: #9CA3AF;
+  --admin-text-muted: #4B5563;
+  --admin-accent: #F59E0B;
+  --admin-accent-hover: #D97706;
+  --admin-accent-light: rgba(245, 158, 11, 0.12);
+  --admin-accent-glow: rgba(245, 158, 11, 0.25);
+  --admin-danger: #EF4444;
+
+  /* Admin Products — Amber palette */
+  --admin-products-accent: #F59E0B;
+  --admin-products-accent-hover: #D97706;
+  --admin-products-accent-light: rgba(245, 158, 11, 0.12);
+  --admin-products-accent-glow: rgba(245, 158, 11, 0.25);
+
+  /* Admin Categories — Blue palette */
+  --admin-categories-accent: #3B82F6;
+  --admin-categories-accent-hover: #2563EB;
+  --admin-categories-accent-light: rgba(59, 130, 246, 0.12);
+  --admin-categories-accent-glow: rgba(59, 130, 246, 0.25);
+
+  /* Admin Tags — Green palette */
+  --admin-tags-accent: #10B981;
+  --admin-tags-accent-hover: #059669;
+  --admin-tags-accent-light: rgba(16, 185, 129, 0.12);
+  --admin-tags-accent-glow: rgba(16, 185, 129, 0.25);
 }
 
 * {

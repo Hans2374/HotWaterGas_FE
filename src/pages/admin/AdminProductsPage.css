@@ -2,6 +2,41 @@
    Admin Products Page — Synchronized with Admin Categories Page
    ============================================ */
 
+/* ── Dark Theme Tokens (scoped to module) ── */
+.products-page.module-products,
+.products-page {
+  --cat-border: #374151;
+  --cat-border-hover: #4B5563;
+  --cat-bg-page: #111827;
+  --cat-bg-card: #1F2937;
+  --cat-bg-header: #273449;
+  --cat-text-primary: #F9FAFB;
+  --cat-text-secondary: #9CA3AF;
+  --cat-text-muted: #4B5563;
+
+  --cat-accent: var(--admin-products-accent, #F59E0B);
+  --cat-accent-hover: var(--admin-products-accent-hover, #D97706);
+  --cat-accent-light: var(--admin-products-accent-light, rgba(245, 158, 11, 0.12));
+  --cat-accent-border: rgba(245, 158, 11, 0.3);
+
+  --cat-status-active-bg: rgba(16, 185, 129, 0.15);
+  --cat-status-active-text: #10B981;
+  --cat-status-inactive-bg: #1F2937;
+  --cat-status-inactive-text: #9CA3AF;
+
+  --cat-count-bg: #1F2937;
+  --cat-count-text: #9CA3AF;
+  --cat-count-hasproducts-bg: rgba(245, 158, 11, 0.12);
+  --cat-count-hasproducts-text: #F59E0B;
+
+  --cat-action-edit-bg: #1F2937;
+  --cat-action-edit-hover-bg: #273449;
+  --cat-action-edit-hover-color: #F59E0B;
+  --cat-action-delete-bg: #1F2937;
+  --cat-action-delete-hover-bg: rgba(239, 68, 68, 0.12);
+  --cat-action-delete-hover-color: #EF4444;
+}
+
 /* ── Page Container ── */
 .products-page {
   display: flex;
@@ -137,7 +172,7 @@
   outline: none;
   border-color: var(--cat-accent);
   background: var(--cat-bg-card);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15);
 }
 
 .filter-search-input:not(:placeholder-shown) {
@@ -201,7 +236,7 @@
 .filter-select:focus {
   outline: none;
   border-color: var(--cat-accent);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15);
 }
 
 .filter-select:disabled {
@@ -508,7 +543,7 @@
 .skeleton-cell {
   height: 16px;
   border-radius: 6px;
-  background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+  background: linear-gradient(90deg, #1F2937 25%, #273449 50%, #1F2937 75%);
   background-size: 200% 100%;
   animation: skeleton-shimmer 1.4s ease infinite;
   width: 100%;
@@ -541,7 +576,7 @@
 }
 
 .empty-icon {
-  color: #cbd5e1;
+  color: var(--cat-text-muted, #4B5563);
   margin-bottom: 4px;
 }
 
@@ -642,7 +677,7 @@
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(15, 23, 42, 0.5);
+  background: rgba(0, 0, 0, 0.6);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -660,9 +695,9 @@
 .modal-card {
   width: 100%;
   max-width: 420px;
-  background: var(--cat-bg-card);
+  background: var(--cat-bg-card, #1F2937);
   border-radius: 14px;
-  box-shadow: 0 24px 48px rgba(15, 23, 42, 0.18);
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.4);
   overflow: hidden;
   animation: modal-in 0.15s ease;
 }

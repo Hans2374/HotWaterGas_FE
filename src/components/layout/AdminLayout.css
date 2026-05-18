@@ -3,7 +3,28 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: var(--bg-light, #f9fafb);
+  background-color: var(--admin-bg, #111827);
+
+  /* Fallback accent (products/amber) — layout-level beats :root defaults */
+  --admin-accent: var(--admin-products-accent, #F59E0B);
+  --admin-accent-hover: var(--admin-products-accent-hover, #D97706);
+  --admin-accent-light: var(--admin-products-accent-light, rgba(245, 158, 11, 0.12));
+  --admin-accent-glow: var(--admin-products-accent-glow, rgba(245, 158, 11, 0.25));
+}
+
+/* ── Module-specific accent overrides ── */
+.admin-layout.module-categories {
+  --admin-accent: var(--admin-categories-accent, #3B82F6);
+  --admin-accent-hover: var(--admin-categories-accent-hover, #2563EB);
+  --admin-accent-light: var(--admin-categories-accent-light, rgba(59, 130, 246, 0.12));
+  --admin-accent-glow: var(--admin-categories-accent-glow, rgba(59, 130, 246, 0.25));
+}
+
+.admin-layout.module-tags {
+  --admin-accent: var(--admin-tags-accent, #10B981);
+  --admin-accent-hover: var(--admin-tags-accent-hover, #059669);
+  --admin-accent-light: var(--admin-tags-accent-light, rgba(16, 185, 129, 0.12));
+  --admin-accent-glow: var(--admin-tags-accent-glow, rgba(16, 185, 129, 0.25));
 }
 
 /* ── Main Content ── */

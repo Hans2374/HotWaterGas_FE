@@ -52,3 +52,32 @@
 .btn-full-width {
   width: 100%;
 }
+
+/* ── Admin-accented button variants — cascade from layout/page level ── */
+
+.btn-admin-products {
+  background-color: var(--admin-products-accent, #F59E0B);
+  color: #ffffff;
+}
+
+.btn-admin-products:hover:not(:disabled) {
+  background-color: var(--admin-products-accent-hover, #D97706);
+}
+
+.btn-admin-categories {
+  background-color: var(--admin-categories-accent, #3B82F6);
+  color: #ffffff;
+}
+
+.btn-admin-categories:hover:not(:disabled) {
+  background-color: var(--admin-categories-accent-hover, #2563EB);
+}
+
+.btn-admin-tags {
+  background-color: var(--admin-tags-accent, #10B981);
+  color: #ffffff;
+}
+
+.btn-admin-tags:hover:not(:disabled) {
+  background-color: var(--admin-tags-accent-hover, #059669);
+}

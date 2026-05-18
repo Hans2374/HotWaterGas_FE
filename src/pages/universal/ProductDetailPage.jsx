@@ -662,7 +662,9 @@ export const ProductDetailPage = () => {
         {/* Recommendations: show only when available or loading. Hide silently on error or empty. */}
         {recommendationsLoading && (
           <section className="product-detail-section">
-            <h2>Các sản phẩm tương tự được đề xuất</h2>
+            <div className="product-detail-section-header">
+              <h2>Sản phẩm tương tự</h2>
+            </div>
             <div className="product-grid">
               {[0, 1, 2, 3].map((i) => (
                 <div key={i} className="product-card product-card-skeleton" />
@@ -675,7 +677,18 @@ export const ProductDetailPage = () => {
           Array.isArray(recommendedProducts) &&
           recommendedProducts.length > 0 && (
             <section className="product-detail-section">
-              <h2>Các sản phẩm tương tự được đề xuất</h2>
+              <div className="product-detail-section-header">
+                <h2>Sản phẩm tương tự</h2>
+                <button
+                  type="button"
+                  className="product-detail-view-all-link"
+                  onClick={handleViewMoreRecommended}
+                  aria-label="Xem tất cả sản phẩm tương tự"
+                >
+                  Xem tất cả
+                  <span className="product-detail-view-all-arrow" aria-hidden>→</span>
+                </button>
+              </div>
               <div className="product-grid">
                 {recommendedProducts.map((p) => (
                   <ProductCard
@@ -725,16 +738,6 @@ export const ProductDetailPage = () => {
                     }}
                   />
                 ))}
-              </div>
-
-              <div className="product-detail-recommended-footer">
-                <button
-                  type="button"
-                  className="product-detail-view-more-btn"
-                  onClick={handleViewMoreRecommended}
-                >
-                  Xem thêm
-                </button>
               </div>
             </section>
           )}

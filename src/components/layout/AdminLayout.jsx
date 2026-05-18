@@ -1,11 +1,14 @@
 import React, { useState, useCallback, useRef } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import { AdminHeader } from './AdminHeader';
 import { AdminSidebar } from './AdminSidebar';
+import { getModuleFromPath } from '../../utils/adminTheme';
 import './AdminLayout.css';
 
 export const AdminLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const location = useLocation();
+  const module = getModuleFromPath(location.pathname);
   const closeTimeoutRef = useRef(null);
 
   const clearCloseTimeout = useCallback(() => {
@@ -38,7 +41,7 @@ export const AdminLayout = () => {
   }, [clearCloseTimeout]);
 
   return (
-    <div className="admin-layout">
+    <div className={`admin-layout module-${module}`}>
       <AdminHeader
         onSidebarHoverOpen={handleSidebarHoverOpen}
         onSidebarHoverClose={handleSidebarHoverClose}

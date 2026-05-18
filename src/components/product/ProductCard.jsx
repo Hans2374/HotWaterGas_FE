@@ -190,26 +190,27 @@ export const ProductCard = ({
         <div className="product-price-row">
           {discountBadge && <span className="product-discount-badge">{discountBadge}</span>}
         </div>
-        <div className="product-price-stack">
-          <span className="product-original-price">{formatCurrency(basePrice)} ₫</span>
-          <strong className="product-final-price">{formatCurrency(finalPrice)} ₫</strong>
+        <div className="product-price-bottom">
+          <button
+            type="button"
+            className="product-action product-action-cart"
+            aria-label="Thêm vào giỏ hàng"
+            disabled={isCartPending || isOutOfStock}
+            title={isOutOfStock ? 'Hết hàng' : 'Thêm vào giỏ hàng'}
+            onMouseDown={handleButtonMouseDown}
+            onClick={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              onAddToCart?.(product);
+            }}
+          >
+            <CartIcon />
+          </button>
+          <div className="product-price-stack">
+            <span className="product-original-price">{formatCurrency(basePrice)} ₫</span>
+            <strong className="product-final-price">{formatCurrency(finalPrice)} ₫</strong>
+          </div>
         </div>
-
-        <button
-          type="button"
-          className="product-action product-action-cart"
-          aria-label="Thêm vào giỏ hàng"
-          disabled={isCartPending || isOutOfStock}
-          title={isOutOfStock ? 'Hết hàng' : 'Thêm vào giỏ hàng'}
-          onMouseDown={handleButtonMouseDown}
-          onClick={(event) => {
-            event.preventDefault();
-            event.stopPropagation();
-            onAddToCart?.(product);
-          }}
-        >
-          <CartIcon />
-        </button>
       </div>
     </article>
   );

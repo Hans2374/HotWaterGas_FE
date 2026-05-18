@@ -2,6 +2,19 @@
    Admin Product Form Pages — Synchronized with Admin Categories Page
    ============================================ */
 
+/* ── Dark Theme Tokens (scoped to module) ── */
+.admin-form-shell {
+  --cat-border: #374151;
+  --cat-border-hover: #4B5563;
+  --cat-bg-page: #111827;
+  --cat-bg-card: #1F2937;
+  --cat-text-primary: #F9FAFB;
+  --cat-text-secondary: #9CA3AF;
+  --cat-text-muted: #4B5563;
+  --cat-accent: var(--admin-products-accent, #F59E0B);
+  --cat-accent-hover: var(--admin-products-accent-hover, #D97706);
+}
+
 /* ── Page Container ── */
 .admin-form-shell {
   display: flex;
@@ -73,9 +86,9 @@
 }
 
 .admin-form-feedback.error {
-  color: #dc2626;
-  background: #fef2f2;
-  border-color: #fecaca;
+  color: #F87171;
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.3);
 }
 
 /* ── Steam Key Card ── */
