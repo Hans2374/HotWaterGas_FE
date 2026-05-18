@@ -99,11 +99,14 @@ export const CartProvider = ({ children }) => {
   }, []);
 
   const updateCartItemQuantity = useCallback(async (productId, quantity) => {
-    const response = await updateCartItemQuantityApi(productId, quantity);
-    const normalized = normalizeCart(response);
-    setCart(normalized);
-    return normalized;
-  }, []);
+    // Call the API to update quantity, then refresh the full cart.
+    // NOTE: updateCartItemQuantityApi returns a CartItemResponse (single item),
+    // NOT a CartResponse. Normalizing it as a full cart produces { items: [] }
+    // which would clear the cart. Using refreshCart() instead ensures the
+    // cart context is always set with the complete, authoritative cart state.
+    await updateCartItemQuantityApi(productId, quantity);
+    return refreshCart();
+  }, [refreshCart]);
 
   const removeFromCart = useCallback(async (productId) => {
     await removeFromCartApi(productId);
