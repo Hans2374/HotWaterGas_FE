@@ -1,97 +1,189 @@
 .steam-key-cell {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 0;
+  width: 100%;
 }
 
-.key-display {
-  flex: 1;
-  min-width: 250px;
-}
-
-.key-value {
-  display: inline-block;
-  font-family: 'Courier New', monospace;
-  font-size: 14px;
-  padding: 8px 12px;
-  background-color: var(--customer-surface-hover);
-  border-radius: 4px;
-  letter-spacing: 1px;
-  word-break: break-all;
-  color: var(--customer-text-primary);
-}
-
-.key-value.masked {
-  color: var(--customer-text-secondary);
-}
-
-.key-value.revealed {
-  color: var(--customer-text-primary);
-  background-color: #2d2a00;
-}
-
-.key-actions {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  align-items: center;
-}
-
-.key-action-btn,
-.key-action-link {
-  padding: 6px 12px;
+/* ── License card ───────────────────────────────────── */
+.steam-key-card {
+  background: var(--customer-surface);
   border: 1px solid var(--customer-border);
-  border-radius: 4px;
-  background-color: var(--customer-surface);
-  color: var(--customer-text-primary);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: border-color 0.2s ease;
+}
+
+.steam-key-card:hover {
+  border-color: rgba(66, 133, 244, 0.4);
+}
+
+/* ── Card header ────────────────────────────────────── */
+.steam-key-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px;
+  background: linear-gradient(
+    to right,
+    rgba(66, 133, 244, 0.06) 0%,
+    transparent 60%
+  );
+  border-bottom: 1px solid var(--customer-border);
+}
+
+.steam-key-header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.steam-icon {
+  color: var(--customer-accent);
+  flex-shrink: 0;
+}
+
+.steam-key-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--customer-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+/* ── Action buttons row ─────────────────────────────── */
+.steam-key-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.key-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 11px;
+  border-radius: 5px;
+  font-size: 12px;
+  font-weight: 500;
   cursor: pointer;
-  font-size: 13px;
+  border: 1px solid transparent;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
   white-space: nowrap;
-  transition: all 0.2s ease;
   text-decoration: none;
-  display: inline-block;
+  line-height: 1;
 }
 
-.key-action-btn:hover,
-.key-action-link:hover {
-  background-color: var(--customer-surface-hover);
-  border-color: var(--customer-border-hover);
+.key-btn svg {
+  flex-shrink: 0;
 }
 
-.key-action-btn.copied {
-  background-color: #0a2a1a;
-  border-color: #4ade80;
+/* Reveal / Hide */
+.key-btn--reveal {
+  background: var(--customer-surface-hover);
+  color: var(--customer-text-primary);
+  border-color: var(--customer-border);
+}
+
+.key-btn--reveal:hover {
+  background: var(--customer-border);
+}
+
+.key-btn--reveal[aria-pressed='true'] {
+  color: var(--customer-accent);
+  border-color: rgba(66, 133, 244, 0.4);
+  background: rgba(66, 133, 244, 0.08);
+}
+
+/* Copy */
+.key-btn--copy {
+  background: var(--customer-surface-hover);
+  color: var(--customer-text-primary);
+  border-color: var(--customer-border);
+}
+
+.key-btn--copy:hover {
+  background: var(--customer-border);
+}
+
+.key-btn--copy:active {
+  transform: scale(0.97);
+}
+
+.key-btn--copied {
+  background: rgba(74, 222, 128, 0.1);
+  border-color: rgba(74, 222, 128, 0.4);
   color: #4ade80;
 }
 
-.key-action-link {
-  color: var(--customer-accent-hover);
-  border-color: var(--customer-accent);
+.key-btn--copied:hover {
+  background: rgba(74, 222, 128, 0.15);
 }
 
-.key-action-link:hover {
-  background-color: var(--customer-accent-light);
+/* Guide link */
+.key-btn--guide {
+  background: transparent;
+  color: var(--customer-text-secondary);
+  border-color: var(--customer-border);
 }
 
-@media (max-width: 768px) {
-  .steam-key-cell {
+.key-btn--guide:hover {
+  background: rgba(220, 38, 38, 0.08);
+  border-color: rgba(220, 38, 38, 0.3);
+  color: #ef4444;
+}
+
+/* ── Key display panel ──────────────────────────────── */
+.steam-key-display {
+  padding: 16px 16px;
+}
+
+.steam-key-value {
+  display: block;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Courier New', monospace;
+  font-size: 15px;
+  letter-spacing: 1.5px;
+  word-break: break-all;
+  line-height: 1.6;
+  transition: color 0.2s ease;
+  user-select: text;
+}
+
+.steam-key-value--masked {
+  color: var(--customer-text-secondary);
+}
+
+.steam-key-value--revealed {
+  color: #93c5fd;
+  text-shadow: 0 0 20px rgba(96, 165, 250, 0.25);
+}
+
+/* ── Responsive ─────────────────────────────────────── */
+@media (max-width: 600px) {
+  .steam-key-header {
     flex-direction: column;
     align-items: flex-start;
+    gap: 10px;
+    padding: 12px;
   }
 
-  .key-display {
+  .steam-key-actions {
     width: 100%;
   }
 
-  .key-actions {
-    width: 100%;
-  }
-
-  .key-action-btn,
-  .key-action-link {
+  .key-btn {
     flex: 1;
-    min-width: 100px;
-    text-align: center;
+    justify-content: center;
+    min-width: 90px;
+    font-size: 12px;
+    padding: 6px 8px;
+  }
+
+  .steam-key-display {
+    padding: 12px;
+  }
+
+  .steam-key-value {
+    font-size: 13px;
+    letter-spacing: 1px;
   }
 }

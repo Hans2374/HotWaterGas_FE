@@ -88,7 +88,7 @@ const PaymentReturnPage = () => {
         console.log('[PaymentReturnPage] Received query:', { orderCode, status, success, transactionId, amountPaid });
 
         if (!orderCode) {
-          setError('Payment return is missing required information. Please contact support.');
+          setError('Thông tin thanh toán không đầy đủ. Vui lòng liên hệ hỗ trợ.');
           setIsLoading(false);
           return;
         }
@@ -136,7 +136,7 @@ const PaymentReturnPage = () => {
           return;
         }
 
-        setError(apiError.message || 'Failed to retrieve payment status. Please try again.');
+        setError('Không thể lấy trạng thái thanh toán. Vui lòng thử lại.');
         console.error('[PaymentReturnPage] Payment return error:', apiError);
       } finally {
         // ALWAYS resolve loading. No cancelled flag, no abort guard.
@@ -163,9 +163,9 @@ const PaymentReturnPage = () => {
       <div style={{ padding: '24px' }}>
         <div className="payment-return-container">
           <div className="payment-return-content payment-return-pending">
-            <Loader text="Verifying payment status..." />
+            <Loader text="Đang xác minh thanh toán..." />
             <p className="payment-return-message" style={{ marginTop: 16 }}>
-              Please wait while we confirm your payment with PayOS.
+              Vui lòng chờ trong khi chúng tôi xác nhận thanh toán của bạn với PayOS.
             </p>
           </div>
         </div>
@@ -179,7 +179,7 @@ const PaymentReturnPage = () => {
         <div className="payment-return-container">
           <div className="payment-return-content payment-return-error">
             <div className="payment-return-icon error-icon">!</div>
-            <h2 className="payment-return-title">Payment Verification Failed</h2>
+            <h2 className="payment-return-title">Xác minh thanh toán thất bại</h2>
             <p className="payment-return-message">{error}</p>
             <div className="payment-return-actions">
               <button
@@ -187,7 +187,7 @@ const PaymentReturnPage = () => {
                 className="payment-return-button"
                 onClick={() => navigate('/cart', { replace: true })}
               >
-                Return to Cart
+                Quay lại giỏ hàng
               </button>
             </div>
           </div>
@@ -200,7 +200,7 @@ const PaymentReturnPage = () => {
     <div style={{ padding: '24px' }}>
       <div className="payment-return-container">
         <div className="payment-return-content payment-return-pending">
-          <Loader text="Redirecting..." />
+          <Loader text="Đang chuyển hướng..." />
         </div>
       </div>
     </div>

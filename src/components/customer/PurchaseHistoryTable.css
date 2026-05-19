@@ -44,8 +44,8 @@
 }
 
 .order-col {
-  width: 12%;
-  min-width: 100px;
+  width: 30%;
+  min-width: 200px;
 }
 
 .date-col {
@@ -59,8 +59,13 @@
 }
 
 .total-col {
-  width: 28%;
-  min-width: 180px;
+  width: 25%;
+  min-width: 140px;
+  text-align: left;
+}
+
+.history-table th:nth-child(4) {
+  text-align: left;
 }
 
 .action-col {
@@ -95,6 +100,7 @@
   color: var(--customer-text-primary);
   font-weight: 500;
   font-size: 14px;
+  text-align: left;
 }
 
 .view-btn {
@@ -434,8 +440,8 @@
   }
 
   .order-col {
-    width: 15%;
-    min-width: 90px;
+    width: 35%;
+    min-width: 160px;
   }
 
   .date-col {
@@ -449,8 +455,8 @@
   }
 
   .total-col {
-    width: 30%;
-    min-width: 160px;
+    width: 22%;
+    min-width: 120px;
   }
 
   .action-col {

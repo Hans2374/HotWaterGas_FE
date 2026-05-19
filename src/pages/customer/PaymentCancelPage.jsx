@@ -65,12 +65,12 @@ const PaymentCancelPage = () => {
           console.log('[PaymentCancelPage] Cart refreshed');
         } else {
           console.log('[PaymentCancelPage] Non-cancel status from backend:', res.status);
-          setProcessError('Could not verify payment cancellation. Your cart is still preserved.');
+          setProcessError('Không thể xác minh thanh toán. Giỏ hàng của bạn vẫn được bảo toàn.');
         }
       } catch (err) {
         console.error('[PaymentCancelPage] Backend call failed:', err);
         if (err.status !== 401) {
-          setProcessError('Could not verify payment cancellation. Your cart is still preserved.');
+          setProcessError('Không thể xác minh thanh toán. Giỏ hàng của bạn vẫn được bảo toàn.');
         }
       } finally {
         // ALWAYS resolve loading. This is the critical fix — no conditional, no abort guard.
@@ -100,9 +100,9 @@ const PaymentCancelPage = () => {
       <div style={{ padding: '24px' }}>
         <div className="payment-return-container">
           <div className="payment-return-content payment-return-pending">
-            <Loader text="Processing cancellation..." />
+            <Loader text="Đang xử lý hủy..." />
             <p className="payment-return-message" style={{ marginTop: 16 }}>
-              Verifying your payment cancellation.
+              Đang xác minh thanh toán của bạn.
             </p>
           </div>
         </div>
@@ -127,7 +127,7 @@ const PaymentCancelPage = () => {
         </p>
 
         {processError && (
-          <p className="payment-cancel-subtitle" style={{ color: '#ef4444' }}>
+          <p className="payment-cancel-subtitle" style={{ color: 'var(--customer-accent-hover)' }}>
             {processError}
           </p>
         )}

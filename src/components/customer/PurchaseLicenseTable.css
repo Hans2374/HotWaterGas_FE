@@ -1,5 +1,4 @@
 .license-table-container {
-  margin: 24px 0;
   border: 1px solid var(--customer-border);
   border-radius: 8px;
   overflow: hidden;
@@ -17,11 +16,13 @@
 }
 
 .license-table th {
-  padding: 12px;
+  padding: 12px 16px;
   text-align: left;
   font-weight: 600;
-  font-size: 14px;
-  color: var(--customer-text-primary);
+  font-size: 13px;
+  color: var(--customer-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .license-table tbody tr {
@@ -30,7 +31,7 @@
 }
 
 .license-table tbody tr:hover {
-  background-color: var(--customer-surface-hover);
+  background-color: rgba(255, 255, 255, 0.02);
 }
 
 .license-table tbody tr:last-child {
@@ -38,54 +39,37 @@
 }
 
 .license-table td {
-  padding: 16px 12px;
+  padding: 16px;
   vertical-align: top;
 }
 
 .product-col {
-  width: 25%;
-  min-width: 200px;
+  width: 30%;
+  min-width: 160px;
 }
 
 .product-name {
-  font-weight: 500;
+  font-weight: 600;
+  font-size: 14px;
   color: var(--customer-text-primary);
   word-break: break-word;
+  padding-top: 4px;
 }
 
 .key-col {
-  flex: 1;
-  min-width: 400px;
+  width: 70%;
+  min-width: 0;
 }
 
 .license-table-empty {
-  padding: 24px;
+  padding: 32px 24px;
   text-align: center;
   color: var(--customer-text-secondary);
   background-color: var(--customer-surface-hover);
   border-radius: 8px;
-  border: 1px solid var(--customer-border);
+  border: 1px dashed var(--customer-border);
   margin: 24px 0;
-}
-
-@media (max-width: 1024px) {
-  .license-table {
-    font-size: 13px;
-  }
-
-  .license-table th,
-  .license-table td {
-    padding: 10px 8px;
-  }
-
-  .key-col {
-    min-width: 300px;
-  }
-
-  .product-col {
-    width: 20%;
-    min-width: 150px;
-  }
+  font-size: 14px;
 }
 
 @media (max-width: 768px) {
@@ -94,21 +78,20 @@
   }
 
   .license-table {
-    min-width: 600px;
+    min-width: 560px;
   }
 
   .license-table th,
   .license-table td {
-    padding: 8px;
-    font-size: 12px;
+    padding: 12px 10px;
   }
 
   .product-col {
-    width: 30%;
+    width: 35%;
     min-width: 120px;
   }
 
-  .key-col {
-    min-width: 250px;
+  .product-name {
+    font-size: 13px;
   }
 }

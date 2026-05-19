@@ -46,7 +46,6 @@ export default function PurchaseDetailSummary({ items, subtotal, discountAmount,
                       ) : (
                         <div className="item-name">{item.productName}</div>
                       )}
-                      <div className="item-slug">{item.productSlug}</div>
                     </div>
                   </div>
                 </td>
