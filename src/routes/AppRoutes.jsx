@@ -101,13 +101,25 @@ const AdminRoute = ({ children }) => {
   }
 
   if (!token) {
+    if (import.meta.env.DEV) {
+      // eslint-disable-next-line no-console
+      console.debug('[Auth.RouteGuard] role= authenticated=false reason=no_token');
+    }
     return <Navigate to="/login" replace />;
   }
 
   if (!isAdmin) {
+    if (import.meta.env.DEV) {
+      // eslint-disable-next-line no-console
+      console.debug('[Auth.RouteGuard] role= authenticated=true reason=not_admin');
+    }
     return <AccessDenied />;
   }
 
+  if (import.meta.env.DEV) {
+    // eslint-disable-next-line no-console
+    console.debug('[Auth.RouteGuard] role=Admin authenticated=true');
+  }
   return children;
 };
 

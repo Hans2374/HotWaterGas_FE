@@ -62,9 +62,57 @@
   user-select: none;
 }
 
-.order-detail-status {
+/* Status badge variants for order detail header */
+.order-status-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
   font-weight: 600;
-  color: var(--customer-text-primary);
+  line-height: 1;
+}
+
+.order-status-badge--success {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10B981;
+  border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+.order-status-badge--error {
+  background: rgba(239, 68, 68, 0.12);
+  color: #EF4444;
+  border: 1px solid rgba(239, 68, 68, 0.25);
+}
+
+.order-status-badge--warning {
+  background: rgba(245, 158, 11, 0.12);
+  color: #D97706;
+  border: 1px solid rgba(245, 158, 11, 0.25);
+}
+
+.order-status-badge--neutral {
+  background: rgba(255, 255, 255, 0.05);
+  color: #8B949E;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Cancelled order notice */
+.order-cancelled-notice {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px 24px;
+  margin-bottom: 16px;
+  background: rgba(239, 68, 68, 0.06);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 8px;
+}
+
+.order-cancelled-notice p {
+  margin: 0;
+  font-size: 14px;
+  color: #EF4444;
+  line-height: 1.5;
 }
 
 .order-license-card {

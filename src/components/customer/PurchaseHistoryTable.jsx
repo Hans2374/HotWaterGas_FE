@@ -143,6 +143,7 @@ export default function PurchaseHistoryTable({ orders, onOrderClick, isLoading, 
               key={order.orderId}
               orderNumber={order.orderNumber}
               createdAt={order.createdAt}
+              status={order.status}
               statusLabel={order.statusLabel}
               total={order.total}
               itemCount={order.itemCount}

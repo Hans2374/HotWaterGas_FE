@@ -66,9 +66,7 @@ const refreshAccessToken = async () => {
 
   if (import.meta.env.DEV) {
     // eslint-disable-next-line no-console
-    console.debug('[Auth] Token stored after refresh:', {
-      storedAt: new Date().toISOString()
-    });
+    console.debug('[Auth.Refresh] Refresh succeeded, token stored at:', new Date().toISOString());
   }
 
   dispatchTokenUpdated();
@@ -175,6 +173,8 @@ axiosClient.interceptors.response.use(
       }
       return axiosClient(clonedConfig);
     } catch (refreshError) {
+      // eslint-disable-next-line no-console
+      console.debug('[Auth.Refresh] Refresh failed:', refreshError?.message || 'Unknown error');
       // Refresh failed. Dispatch event so AuthContext can log out.
       window.dispatchEvent(
         new CustomEvent('hotwatergas:auth:expired', {

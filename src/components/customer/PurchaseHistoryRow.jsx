@@ -1,45 +1,22 @@
 import { formatOrderDate, formatOrderSummary } from '../../utils/formatters';
 
 /**
- * Maps status labels to semantic CSS classes for badge styling.
- * Green = success/positive. Red = error/negative. Amber = warning/pending. Gray = neutral.
+ * Maps raw order status integer to semantic CSS class for badge styling.
+ * Status values (from backend OrderService.GetStatusLabel):
+ *   0 = Cancelled  -> status-error (red)
+ *   1 = Failed     -> status-error (red)
+ *   2 = Pending    -> status-warning (amber)
+ *   4 = Completed  -> status-success (green)
+ *   _ = Unknown    -> status-neutral (gray)
  */
-const getStatusClass = (statusLabel) => {
-  if (!statusLabel) return 'status-neutral';
-  const lower = statusLabel.toLowerCase();
-
-  if (
-    lower === 'delivered' ||
-    lower === 'completed' ||
-    lower === 'success' ||
-    lower === 'đã giao' ||
-    lower === 'hoàn thành' ||
-    lower === 'thành công'
-  ) {
-    return 'status-success';
+const getStatusClass = (status) => {
+  switch (status) {
+    case 4: return 'status-success'; // Hoàn tất / Completed
+    case 0:
+    case 1: return 'status-error';   // Đã hủy / Thất bại / Cancelled / Failed
+    case 2: return 'status-warning'; // Đang chờ / Pending
+    default: return 'status-neutral';
   }
-  if (
-    lower === 'failed' ||
-    lower === 'cancelled' ||
-    lower === 'refunded' ||
-    lower === 'failed' ||
-    lower === 'thất bại' ||
-    lower === 'đã hủy' ||
-    lower === 'đã hoàn tiền'
-  ) {
-    return 'status-error';
-  }
-  if (
-    lower === 'pending' ||
-    lower === 'processing' ||
-    lower === 'shipped' ||
-    lower === 'đang xử lý' ||
-    lower === 'đang giao'
-  ) {
-    return 'status-warning';
-  }
-
-  return 'status-neutral';
 };
 
 /**
@@ -48,6 +25,7 @@ const getStatusClass = (statusLabel) => {
 export default function PurchaseHistoryRow({
   orderNumber,
   createdAt,
+  status,
   statusLabel,
   total,
   itemCount,
@@ -62,7 +40,7 @@ export default function PurchaseHistoryRow({
         <div className="order-date">{formatOrderDate(createdAt)}</div>
       </td>
       <td className="status-col">
-        <div className={`status-badge ${getStatusClass(statusLabel)}`}>{statusLabel}</div>
+        <div className={`status-badge ${getStatusClass(status)}`}>{statusLabel}</div>
       </td>
       <td className="total-col">
         <div className="order-total">{formatOrderSummary(total, itemCount)}</div>

@@ -96,7 +96,7 @@ export const decodeToken = (token) => {
   if (!payload) return {};
   const emailValue = payload[EMAIL_CLAIM] || payload.email || payload.Email || '';
   return {
-    role: payload[ROLE_CLAIM] || payload.role || payload.Role || '',
+    role: payload.role || payload[ROLE_CLAIM] || '',
     userId: payload[USER_ID_CLAIM] || payload.userId || payload.sub || '',
     username:
       payload[NAME_CLAIM] ||

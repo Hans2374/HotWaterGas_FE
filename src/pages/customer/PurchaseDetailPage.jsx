@@ -7,6 +7,20 @@ import PurchaseLicenseTable from '../../components/customer/PurchaseLicenseTable
 import { formatOrderDate } from '../../utils/formatters';
 import './PurchaseDetailPage.css';
 
+/** Order status integer → badge CSS class */
+const getDetailStatusClass = (status) => {
+  switch (status) {
+    case 4: return 'order-status-badge--success';
+    case 0:
+    case 1: return 'order-status-badge--error';
+    case 2: return 'order-status-badge--warning';
+    default: return 'order-status-badge--neutral';
+  }
+};
+
+/** True when order status means no delivery occurred */
+const isFulfilledOrder = (status) => status === 4;
+
 /**
  * PurchaseDetailPage - Customer's order detail and key fulfillment
  *
@@ -119,6 +133,9 @@ export default function PurchaseDetailPage() {
     return null;
   }
 
+  const fulfilled = isFulfilledOrder(order.status);
+  const statusBadgeClass = getDetailStatusClass(order.status);
+
   return (
     <div className="order-detail-page">
       <button
@@ -141,7 +158,10 @@ export default function PurchaseDetailPage() {
               ·
             </span>
             <span>
-              Trạng thái: <strong className="order-detail-status">{order.statusLabel}</strong>
+              Trạng thái:{' '}
+              <span className={`order-status-badge ${statusBadgeClass}`}>
+                {order.statusLabel}
+              </span>
             </span>
           </p>
         </header>
@@ -154,10 +174,12 @@ export default function PurchaseDetailPage() {
           paymentMethodLabel={order.paymentMethodLabel}
         />
 
-        <section className="order-license-card" aria-labelledby="order-license-heading">
-          <h3 id="order-license-heading">Key bản quyền và giao hàng</h3>
-          <PurchaseLicenseTable licenses={order.licenses} />
-        </section>
+        {fulfilled && (
+          <section className="order-license-card" aria-labelledby="order-license-heading">
+            <h3 id="order-license-heading">Key bản quyền và giao hàng</h3>
+            <PurchaseLicenseTable licenses={order.licenses} />
+          </section>
+        )}
       </div>
   );
 }

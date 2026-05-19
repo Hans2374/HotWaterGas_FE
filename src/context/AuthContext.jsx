@@ -214,6 +214,10 @@ export const AuthProvider = ({ children }) => {
       const currentToken = getAccessToken();
       if (!currentToken) return;
       const derived = deriveStateFromToken(currentToken);
+      if (import.meta.env.DEV) {
+        // eslint-disable-next-line no-console
+        console.debug('[Auth.Refresh] Decoded role after refresh:', derived.role || '(empty)');
+      }
       setTokenState(currentToken);
       setRole(derived.role);
       setUserId(derived.userId);
@@ -280,6 +284,7 @@ export const AuthProvider = ({ children }) => {
       setEmail(derived.email);
       setDisplayName(derived.displayName);
       scheduleProactiveRefresh();
+      broadcastTokenUpdated();
     },
     [scheduleProactiveRefresh]
   );
