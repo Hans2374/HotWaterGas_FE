@@ -41,8 +41,10 @@ const clearCheckoutPaymentTransientState = () => {
   return keysToRemove.length;
 };
 
-const isCancelledStatus = (status) => ['cancelled', 'canceled'].includes(String(status || '').toLowerCase());
-const isSuccessStatus = (status) => ['paid', 'success', 'completed'].includes(String(status || '').toLowerCase());
+const isCancelledStatus = (status) =>
+  ['cancelled', 'canceled'].includes(String(status || '').toLowerCase());
+const isSuccessStatus = (status) =>
+  ['paid', 'success', 'completed'].includes(String(status || '').toLowerCase());
 
 const PaymentReturnPage = () => {
   const [searchParams] = useSearchParams();
@@ -51,26 +53,25 @@ const PaymentReturnPage = () => {
   const refreshCartRef = useRef(refreshCart);
   refreshCartRef.current = refreshCart;
 
-  // Guard against React StrictMode double-execution.
-  // StrictMode runs effects twice in development. Without this guard,
-  // processPaymentReturn() fires twice, causing duplicate API calls and
-  // interleaved setState calls (race conditions).
+  // Single guard: process at most once per page visit.
+  // Accepts StrictMode double-mount as a non-issue — the backend is idempotent
+  // and the hasProcessedRef ensures the effect body runs at most once.
   const hasProcessedRef = useRef(false);
 
   const [result, setResult] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
-  const [hasRouted, setHasRouted] = useState(false);
+  const [routeTarget, setRouteTarget] = useState(null);
 
   useEffect(() => {
-    // Skip if StrictMode already ran this effect and called the cleanup.
+    // StrictMode first mount: runs the effect.
+    // StrictMode second mount (after cleanup): skipped — effect body does NOT run.
+    // No cleanup returned, so cancelled flag is NOT set on second mount.
     if (hasProcessedRef.current) {
-      console.log('[PaymentReturnPage] StrictMode second mount detected — skipping duplicate useEffect execution');
+      console.log('[PaymentReturnPage] StrictMode double-mount — second mount skipped by ref guard');
       return;
     }
     hasProcessedRef.current = true;
-
-    let cancelled = false;
 
     const processPaymentReturn = async () => {
       setIsLoading(true);
@@ -102,73 +103,61 @@ const PaymentReturnPage = () => {
         );
 
         console.log('[PaymentReturnPage] Backend result:', paymentResult);
-
-        // Guard: abort if component unmounted while awaiting.
-        if (cancelled) {
-          console.log('[PaymentReturnPage] Component unmounted during API call — aborting');
-          return;
-        }
-
         setResult(paymentResult);
 
-        // Mutually exclusive routing — all paths return/return early.
-        // No fallthrough possible.
-
         if (isSuccessStatus(paymentResult.status) || paymentResult.success) {
-          console.log('[PaymentReturnPage] SUCCESS path — clearing state, refreshing cart, routing to success page');
+          console.log('[PaymentReturnPage] SUCCESS — refreshing cart and routing to success page');
 
           clearCheckoutPaymentTransientState();
 
           try {
             await refreshCartRef.current();
-            console.log('[PaymentReturnPage] Cart refreshed after success');
+            console.log('[PaymentReturnPage] Cart refreshed');
           } catch {
-            console.warn('[PaymentReturnPage] Cart refresh failed (best effort)');
+            console.warn('[PaymentReturnPage] Cart refresh failed (best-effort)');
           }
 
-          const navigateUrl = paymentResult.orderCode
+          const targetUrl = paymentResult.orderCode
             ? `/purchase/success?orderCode=${encodeURIComponent(paymentResult.orderCode)}&status=${encodeURIComponent(paymentResult.status || 'PAID')}`
             : '/purchase/success';
 
-          navigate(navigateUrl, { replace: true });
-          setHasRouted(true);
-          return;
+          setRouteTarget(targetUrl);
+        } else if (isCancelledStatus(paymentResult.status)) {
+          console.log('[PaymentReturnPage] CANCELLED — routing to cancel page. status:', paymentResult.status);
+          setRouteTarget('/purchase/cancel');
+        } else {
+          console.log('[PaymentReturnPage] FAILED/OTHER — routing to cancel page. status:', paymentResult.status);
+          setRouteTarget('/purchase/cancel');
         }
-
-        // All non-success paths land on the cancel page.
-        console.log('[PaymentReturnPage] NON-SUCCESS path — routing to cancel page. status:', paymentResult.status);
-        navigate('/purchase/cancel', { replace: true });
-        setHasRouted(true);
       } catch (apiError) {
-        if (cancelled) {
-          console.log('[PaymentReturnPage] Component unmounted during error — aborting');
-          return;
-        }
-
         if (apiError.status === 401) {
-          console.log('[PaymentReturnPage] 401 received — redirecting to login');
-          navigate('/login', { replace: true });
-          setHasRouted(true);
+          console.log('[PaymentReturnPage] 401 — redirecting to login');
+          setRouteTarget('/login');
           return;
         }
 
         setError(apiError.message || 'Failed to retrieve payment status. Please try again.');
         console.error('[PaymentReturnPage] Payment return error:', apiError);
       } finally {
-        if (!cancelled) {
-          setIsLoading(false);
-        }
+        // ALWAYS resolve loading. No cancelled flag, no abort guard.
+        // Navigation is handled via routeTarget state to avoid setState-after-navigate issues.
+        setIsLoading(false);
       }
     };
 
     processPaymentReturn();
+    // Intentionally no cleanup return. No cancelled flag. No abort logic.
+    // The async function completes fully regardless of StrictMode double-mount.
+  }, [searchParams]);
 
-    return () => {
-      cancelled = true;
-    };
-  }, [searchParams, navigate, hasRouted]);
+  // Handle navigation separately from the async effect.
+  // This separates concerns: effect handles data, this effect handles routing.
+  useEffect(() => {
+    if (routeTarget) {
+      navigate(routeTarget, { replace: true });
+    }
+  }, [routeTarget, navigate]);
 
-  // Loading state — show while verifying payment.
   if (isLoading) {
     return (
       <div style={{ padding: '24px' }}>
@@ -184,8 +173,7 @@ const PaymentReturnPage = () => {
     );
   }
 
-  // Error state — show only if routing failed.
-  if (error && !hasRouted) {
+  if (error) {
     return (
       <div style={{ padding: '24px' }}>
         <div className="payment-return-container">
@@ -208,7 +196,6 @@ const PaymentReturnPage = () => {
     );
   }
 
-  // Fallback — should not normally render since we always route.
   return (
     <div style={{ padding: '24px' }}>
       <div className="payment-return-container">
