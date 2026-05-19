@@ -1,42 +1,48 @@
 /* ============================================
-   Admin Categories Page — Refined UI/UX
+   Admin Categories Page — Dark Theme Refinement
    ============================================ */
 
 /* ── Dark Theme Tokens (scoped to module) ── */
 .categories-page.module-categories,
 .categories-page {
-  --cat-border: #374151;
-  --cat-border-hover: #4B5563;
+  /* Surface hierarchy */
   --cat-bg-page: #111827;
   --cat-bg-card: #1F2937;
-  --cat-bg-header: #273449;
-  --cat-text-primary: #F9FAFB;
-  --cat-text-secondary: #9CA3AF;
-  --cat-text-muted: #4B5563;
+  --cat-bg-header: #1a2332;
+  --cat-bg-hover: rgba(255, 255, 255, 0.05);
 
+  /* Border tokens */
+  --cat-border: rgba(255, 255, 255, 0.09);
+  --cat-border-surface: rgba(255, 255, 255, 0.13);
+  --cat-border-hover: rgba(255, 255, 255, 0.18);
+
+  /* Semantic text hierarchy */
+  --cat-text-primary: #F3F4F6;
+  --cat-text-secondary: #C9D1D9;
+  --cat-text-muted: #8B949E;
+
+  /* Accent (blue for categories) */
   --cat-accent: var(--admin-categories-accent, #3B82F6);
   --cat-accent-hover: var(--admin-categories-accent-hover, #2563EB);
-  --cat-accent-light: var(--admin-categories-accent-light, rgba(59, 130, 246, 0.12));
-  --cat-accent-border: rgba(59, 130, 246, 0.3);
+  --cat-accent-light: rgba(59, 130, 246, 0.12);
 
+  /* Status tokens */
   --cat-status-active-bg: rgba(16, 185, 129, 0.15);
   --cat-status-active-text: #10B981;
-  --cat-status-inactive-bg: #1F2937;
-  --cat-status-inactive-text: #9CA3AF;
+  --cat-status-inactive-bg: rgba(255, 255, 255, 0.05);
+  --cat-status-inactive-text: #8B949E;
 
-  --cat-count-bg: #1F2937;
-  --cat-count-text: #9CA3AF;
+  /* Count badge tokens */
+  --cat-count-bg: rgba(255, 255, 255, 0.05);
+  --cat-count-text: #8B949E;
   --cat-count-hasproducts-bg: rgba(59, 130, 246, 0.12);
   --cat-count-hasproducts-text: #3B82F6;
 
-  --cat-action-edit-bg: #1F2937;
-  --cat-action-edit-hover-bg: #273449;
-  --cat-action-edit-hover-color: #3B82F6;
-  --cat-action-delete-bg: #1F2937;
-  --cat-action-delete-hover-bg: rgba(239, 68, 68, 0.12);
-  --cat-action-delete-hover-color: #EF4444;
-  --cat-action-disabled-opacity: 0.35;
-  --cat-action-disabled-cursor: not-allowed;
+  /* Action button affordance */
+  --btn-action-bg: rgba(255, 255, 255, 0.07);
+  --btn-action-bg-hover: rgba(255, 255, 255, 0.11);
+  --btn-action-border: rgba(255, 255, 255, 0.14);
+  --btn-action-border-hover: rgba(255, 255, 255, 0.26);
 }
 
 /* ── Page Container ── */
@@ -66,7 +72,8 @@
 
 .page-header-left p {
   font-size: 13px;
-  color: var(--cat-text-muted);
+  font-weight: 500;
+  color: var(--cat-text-secondary);
   margin: 3px 0 0;
   line-height: 1.4;
 }
@@ -74,7 +81,7 @@
 /* ── Filter Toolbar ── */
 .filter-toolbar {
   background: var(--cat-bg-card);
-  border: 1px solid var(--cat-border);
+  border: 1px solid var(--cat-border-surface);
   border-radius: 10px;
   padding: 12px 16px;
   display: flex;
@@ -83,7 +90,6 @@
   flex-wrap: wrap;
 }
 
-/* Status filter pills */
 .filter-pills {
   display: flex;
   align-items: center;
@@ -94,7 +100,7 @@
   height: 32px;
   padding: 0 12px;
   border-radius: 20px;
-  border: 1px solid var(--cat-border);
+  border: 1px solid var(--cat-border-surface);
   background: var(--cat-bg-card);
   color: var(--cat-text-secondary);
   font-size: 12.5px;
@@ -128,11 +134,10 @@
 .filter-divider {
   width: 1px;
   height: 20px;
-  background: var(--cat-border);
+  background: var(--cat-border-surface);
   flex-shrink: 0;
 }
 
-/* Search */
 .filter-search {
   position: relative;
   flex: 1;
@@ -155,7 +160,7 @@
   width: 100%;
   height: 34px;
   padding: 0 34px 0 34px;
-  border: 1px solid var(--cat-border);
+  border: 1px solid var(--cat-border-surface);
   border-radius: 8px;
   font-size: 13px;
   background: var(--cat-bg-page);
@@ -171,7 +176,7 @@
   outline: none;
   border-color: var(--cat-accent);
   background: var(--cat-bg-card);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
 }
 
 .filter-search-input:not(:placeholder-shown) {
@@ -197,13 +202,13 @@
 
 .filter-search-clear:hover {
   color: var(--cat-text-secondary);
-  background: var(--cat-border);
+  background: var(--cat-border-surface);
 }
 
 /* ── Table Wrapper ── */
 .table-wrapper {
   background: var(--cat-bg-card);
-  border: 1px solid var(--cat-border);
+  border: 1px solid var(--cat-border-surface);
   border-radius: 10px;
   overflow: hidden;
 }
@@ -224,7 +229,7 @@
 
 .categories-table thead tr {
   background: var(--cat-bg-header);
-  border-bottom: 1px solid var(--cat-border);
+  border-bottom: 1px solid var(--cat-border-surface);
 }
 
 .categories-table th {
@@ -233,7 +238,7 @@
   font-size: 11.5px;
   text-transform: uppercase;
   letter-spacing: 0.6px;
-  color: var(--cat-text-muted);
+  color: var(--cat-text-secondary);
   text-align: left;
   white-space: nowrap;
   user-select: none;
@@ -249,7 +254,7 @@
 }
 
 .categories-table tbody tr {
-  border-bottom: 1px solid var(--cat-border);
+  border-bottom: 1px solid var(--cat-border-surface);
   transition: background 0.1s;
 }
 
@@ -273,14 +278,11 @@
   line-height: 1.3;
 }
 
-/* Slug cell — standalone */
 .slug-cell {
   font-size: 11.5px;
   font-family: 'SFMono-Regular', 'Consolas', monospace;
   color: var(--cat-text-muted);
 }
-
-/* ──  */
 
 /* Products count */
 .products-cell {
@@ -320,19 +322,19 @@
 }
 
 .badge-active {
-  background: var(--cat-status-active-bg, rgba(16, 185, 129, 0.15)) !important;
-  color: var(--cat-status-active-text, #10B981) !important;
+  background: rgba(16, 185, 129, 0.15);
+  color: #10B981;
 }
 
 .badge-inactive {
-  background: var(--cat-status-inactive-bg, #1F2937) !important;
-  color: var(--cat-status-inactive-text, #9CA3AF) !important;
+  background: rgba(255, 255, 255, 0.05);
+  color: #8B949E;
 }
 
 /* Date cell */
 .date-cell {
   font-size: 12.5px;
-  color: var(--cat-text-muted);
+  color: var(--cat-text-secondary);
   white-space: nowrap;
 }
 
@@ -354,35 +356,28 @@
   width: 30px;
   height: 30px;
   border-radius: 7px;
-  border: none;
   cursor: pointer;
-  transition: background 0.15s, color 0.15s, opacity 0.15s;
-  background: transparent;
+  transition: background 0.15s, border-color 0.15s, color 0.15s, opacity 0.15s;
+  background: var(--btn-action-bg);
+  border: 1px solid var(--btn-action-border);
+  color: #9CA3AF;
 }
 
 .action-btn:disabled {
-  opacity: var(--cat-action-disabled-opacity);
-  cursor: var(--cat-action-disabled-cursor);
-}
-
-.action-btn-edit {
-  color: var(--cat-text-muted);
-  background: var(--cat-action-edit-bg);
+  opacity: 0.3;
+  cursor: not-allowed;
 }
 
 .action-btn-edit:hover:not(:disabled) {
-  background: var(--cat-action-edit-hover-bg);
-  color: var(--cat-action-edit-hover-color);
-}
-
-.action-btn-delete {
-  color: var(--cat-text-muted);
-  background: var(--cat-action-edit-bg);
+  background: rgba(59, 130, 246, 0.18);
+  border-color: rgba(59, 130, 246, 0.55);
+  color: #3B82F6;
 }
 
 .action-btn-delete:hover:not(:disabled) {
-  background: var(--cat-action-delete-hover-bg);
-  color: var(--cat-action-delete-hover-color);
+  background: rgba(239, 68, 68, 0.18);
+  border-color: rgba(239, 68, 68, 0.55);
+  color: #EF4444;
 }
 
 /* ── Pagination Bar ── */
@@ -391,7 +386,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 10px 16px;
-  border-top: 1px solid var(--cat-border);
+  border-top: 1px solid var(--cat-border-surface);
   background: var(--cat-bg-page);
 }
 
@@ -418,8 +413,8 @@
   width: 30px;
   height: 30px;
   border-radius: 7px;
-  border: 1px solid var(--cat-border);
-  background: var(--cat-bg-card);
+  border: 1px solid var(--btn-action-border);
+  background: var(--btn-action-bg);
   color: var(--cat-text-secondary);
   cursor: pointer;
   transition: background 0.15s, border-color 0.15s, color 0.15s;
@@ -428,13 +423,13 @@
 }
 
 .pagination-btn:hover:not(:disabled) {
-  background: var(--cat-bg-page);
-  border-color: var(--cat-border-hover);
+  background: var(--btn-action-bg-hover);
+  border-color: var(--btn-action-border-hover);
   color: var(--cat-text-primary);
 }
 
 .pagination-btn:disabled {
-  opacity: 0.35;
+  opacity: 0.3;
   cursor: not-allowed;
 }
 
@@ -458,7 +453,7 @@
 
 .skeleton-row td {
   padding: 14px 16px;
-  border-bottom: 1px solid var(--cat-border);
+  border-bottom: 1px solid var(--cat-border-surface);
 }
 
 .skeleton-row:last-child td {
@@ -500,7 +495,7 @@
 }
 
 .empty-icon {
-  color: #cbd5e1;
+  color: var(--cat-text-muted);
   margin-bottom: 4px;
 }
 
@@ -558,7 +553,7 @@
 .modal-card {
   width: 100%;
   max-width: 400px;
-  background: var(--cat-bg-card, #1F2937);
+  background: var(--cat-bg-card);
   border-radius: 14px;
   box-shadow: 0 24px 48px rgba(0, 0, 0, 0.4);
   overflow: hidden;
@@ -572,7 +567,7 @@
 
 .modal-header {
   padding: 20px 20px 16px;
-  border-bottom: 1px solid var(--cat-border);
+  border-bottom: 1px solid var(--cat-border-surface);
 }
 
 .modal-title {
@@ -601,7 +596,7 @@
   display: flex;
   justify-content: flex-end;
   gap: 8px;
-  border-top: 1px solid var(--cat-border);
+  border-top: 1px solid var(--cat-border-surface);
 }
 
 /* ── Reusable Button Styles ── */
@@ -636,13 +631,13 @@
 }
 
 .btn-secondary {
-  background: var(--cat-bg-page);
+  background: rgba(255, 255, 255, 0.05);
   color: var(--cat-text-secondary);
-  border: 1px solid var(--cat-border);
+  border: 1px solid var(--cat-border-surface);
 }
 
 .btn-secondary:hover:not(:disabled) {
-  background: var(--cat-border);
+  background: rgba(255, 255, 255, 0.09);
   border-color: var(--cat-border-hover);
   color: var(--cat-text-primary);
 }

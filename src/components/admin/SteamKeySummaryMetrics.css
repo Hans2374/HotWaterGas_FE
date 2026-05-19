@@ -1,3 +1,7 @@
+/* ============================================
+   Steam Key Summary Metrics — Dark Theme Refinement
+   ============================================ */
+
 .steam-key-summary-metrics {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -6,7 +10,7 @@
 
 .steam-key-summary-item {
   background: var(--cat-bg-card, #1F2937);
-  border: 1px solid var(--cat-border, #374151);
+  border: 1px solid var(--cat-border-surface, rgba(255, 255, 255, 0.13));
   border-radius: 10px;
   padding: 14px 16px;
   display: flex;
@@ -16,9 +20,9 @@
 
 .steam-key-summary-label {
   margin: 0;
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--cat-text-muted, #4B5563);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--cat-text-muted, #8B949E);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -28,7 +32,7 @@
   font-size: 26px;
   font-weight: 700;
   line-height: 1;
-  color: var(--cat-text-primary, #F9FAFB);
+  color: var(--cat-text-primary, #F3F4F6);
 }
 
 @media (max-width: 900px) {
@@ -40,6 +44,7 @@
 @media (max-width: 480px) {
   .steam-key-summary-metrics {
     grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
   }
 
   .steam-key-summary-item {

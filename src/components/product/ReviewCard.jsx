@@ -19,11 +19,11 @@ export const ReviewCard = ({ review }) => {
       <div className="review-card-header">
         <div className="review-card-user-info">
           <span className="review-card-username">{review.userDisplayName}</span>
-          {review.isMine && <span className="review-card-badge">Your Review</span>}
+          {review.isMine && <span className="review-card-badge">Đánh giá của bạn</span>}
         </div>
         <span className="review-card-date">
           {formatDate(review.createdAt)}
-          {review.isEdited && <span className="review-card-edited"> (Edited)</span>}
+          {review.isEdited && <span className="review-card-edited"> (Đã chỉnh sửa)</span>}
         </span>
       </div>
       

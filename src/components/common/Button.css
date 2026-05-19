@@ -1,52 +1,77 @@
+/* ============================================
+   Button Component — Dark Admin Theme
+   ============================================ */
+
 .btn {
-  padding: 10px 16px;
-  font-size: 14px;
+  padding: 8px 14px;
+  font-size: 13px;
   font-weight: 600;
-  border: none;
-  border-radius: 4px;
+  border: 1px solid transparent;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.2s, opacity 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: background-color 0.15s, border-color 0.15s, color 0.15s, opacity 0.15s;
+  white-space: nowrap;
+  line-height: 1;
+  text-decoration: none;
 }
 
 .btn:disabled {
-  opacity: 0.6;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
-.btn-primary {
-  background-color: #007bff;
-  color: white;
+/* Primary — uses page-level accent via CSS custom property cascade */
+.btn-primary,
+.btn {
+  background-color: #F59E0B;
+  color: #ffffff;
+  border-color: #F59E0B;
 }
 
-.btn-primary:hover:not(:disabled) {
-  background-color: #0056b3;
+.btn-primary:hover:not(:disabled),
+.btn:hover:not(:disabled) {
+  background-color: #D97706;
+  border-color: #D97706;
 }
 
+/* Secondary — dark admin surface button */
 .btn-secondary {
-  background-color: #6c757d;
-  color: white;
+  background: rgba(255, 255, 255, 0.07);
+  color: #C9D1D9;
+  border-color: rgba(255, 255, 255, 0.14);
 }
 
 .btn-secondary:hover:not(:disabled) {
-  background-color: #545b62;
+  background: rgba(255, 255, 255, 0.11);
+  border-color: rgba(255, 255, 255, 0.26);
+  color: #F3F4F6;
 }
 
+/* Danger */
 .btn-danger {
-  background-color: #c62828;
+  background-color: #dc2626;
   color: #ffffff;
+  border-color: #dc2626;
 }
 
 .btn-danger:hover:not(:disabled) {
-  background-color: #a51f1f;
+  background-color: #b91c1c;
+  border-color: #b91c1c;
 }
 
 .btn-danger-strong {
   background-color: #8b0000;
   color: #ffffff;
+  border-color: #8b0000;
 }
 
 .btn-danger-strong:hover:not(:disabled) {
   background-color: #680000;
+  border-color: #680000;
 }
 
 .btn-full-width {
@@ -58,26 +83,32 @@
 .btn-admin-products {
   background-color: var(--admin-products-accent, #F59E0B);
   color: #ffffff;
+  border-color: var(--admin-products-accent, #F59E0B);
 }
 
 .btn-admin-products:hover:not(:disabled) {
   background-color: var(--admin-products-accent-hover, #D97706);
+  border-color: var(--admin-products-accent-hover, #D97706);
 }
 
 .btn-admin-categories {
   background-color: var(--admin-categories-accent, #3B82F6);
   color: #ffffff;
+  border-color: var(--admin-categories-accent, #3B82F6);
 }
 
 .btn-admin-categories:hover:not(:disabled) {
   background-color: var(--admin-categories-accent-hover, #2563EB);
+  border-color: var(--admin-categories-accent-hover, #2563EB);
 }
 
 .btn-admin-tags {
   background-color: var(--admin-tags-accent, #10B981);
   color: #ffffff;
+  border-color: var(--admin-tags-accent, #10B981);
 }
 
 .btn-admin-tags:hover:not(:disabled) {
   background-color: var(--admin-tags-accent-hover, #059669);
+  border-color: var(--admin-tags-accent-hover, #059669);
 }

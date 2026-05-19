@@ -1,9 +1,13 @@
+/* ============================================
+   Tag Form Modal — Dark Theme Refinement
+   ============================================ */
+
 .tag-form-modal {
   max-width: 480px;
   width: 100%;
 }
 
-/* Modal Body */
+/* ── Modal Body ── */
 .modal-body {
   padding: 16px 20px;
   display: flex;
@@ -11,7 +15,7 @@
   gap: 16px;
 }
 
-/* Form Fields */
+/* ── Form Fields ── */
 .form-field-group {
   display: flex;
   flex-direction: column;
@@ -21,12 +25,12 @@
 .input-label {
   font-size: 13px;
   font-weight: 600;
-  color: var(--cat-text-secondary, #9CA3AF);
+  color: var(--cat-text-secondary, #C9D1D9);
 }
 
 .input-optional {
   font-weight: 400;
-  color: var(--cat-text-muted, #4B5563);
+  color: var(--cat-text-muted, #8B949E);
   font-size: 12px;
 }
 
@@ -34,12 +38,13 @@
   width: 100%;
   height: 40px;
   padding: 0 12px;
-  border: 1px solid var(--cat-border, #374151);
+  border: 1px solid var(--cat-border-surface, rgba(255, 255, 255, 0.13));
   border-radius: 8px;
   font-size: 14px;
   background: var(--cat-bg-card, #1F2937);
-  color: var(--cat-text-primary, #F9FAFB);
+  color: var(--cat-text-primary, #F3F4F6);
   transition: border-color 0.15s, box-shadow 0.15s;
+  box-sizing: border-box;
 }
 
 .input:focus {
@@ -49,7 +54,7 @@
 }
 
 .input::placeholder {
-  color: var(--cat-text-muted, #4B5563);
+  color: var(--cat-text-muted, #8B949E);
 }
 
 .input:disabled {
@@ -73,10 +78,10 @@
 
 .input-hint {
   font-size: 12px;
-  color: var(--cat-text-muted, #4B5563);
+  color: var(--cat-text-muted, #8B949E);
 }
 
-/* Checkbox */
+/* ── Checkbox ── */
 .input-checkbox-label {
   display: flex;
   align-items: center;
@@ -98,10 +103,10 @@
 
 .checkbox-text {
   font-size: 14px;
-  color: var(--cat-text-primary, #F9FAFB);
+  color: var(--cat-text-primary, #F3F4F6);
 }
 
-/* Responsive */
+/* ── Responsive ── */
 @media (max-width: 700px) {
   .modal-footer {
     flex-direction: column-reverse;

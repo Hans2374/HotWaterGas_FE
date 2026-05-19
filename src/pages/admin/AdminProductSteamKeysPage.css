@@ -1,10 +1,43 @@
+/* ============================================
+   Admin Product Steam Keys Page — Dark Theme
+   ============================================ */
+
+/* ── Dark Theme Tokens ── */
+.steam-key-page-shell {
+  --cat-bg-page: #111827;
+  --cat-bg-card: #1F2937;
+  --cat-bg-header: #1a2332;
+
+  /* Border tokens */
+  --cat-border: rgba(255, 255, 255, 0.09);
+  --cat-border-surface: rgba(255, 255, 255, 0.13);
+  --cat-border-hover: rgba(255, 255, 255, 0.18);
+
+  /* Semantic text hierarchy */
+  --cat-text-primary: #F3F4F6;
+  --cat-text-secondary: #C9D1D9;
+  --cat-text-muted: #8B949E;
+
+  /* Surface colors */
+  --cat-bg-input: #111827;
+  --cat-bg-surface: #1F2937;
+  --cat-bg-surface-hover: rgba(255, 255, 255, 0.05);
+
+  /* Action button affordance */
+  --btn-action-bg: rgba(255, 255, 255, 0.07);
+  --btn-action-bg-hover: rgba(255, 255, 255, 0.11);
+  --btn-action-border: rgba(255, 255, 255, 0.14);
+  --btn-action-border-hover: rgba(255, 255, 255, 0.26);
+}
+
+/* ── Page Shell ── */
 .steam-key-page-shell {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
-/* Header */
+/* ── Header ── */
 .steam-key-page-header {
   display: flex;
   align-items: flex-start;
@@ -36,19 +69,22 @@
   height: 48px;
   border-radius: 8px;
   object-fit: cover;
-  border: 1px solid var(--border-color, #e5e7eb);
+  border: 1px solid var(--cat-border-surface);
+  background: var(--cat-bg-page);
 }
 
 .steam-key-page-title {
   margin: 0;
   font-size: 22px;
   font-weight: 600;
+  color: var(--cat-text-primary);
 }
 
 .steam-key-page-subtitle {
   margin: 4px 0 0;
-  color: var(--text-light, #6b7280);
+  color: var(--cat-text-secondary);
   font-size: 13px;
+  font-weight: 500;
 }
 
 .steam-key-header-actions {
@@ -57,14 +93,14 @@
   flex-wrap: wrap;
 }
 
-/* Summary Section */
+/* ── Summary Section ── */
 .steam-key-summary-section {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-/* Toolbar */
+/* ── Toolbar ── */
 .steam-key-toolbar {
   display: flex;
   align-items: center;
@@ -87,27 +123,33 @@
 .toolbar-select {
   height: 38px;
   min-width: 160px;
-  padding: 0 12px;
-  border: 1px solid var(--border-color, #e5e7eb);
+  padding: 0 32px 0 12px;
+  border: 1px solid var(--cat-border-surface);
   border-radius: 8px;
-  background: #ffffff;
-  color: var(--text-color, #374151);
-  font-size: 14px;
+  background: var(--cat-bg-surface);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238B949E' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  color: var(--cat-text-secondary);
+  font-size: 13px;
   cursor: pointer;
   transition: border-color 0.15s;
+  appearance: none;
+  -webkit-appearance: none;
 }
 
 .toolbar-select:hover {
-  border-color: #d1d5db;
+  border-color: var(--cat-border-hover);
+  color: var(--cat-text-primary);
 }
 
 .toolbar-select:focus {
   outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  border-color: #3B82F6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
 }
 
-/* Inline Feedback */
+/* ── Inline Feedback ── */
 .feedback-inline {
   padding: 10px 12px;
   border-radius: 8px;
@@ -115,29 +157,37 @@
 }
 
 .feedback-inline.error {
-  color: #dc2626;
-  background: #fef2f2;
-  border: 1px solid #fecaca;
+  color: #F87171;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.25);
 }
 
-/* Modal Overlay */
+/* ── Modal ── */
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.45);
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(2px);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 20px;
   z-index: 1000;
+  animation: modalFadeIn 0.15s ease;
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .modal-card {
   width: 100%;
   max-width: 560px;
-  background: #ffffff;
+  background: var(--cat-bg-card);
+  border: 1px solid var(--cat-border-surface);
   border-radius: 12px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.5);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -153,14 +203,16 @@
 
 .modal-title {
   margin: 0;
-  font-size: 18px;
-  font-weight: 600;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--cat-text-primary);
 }
 
 .modal-subtitle {
   margin: 4px 0 0;
-  color: var(--text-light, #6b7280);
+  color: var(--cat-text-muted);
   font-size: 13px;
+  line-height: 1.4;
 }
 
 .modal-body {
@@ -173,17 +225,26 @@
 .modal-textarea {
   width: 100%;
   padding: 12px;
-  border: 1px solid var(--border-color, #e5e7eb);
+  border: 1px solid var(--cat-border-surface);
   border-radius: 8px;
-  font-size: 14px;
+  font-size: 13px;
   font-family: inherit;
   resize: vertical;
   transition: border-color 0.15s;
+  background: var(--cat-bg-input);
+  color: var(--cat-text-primary);
+  box-sizing: border-box;
+  line-height: 1.5;
+}
+
+.modal-textarea::placeholder {
+  color: var(--cat-text-muted);
 }
 
 .modal-textarea:focus {
   outline: none;
-  border-color: #3b82f6;
+  border-color: #3B82F6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
 }
 
 .modal-textarea.mono {
@@ -197,23 +258,30 @@
 }
 
 .modal-label {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text-color, #374151);
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--cat-text-secondary);
 }
 
 .modal-input {
   padding: 10px 12px;
-  border: 1px solid var(--border-color, #e5e7eb);
+  border: 1px solid var(--cat-border-surface);
   border-radius: 8px;
-  font-size: 14px;
-  background: #ffffff;
+  font-size: 13px;
+  background: var(--cat-bg-input);
+  color: var(--cat-text-primary);
   transition: border-color 0.15s;
+  box-sizing: border-box;
+}
+
+.modal-input::placeholder {
+  color: var(--cat-text-muted);
 }
 
 .modal-input:focus {
   outline: none;
-  border-color: #3b82f6;
+  border-color: #3B82F6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
 }
 
 .modal-input.mono {
@@ -225,32 +293,33 @@
   display: flex;
   justify-content: flex-end;
   gap: 8px;
-  border-top: 1px solid var(--border-color, #e5e7eb);
+  border-top: 1px solid var(--cat-border-surface);
 }
 
-/* Back Button (reusable) */
+/* ── Back Button ── */
 .back-button {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   padding: 6px 12px;
-  border: 1px solid var(--border-color, #e5e7eb);
+  border: 1px solid var(--btn-action-border);
   border-radius: 8px;
-  background: #ffffff;
-  color: var(--text-color, #374151);
+  background: var(--btn-action-bg);
+  color: var(--cat-text-secondary);
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
-  transition: background 0.15s, border-color 0.15s;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
   align-self: flex-start;
 }
 
 .back-button:hover {
-  background: #f9fafb;
-  border-color: #d1d5db;
+  background: var(--btn-action-bg-hover);
+  border-color: var(--btn-action-border-hover);
+  color: var(--cat-text-primary);
 }
 
-/* Responsive */
+/* ── Responsive ── */
 @media (max-width: 640px) {
   .steam-key-page-header {
     flex-direction: column;

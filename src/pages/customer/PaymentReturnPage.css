@@ -281,10 +281,15 @@
 
 .payment-success-detail-value.status-badge {
   padding: 4px 12px;
-  background-color: #0a2a1a;
-  color: #4ade80;
-  border-radius: 4px;
+  background: rgba(16, 185, 129, 0.15);
+  color: #10B981;
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  border-radius: 999px;
   font-size: 12px;
+  font-weight: 600;
+  display: inline-block;
+  text-align: center;
+  line-height: 1;
 }
 
 .payment-success-info {

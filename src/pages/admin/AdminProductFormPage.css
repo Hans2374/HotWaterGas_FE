@@ -1,18 +1,34 @@
 /* ============================================
-   Admin Product Form Pages — Synchronized with Admin Categories Page
+   Admin Product Form Pages — Dark Theme Refinement
    ============================================ */
 
 /* ── Dark Theme Tokens (scoped to module) ── */
 .admin-form-shell {
-  --cat-border: #374151;
-  --cat-border-hover: #4B5563;
+  /* Surface hierarchy */
   --cat-bg-page: #111827;
   --cat-bg-card: #1F2937;
-  --cat-text-primary: #F9FAFB;
-  --cat-text-secondary: #9CA3AF;
-  --cat-text-muted: #4B5563;
+  --cat-bg-header: #1a2332;
+
+  /* Border tokens */
+  --cat-border: rgba(255, 255, 255, 0.09);
+  --cat-border-surface: rgba(255, 255, 255, 0.13);
+  --cat-border-hover: rgba(255, 255, 255, 0.18);
+
+  /* Semantic text hierarchy — tuned for dark-surface readability */
+  --cat-text-primary: #F3F4F6;
+  --cat-text-secondary: #C9D1D9;
+  --cat-text-muted: #8B949E;
+
+  /* Accent */
   --cat-accent: var(--admin-products-accent, #F59E0B);
   --cat-accent-hover: var(--admin-products-accent-hover, #D97706);
+  --cat-accent-light: rgba(245, 158, 11, 0.12);
+
+  /* Action button affordance */
+  --btn-action-bg: rgba(255, 255, 255, 0.07);
+  --btn-action-bg-hover: rgba(255, 255, 255, 0.11);
+  --btn-action-border: rgba(255, 255, 255, 0.14);
+  --btn-action-border-hover: rgba(255, 255, 255, 0.26);
 }
 
 /* ── Page Container ── */
@@ -42,8 +58,8 @@
   height: 30px;
   padding: 0 10px;
   border-radius: 7px;
-  border: 1px solid var(--cat-border);
-  background: var(--cat-bg-card);
+  border: 1px solid var(--cat-border-surface);
+  background: var(--btn-action-bg);
   color: var(--cat-text-secondary);
   font-size: 12.5px;
   font-weight: 500;
@@ -54,7 +70,7 @@
 }
 
 .back-button:hover {
-  background: var(--cat-bg-page);
+  background: var(--btn-action-bg-hover);
   border-color: var(--cat-border-hover);
   color: var(--cat-text-primary);
 }
@@ -70,7 +86,8 @@
 
 .admin-form-subtitle {
   font-size: 13px;
-  color: var(--cat-text-muted);
+  font-weight: 500;
+  color: var(--cat-text-secondary);
   margin: 2px 0 0;
   line-height: 1.4;
 }
@@ -80,7 +97,7 @@
   margin-bottom: 16px;
   padding: 12px 14px;
   border-radius: 10px;
-  border: 1px solid var(--cat-border);
+  border: 1px solid var(--cat-border-surface);
   background: var(--cat-bg-card);
   font-size: 13px;
 }
@@ -94,7 +111,7 @@
 /* ── Steam Key Card ── */
 .steam-key-card {
   background: var(--cat-bg-card);
-  border: 1px solid var(--cat-border);
+  border: 1px solid var(--cat-border-surface);
   border-radius: 10px;
   padding: 16px;
 }
@@ -127,7 +144,7 @@
   line-height: 1.4;
 }
 
-/* Metrics grid uses the same component CSS from SteamKeySummaryMetrics */
+/* Metrics grid */
 .steam-key-summary-metrics {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -136,7 +153,7 @@
 
 .steam-key-summary-item {
   background: var(--cat-bg-page);
-  border: 1px solid var(--cat-border);
+  border: 1px solid var(--cat-border-surface);
   border-radius: 10px;
   padding: 14px 16px;
   display: flex;

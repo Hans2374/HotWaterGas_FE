@@ -163,7 +163,7 @@ export const AdminSteamKeyTable = ({
                         )}
                       </div>
                     ) : (
-                      <span className="key-no-actions">Sold</span>
+                      <span className="key-no-actions">_____</span>
                     )}
                   </td>
                 </tr>

@@ -5,36 +5,53 @@
 /* ── Dark Theme Tokens (scoped to module) ── */
 .products-page.module-products,
 .products-page {
-  --cat-border: #374151;
-  --cat-border-hover: #4B5563;
+  /* Surface hierarchy */
   --cat-bg-page: #111827;
   --cat-bg-card: #1F2937;
-  --cat-bg-header: #273449;
-  --cat-text-primary: #F9FAFB;
-  --cat-text-secondary: #9CA3AF;
-  --cat-text-muted: #4B5563;
+  --cat-bg-header: #1a2332;
+  --cat-bg-hover: rgba(255, 255, 255, 0.05);
 
+  /* Border tokens */
+  --cat-border: rgba(255, 255, 255, 0.09);
+  --cat-border-hover: rgba(255, 255, 255, 0.18);
+  --cat-border-active: rgba(255, 255, 255, 0.28);
+  /* surface border: opaque divider for structural separators */
+  --cat-border-surface: rgba(255, 255, 255, 0.13);
+
+  /* Semantic text hierarchy — tuned for dark-surface readability */
+  /* primary: strong near-white. names, prices, titles */
+  --cat-text-primary: #F3F4F6;
+  /* secondary: readable mid-gray. subtitles, labels, dates, meta */
+  --cat-text-secondary: #C9D1D9;
+  /* muted: softened. placeholders, arrows, de-emphasized inline text */
+  --cat-text-muted: #8B949E;
+
+  /* Accent tokens */
   --cat-accent: var(--admin-products-accent, #F59E0B);
   --cat-accent-hover: var(--admin-products-accent-hover, #D97706);
   --cat-accent-light: var(--admin-products-accent-light, rgba(245, 158, 11, 0.12));
   --cat-accent-border: rgba(245, 158, 11, 0.3);
 
+  /* Status tokens */
   --cat-status-active-bg: rgba(16, 185, 129, 0.15);
   --cat-status-active-text: #10B981;
-  --cat-status-inactive-bg: #1F2937;
-  --cat-status-inactive-text: #9CA3AF;
+  --cat-status-inactive-bg: rgba(255, 255, 255, 0.05);
+  --cat-status-inactive-text: #8B949E;
 
-  --cat-count-bg: #1F2937;
-  --cat-count-text: #9CA3AF;
+  /* Count/category badge tokens */
+  --cat-count-bg: rgba(255, 255, 255, 0.05);
+  --cat-count-text: #8B949E;
   --cat-count-hasproducts-bg: rgba(245, 158, 11, 0.12);
   --cat-count-hasproducts-text: #F59E0B;
 
-  --cat-action-edit-bg: #1F2937;
-  --cat-action-edit-hover-bg: #273449;
-  --cat-action-edit-hover-color: #F59E0B;
-  --cat-action-delete-bg: #1F2937;
-  --cat-action-delete-hover-bg: rgba(239, 68, 68, 0.12);
-  --cat-action-delete-hover-color: #EF4444;
+  /* Action button tokens — refined for dark-table affordance */
+  /* default state: visible enough to read as interactive, not washed out */
+  --btn-action-bg: rgba(255, 255, 255, 0.07);
+  --btn-action-bg-hover: rgba(255, 255, 255, 0.11);
+  --btn-action-border: rgba(255, 255, 255, 0.14);
+  --btn-action-border-hover: rgba(255, 255, 255, 0.26);
+  --btn-action-icon: #9CA3AF;
+  --btn-action-icon-hover: currentColor;
 }
 
 /* ── Page Container ── */
@@ -67,7 +84,8 @@
 
 .page-header-left p {
   font-size: 13px;
-  color: var(--cat-text-muted);
+  font-weight: 500;
+  color: var(--cat-text-secondary);
   margin: 3px 0 0;
   line-height: 1.4;
 }
@@ -75,7 +93,7 @@
 /* ── Filter Toolbar ── */
 .filter-toolbar {
   background: var(--cat-bg-card);
-  border: 1px solid var(--cat-border);
+  border: 1px solid var(--cat-border-surface);
   border-radius: 10px;
   padding: 12px 16px;
   display: flex;
@@ -95,7 +113,7 @@
   height: 32px;
   padding: 0 12px;
   border-radius: 20px;
-  border: 1px solid var(--cat-border);
+  border: 1px solid var(--cat-border-surface);
   background: var(--cat-bg-card);
   color: var(--cat-text-secondary);
   font-size: 12.5px;
@@ -129,7 +147,7 @@
 .filter-divider {
   width: 1px;
   height: 20px;
-  background: var(--cat-border);
+  background: var(--cat-border-surface);
   flex-shrink: 0;
 }
 
@@ -156,7 +174,7 @@
   width: 100%;
   height: 34px;
   padding: 0 34px 0 34px;
-  border: 1px solid var(--cat-border);
+  border: 1px solid var(--cat-border-surface);
   border-radius: 8px;
   font-size: 13px;
   background: var(--cat-bg-page);
@@ -198,7 +216,7 @@
 
 .filter-search-clear:hover {
   color: var(--cat-text-secondary);
-  background: var(--cat-border);
+  background: var(--cat-border-surface);
 }
 
 /* Dropdown selects inside toolbar */
@@ -212,7 +230,7 @@
 .filter-select {
   height: 34px;
   padding: 0 30px 0 11px;
-  border: 1px solid var(--cat-border);
+  border: 1px solid var(--cat-border-surface);
   border-radius: 8px;
   font-size: 12.5px;
   font-weight: 500;
@@ -247,7 +265,7 @@
 /* ── Table Wrapper ── */
 .table-wrapper {
   background: var(--cat-bg-card);
-  border: 1px solid var(--cat-border);
+  border: 1px solid var(--cat-border-surface);
   border-radius: 10px;
   overflow: hidden;
 }
@@ -269,7 +287,7 @@
 
 .products-table thead tr {
   background: var(--cat-bg-header);
-  border-bottom: 1px solid var(--cat-border);
+  border-bottom: 1px solid var(--cat-border-surface);
 }
 
 .products-table th {
@@ -278,7 +296,7 @@
   font-size: 11.5px;
   text-transform: uppercase;
   letter-spacing: 0.6px;
-  color: var(--cat-text-muted);
+  color: var(--cat-text-secondary);
   text-align: left;
   white-space: nowrap;
   user-select: none;
@@ -290,7 +308,7 @@
 }
 
 .products-table tbody tr {
-  border-bottom: 1px solid var(--cat-border);
+  border-bottom: 1px solid var(--cat-border-surface);
   transition: background 0.1s;
 }
 
@@ -320,7 +338,7 @@
   height: 42px;
   border-radius: 8px;
   overflow: hidden;
-  border: 1px solid var(--cat-border);
+  border: 1px solid var(--cat-border-surface);
   background: var(--cat-bg-page);
   flex-shrink: 0;
   display: flex;
@@ -360,13 +378,13 @@
 }
 
 .product-subtitle {
-  font-size: 11px;
+  font-size: 11.5px;
+  font-weight: 500;
   color: var(--cat-text-muted);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  line-height: 1.2;
-  font-family: 'SFMono-Regular', 'Consolas', monospace;
+  line-height: 1.3;
 }
 
 /* Price cell */
@@ -380,18 +398,20 @@
 .price-original {
   color: var(--cat-text-muted);
   text-decoration: line-through;
-  font-size: 11.5px;
+  font-size: 12px;
+  font-weight: 400;
 }
 
 .price-arrow {
-  color: var(--cat-border-hover);
+  color: var(--cat-text-muted);
   font-size: 11px;
+  opacity: 0.7;
 }
 
 .price-discount {
   font-weight: 600;
   color: var(--cat-text-primary);
-  font-size: 12.5px;
+  font-size: 13px;
 }
 
 /* Stock badge */
@@ -407,18 +427,18 @@
 }
 
 .stock-badge.in-stock {
-  background: #dcfce7;
-  color: #15803d;
+  background: rgba(16, 185, 129, 0.15);
+  color: #10B981;
 }
 
 .stock-badge.low-stock {
-  background: #fef3c7;
-  color: #92400e;
+  background: rgba(245, 158, 11, 0.15);
+  color: #D97706;
 }
 
 .stock-badge.out-of-stock {
-  background: #fee2e2;
-  color: #991b1b;
+  background: rgba(239, 68, 68, 0.12);
+  color: #EF4444;
 }
 
 /* Status badge */
@@ -434,19 +454,19 @@
 }
 
 .status-badge.available {
-  background: #dcfce7;
-  color: #15803d;
+  background: rgba(16, 185, 129, 0.15);
+  color: #10B981;
 }
 
 .status-badge.disabled {
-  background: #f1f5f9;
-  color: #64748b;
+  background: rgba(255, 255, 255, 0.05);
+  color: #8B949E;
 }
 
 /* Date cell */
 .date-cell {
   font-size: 12.5px;
-  color: var(--cat-text-muted);
+  color: var(--cat-text-secondary);
   white-space: nowrap;
 }
 
@@ -468,61 +488,46 @@
   width: 30px;
   height: 30px;
   border-radius: 7px;
-  border: none;
   cursor: pointer;
-  transition: background 0.15s, color 0.15s, opacity 0.15s;
-  background: transparent;
+  transition: background 0.15s, border-color 0.15s, color 0.15s, opacity 0.15s;
+  background: var(--btn-action-bg);
+  border: 1px solid var(--btn-action-border);
+  color: var(--btn-action-icon);
 }
 
 .action-btn:disabled {
-  opacity: 0.35;
+  opacity: 0.3;
   cursor: not-allowed;
 }
 
-.action-btn-edit {
-  color: var(--cat-text-muted);
-  background: var(--cat-action-edit-bg);
-}
-
 .action-btn-edit:hover:not(:disabled) {
-  background: var(--cat-action-edit-hover-bg);
-  color: var(--cat-action-edit-hover-color);
-}
-
-.action-btn-disable {
-  color: var(--cat-text-muted);
-  background: var(--cat-action-edit-bg);
+  background: rgba(245, 158, 11, 0.18);
+  border-color: rgba(245, 158, 11, 0.55);
+  color: #F59E0B;
 }
 
 .action-btn-disable:hover:not(:disabled) {
-  background: #fef3c7;
-  color: #d97706;
-}
-
-.action-btn-restore {
-  color: var(--cat-text-muted);
-  background: var(--cat-action-edit-bg);
+  background: rgba(245, 158, 11, 0.18);
+  border-color: rgba(245, 158, 11, 0.55);
+  color: #D97706;
 }
 
 .action-btn-restore:hover:not(:disabled) {
-  background: #dcfce7;
-  color: #15803d;
-}
-
-.action-btn-delete {
-  color: var(--cat-text-muted);
-  background: var(--cat-action-edit-bg);
+  background: rgba(16, 185, 129, 0.18);
+  border-color: rgba(16, 185, 129, 0.55);
+  color: #10B981;
 }
 
 .action-btn-delete:hover:not(:disabled) {
-  background: var(--cat-action-delete-hover-bg);
-  color: var(--cat-action-delete-hover-color);
+  background: rgba(239, 68, 68, 0.18);
+  border-color: rgba(239, 68, 68, 0.55);
+  color: #EF4444;
 }
 
 /* ── Loading / Empty / Error States ── */
 .table-loading {
   background: var(--cat-bg-card);
-  border: 1px solid var(--cat-border);
+  border: 1px solid var(--cat-border-surface);
   border-radius: 10px;
   padding: 60px 20px;
   display: flex;
@@ -532,7 +537,7 @@
 
 .skeleton-row td {
   padding: 14px 16px;
-  border-bottom: 1px solid var(--cat-border);
+  border-bottom: 1px solid var(--cat-border-surface);
   background: var(--cat-bg-card);
 }
 
@@ -565,7 +570,7 @@
 
 .table-empty {
   background: var(--cat-bg-card);
-  border: 1px dashed var(--cat-border);
+  border: 1px dashed var(--cat-border-surface);
   border-radius: 10px;
   padding: 56px 20px;
   display: flex;
@@ -644,13 +649,13 @@
 }
 
 .btn-secondary {
-  background: var(--cat-bg-page);
+  background: rgba(255, 255, 255, 0.05);
   color: var(--cat-text-secondary);
-  border: 1px solid var(--cat-border);
+  border: 1px solid var(--cat-border-surface);
 }
 
 .btn-secondary:hover:not(:disabled) {
-  background: var(--cat-border);
+  background: rgba(255, 255, 255, 0.09);
   border-color: var(--cat-border-hover);
   color: var(--cat-text-primary);
 }
@@ -709,7 +714,7 @@
 
 .modal-header {
   padding: 20px 20px 16px;
-  border-bottom: 1px solid var(--cat-border);
+  border-bottom: 1px solid var(--cat-border-surface);
 }
 
 .modal-title {
@@ -738,7 +743,7 @@
   display: flex;
   justify-content: flex-end;
   gap: 8px;
-  border-top: 1px solid var(--cat-border);
+  border-top: 1px solid var(--cat-border-surface);
 }
 
 /* ── Responsive ── */

@@ -298,11 +298,6 @@ export const AdminProductSteamKeysPage = () => {
               <option value="Sold">Sold</option>
             </select>
           </div>
-          <div className="steam-key-toolbar-right">
-            <Button variant="secondary" onClick={() => navigate(`/admin/products/${id}/edit`)}>
-              Edit Product
-            </Button>
-          </div>
         </section>
 
         {/* Table */}

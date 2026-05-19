@@ -15,7 +15,7 @@
   --customer-accent: #DC2626;
   --customer-accent-hover: #EF4444;
   --customer-accent-active: #991B1B;
-  --customer-accent-light: #2d1515;
+  --customer-accent-light: rgba(220, 38, 38, 0.12);
   --customer-text-primary: #F9FAFB;
   --customer-text-secondary: #9CA3AF;
   --customer-border: #374151;

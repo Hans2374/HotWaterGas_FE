@@ -87,13 +87,40 @@
 
 .status-badge {
   display: inline-block;
-  padding: 6px 12px;
-  background-color: var(--customer-accent-light);
-  color: var(--customer-accent-hover);
-  border-radius: 4px;
+  padding: 4px 12px;
+  border-radius: 999px;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 600;
+  line-height: 1;
   text-align: center;
+}
+
+/* Semantic: success / positive */
+.status-badge.status-success {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10B981;
+  border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+/* Semantic: error / negative */
+.status-badge.status-error {
+  background: rgba(239, 68, 68, 0.12);
+  color: #EF4444;
+  border: 1px solid rgba(239, 68, 68, 0.25);
+}
+
+/* Semantic: warning / pending */
+.status-badge.status-warning {
+  background: rgba(245, 158, 11, 0.12);
+  color: #D97706;
+  border: 1px solid rgba(245, 158, 11, 0.25);
+}
+
+/* Semantic: neutral / unknown */
+.status-badge.status-neutral {
+  background: rgba(255, 255, 255, 0.05);
+  color: #8B949E;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .order-total {
