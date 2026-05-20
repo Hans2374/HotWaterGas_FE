@@ -14,11 +14,13 @@ import PaymentReturnPage from '../pages/customer/PaymentReturnPage';
 import PaymentSuccessPage from '../pages/customer/PaymentSuccessPage';
 import PaymentCancelPage from '../pages/customer/PaymentCancelPage';
 import { AdminProductsPage } from '../pages/admin/AdminProductsPage';
+import { AdminDashboardPage } from '../pages/admin/AdminDashboardPage';
 import { AdminProductCreatePage } from '../pages/admin/AdminProductCreatePage';
 import { AdminProductEditPage } from '../pages/admin/AdminProductEditPage';
 import { AdminProductSteamKeysPage } from '../pages/admin/AdminProductSteamKeysPage';
 import { AdminCategoriesPage } from '../pages/admin/AdminCategoriesPage';
 import { AdminTagsPage } from '../pages/admin/AdminTagsPage';
+import { AdminOrderDetailPage } from '../pages/admin/AdminOrderDetailPage';
 import PurchaseHistoryPage from '../pages/customer/PurchaseHistoryPage';
 import PurchaseDetailPage from '../pages/customer/PurchaseDetailPage';
 import { Loader } from '../components/common/Loader';
@@ -55,7 +57,7 @@ const PublicRoute = ({ children }) => {
   }
 
   if (token) {
-    return <Navigate to={isAdmin ? '/admin/products' : '/'} replace />;
+    return <Navigate to={isAdmin ? '/admin/dashboard' : '/'} replace />;
   }
 
   return children;
@@ -69,7 +71,7 @@ const StorefrontRoute = ({ children }) => {
   }
 
   if (token && isAdmin) {
-    return <Navigate to="/admin/products" replace />;
+    return <Navigate to="/admin/dashboard" replace />;
   }
 
   return children;
@@ -259,13 +261,15 @@ export const AppRoutes = () => {
           </AdminRoute>
         )}
       >
-        <Route index element={<Navigate to="/admin/products" replace />} />
+        <Route index element={<Navigate to="/admin/dashboard" replace />} />
+        <Route path="dashboard" element={<AdminDashboardPage />} />
         <Route path="products" element={<AdminProductsPage />} />
         <Route path="products/create" element={<AdminProductCreatePage />} />
         <Route path="products/:id/edit" element={<AdminProductEditPage />} />
         <Route path="products/:id/keys" element={<AdminProductSteamKeysPage />} />
         <Route path="categories" element={<AdminCategoriesPage />} />
         <Route path="tags" element={<AdminTagsPage />} />
+        <Route path="orders/:orderId" element={<AdminOrderDetailPage />} />
       </Route>
 
       {/* Catch-all */}

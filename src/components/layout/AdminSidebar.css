@@ -111,12 +111,12 @@
 
 /* ── Active State — accent flows from AdminLayout cascade ── */
 .admin-sidebar-link.active {
-  background-color: var(--admin-accent-light, rgba(245, 158, 11, 0.12));
-  color: var(--admin-accent, #F59E0B);
+  background-color: var(--admin-accent-light, rgba(239, 68, 68, 0.12));
+  color: var(--admin-accent, #EF4444);
 }
 
 .admin-sidebar-link.active .admin-sidebar-icon {
-  color: var(--admin-accent, #F59E0B);
+  color: var(--admin-accent, #EF4444);
 }
 
 /* ── Icon ── */

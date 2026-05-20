@@ -52,6 +52,12 @@
   --admin-tags-accent-hover: #059669;
   --admin-tags-accent-light: rgba(16, 185, 129, 0.12);
   --admin-tags-accent-glow: rgba(16, 185, 129, 0.25);
+
+  /* Admin Dashboard — Red palette */
+  --admin-dashboard-accent: #EF4444;
+  --admin-dashboard-accent-hover: #DC2626;
+  --admin-dashboard-accent-light: rgba(239, 68, 68, 0.12);
+  --admin-dashboard-accent-glow: rgba(239, 68, 68, 0.25);
 }
 
 * {

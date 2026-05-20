@@ -1,9 +1,14 @@
 import React, { useCallback } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Package, LayoutGrid, Tag } from 'lucide-react';
+import { LayoutDashboard, Package, LayoutGrid, Tag } from 'lucide-react';
 import './AdminSidebar.css';
 
 const adminNavItems = [
+  {
+    path: '/admin/dashboard',
+    label: 'Dashboard',
+    icon: LayoutDashboard,
+  },
   {
     path: '/admin/products',
     label: 'Products',

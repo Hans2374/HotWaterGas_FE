@@ -1,5 +1,6 @@
 export const adminModuleMap = {
-  '/admin/products':  'products',
+  '/admin/dashboard':  'dashboard',
+  '/admin/products':   'products',
   '/admin/categories': 'categories',
   '/admin/tags':       'tags',
 };
@@ -10,7 +11,8 @@ export function getModuleFromPath(pathname) {
 }
 
 export const moduleMeta = {
+  dashboard:  { label: 'Dashboard',  accentVar: '--admin-dashboard-accent' },
   products:   { label: 'Products',   accentVar: '--admin-products-accent' },
-  categories:  { label: 'Categories', accentVar: '--admin-categories-accent' },
-  tags:        { label: 'Tags',        accentVar: '--admin-tags-accent' },
+  categories: { label: 'Categories', accentVar: '--admin-categories-accent' },
+  tags:       { label: 'Tags',       accentVar: '--admin-tags-accent' },
 };

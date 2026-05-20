@@ -46,7 +46,7 @@ export const AdminHeader = ({
         </button>
       </div>
 
-      <Link to="/admin/products" className="admin-header-brand">
+      <Link to="/admin/dashboard" className="admin-header-brand">
         <h1 className="admin-header-title">HotWaterGas</h1>
       </Link>
 
