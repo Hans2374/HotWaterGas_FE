@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Heart } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 
 export const HeaderWishlistButton = () => {
@@ -18,11 +19,10 @@ export const HeaderWishlistButton = () => {
     <button
       onClick={handleWishlistClick}
       className="header-wishlist-button"
-      aria-label="Xem danh sách yêu thích"
+      aria-label="Yêu thích"
       title="Yêu thích"
     >
-      <span className="header-wishlist-icon">♥</span>
-      <span className="header-wishlist-label">Yêu thích</span>
+      <Heart size={20} strokeWidth={1.75} />
     </button>
   );
 };

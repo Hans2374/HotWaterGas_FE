@@ -5,7 +5,7 @@
 .profile-menu-trigger {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   background: none;
   border: none;
   cursor: pointer;
@@ -19,8 +19,8 @@
 }
 
 .profile-menu-avatar {
-  width: 32px;
-  height: 32px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   background: linear-gradient(135deg, var(--admin-accent, #F59E0B) 0%, var(--admin-accent-hover, #D97706) 100%);
   color: white;
@@ -28,14 +28,15 @@
   align-items: center;
   justify-content: center;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 13px;
+  flex-shrink: 0;
 }
 
 .profile-menu-username {
   font-size: 13px;
   font-weight: 500;
   color: var(--admin-text-primary, #F9FAFB);
-  max-width: 120px;
+  max-width: 110px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -43,78 +44,125 @@
 
 .profile-menu-dropdown {
   position: absolute;
-  top: 100%;
+  top: calc(100% + 6px);
   right: 0;
-  margin-top: 8px;
   background: var(--admin-surface, #1F2937);
   border: 1px solid var(--admin-border, #374151);
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-  min-width: 220px;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.04);
+  min-width: 200px;
   z-index: 1000;
   overflow: hidden;
+  animation: profile-dropdown-in 0.12s ease-out;
+}
+
+@keyframes profile-dropdown-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .profile-menu-header {
-  padding: 12px 16px;
+  padding: 12px 14px;
 }
 
 .profile-menu-display-name {
-  font-size: 14px;
+  font-size: 13.5px;
   font-weight: 600;
   color: var(--admin-text-primary, #F9FAFB);
   word-break: break-word;
 }
 
 .profile-menu-email {
-  font-size: 12px;
+  font-size: 11.5px;
   color: var(--admin-text-secondary, #9CA3AF);
-  margin-top: 4px;
+  margin-top: 3px;
   word-break: break-word;
 }
 
 .profile-menu-divider {
   height: 1px;
   background-color: var(--admin-border, #374151);
+  margin: 0;
 }
 
 .profile-menu-role {
-  padding: 10px 16px;
-  font-size: 12px;
+  padding: 8px 14px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
   color: var(--admin-text-secondary, #9CA3AF);
-  background-color: var(--admin-elevated, #273449);
+  background-color: rgba(255, 255, 255, 0.03);
 }
 
-.profile-menu-purchase-history {
+/* ── Dropdown menu items ── */
+
+.profile-menu-item {
   width: 100%;
-  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
   background: none;
   border: none;
   text-align: left;
   cursor: pointer;
   font-size: 13px;
   font-weight: 500;
-  color: var(--admin-accent-hover, #D97706);
-  transition: background-color 0.2s;
+  color: var(--admin-text-primary, #F9FAFB);
+  transition: background-color 0.15s, color 0.15s;
 }
 
-.profile-menu-purchase-history:hover {
-  background-color: var(--admin-elevated, #273449);
+.profile-menu-item:hover {
+  background-color: rgba(255, 255, 255, 0.06);
 }
 
-.profile-menu-logout {
-  width: 100%;
-  padding: 12px 16px;
-  background: none;
-  border: none;
-  text-align: left;
-  cursor: pointer;
-  font-size: 13px;
-  font-weight: 500;
+.profile-menu-item svg {
+  flex-shrink: 0;
+  color: var(--admin-text-secondary, #9CA3AF);
+  transition: color 0.15s;
+}
+
+.profile-menu-item:hover svg {
+  color: var(--admin-text-primary, #F9FAFB);
+}
+
+/* Wishlist item — highlighted in pink */
+.profile-menu-item--wishlist {
+  color: #ff5b88;
+}
+
+.profile-menu-item--wishlist:hover {
+  background-color: rgba(255, 91, 136, 0.08);
+}
+
+.profile-menu-item--wishlist svg {
+  color: #ff5b88;
+}
+
+.profile-menu-item--wishlist:hover svg {
+  color: #ff6b9a;
+}
+
+/* Logout item — amber accent */
+.profile-menu-item--logout {
   color: var(--admin-accent, #F59E0B);
-  transition: background-color 0.2s;
 }
 
-.profile-menu-logout:hover {
-  background-color: var(--admin-elevated, #273449);
+.profile-menu-item--logout:hover {
+  background-color: rgba(245, 158, 11, 0.08);
+}
+
+.profile-menu-item--logout svg {
+  color: var(--admin-accent, #F59E0B);
+}
+
+.profile-menu-item--logout:hover svg {
+  color: var(--admin-accent-hover, #D97706);
 }

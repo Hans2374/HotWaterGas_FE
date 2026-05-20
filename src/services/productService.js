@@ -224,6 +224,23 @@ export const uploadProductImage = async (file) => {
   }
 };
 
+export const uploadCategoryImage = async (file) => {
+  try {
+    const formData = new FormData();
+    formData.append('File', file);
+
+    const response = await axiosClient.post('/api/uploads/categories', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+
+    return response.data?.url || response.data?.Url || '';
+  } catch (error) {
+    throw toApiError(error, 'Failed to upload category image.');
+  }
+};
+
 export const getAdminSteamKeySummary = async (productId) => {
   try {
     const response = await axiosClient.get(`/api/products/${productId}/keys/summary`);

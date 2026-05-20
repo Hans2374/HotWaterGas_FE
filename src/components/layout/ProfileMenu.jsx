@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { User, Package, Heart, LogOut } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import './ProfileMenu.css';
 
@@ -29,9 +30,24 @@ export const ProfileMenu = ({ onLogout }) => {
     onLogout();
   };
 
+  const handleViewProfile = () => {
+    setIsOpen(false);
+    navigate('/account/profile');
+  };
+
   const handleViewPurchaseHistory = () => {
     setIsOpen(false);
     navigate('/account/orders');
+  };
+
+  const handleViewWishlist = () => {
+    setIsOpen(false);
+    navigate('/wishlist');
+  };
+
+  const handleViewAdminPanel = () => {
+    setIsOpen(false);
+    navigate('/admin');
   };
 
   return (
@@ -40,6 +56,8 @@ export const ProfileMenu = ({ onLogout }) => {
         className="profile-menu-trigger"
         onClick={() => setIsOpen(!isOpen)}
         aria-label="Menu hồ sơ người dùng"
+        aria-expanded={isOpen}
+        aria-haspopup="menu"
       >
         <div className="profile-menu-avatar">
           {profileDisplayName.charAt(0).toUpperCase()}
@@ -48,31 +66,51 @@ export const ProfileMenu = ({ onLogout }) => {
       </button>
 
       {isOpen && (
-        <div className="profile-menu-dropdown">
+        <div className="profile-menu-dropdown" role="menu" aria-label="Tài khoản">
           <div className="profile-menu-header">
             <div className="profile-menu-display-name">{profileDisplayName}</div>
             {email && <div className="profile-menu-email">{email}</div>}
           </div>
           <div className="profile-menu-divider" />
           <div className="profile-menu-role">
-            {isAdmin ? '👔 Quản trị viên' : '🛍️ Khách hàng'}
+            {isAdmin ? 'Quản trị viên' : 'Khách hàng'}
           </div>
+
           {!isAdmin && (
             <>
               <div className="profile-menu-divider" />
-              <button
-                className="profile-menu-purchase-history"
-                onClick={handleViewPurchaseHistory}
-              >
-                Lịch sử mua hàng
+              <button className="profile-menu-item" onClick={handleViewProfile} role="menuitem">
+                <User size={15} strokeWidth={1.75} />
+                Hồ sơ
+              </button>
+              <button className="profile-menu-item" onClick={handleViewPurchaseHistory} role="menuitem">
+                <Package size={15} strokeWidth={1.75} />
+                Đơn hàng
+              </button>
+              <button className="profile-menu-item profile-menu-item--wishlist" onClick={handleViewWishlist} role="menuitem">
+                <Heart size={15} strokeWidth={1.75} />
+                Yêu thích
               </button>
             </>
           )}
+
+          {isAdmin && (
+            <>
+              <div className="profile-menu-divider" />
+              <button className="profile-menu-item" onClick={handleViewAdminPanel} role="menuitem">
+                <Package size={15} strokeWidth={1.75} />
+                Trang quản trị
+              </button>
+            </>
+          )}
+
           <div className="profile-menu-divider" />
           <button
-            className="profile-menu-logout"
+            className="profile-menu-item profile-menu-item--logout"
             onClick={handleLogout}
+            role="menuitem"
           >
+            <LogOut size={15} strokeWidth={1.75} />
             Đăng xuất
           </button>
         </div>

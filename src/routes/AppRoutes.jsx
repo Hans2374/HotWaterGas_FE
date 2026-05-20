@@ -5,6 +5,7 @@ import { Register } from '../pages/universal/Register';
 import VerifyEmail from '../pages/universal/VerifyEmail';
 import { Home } from '../pages/universal/Home';
 import { SearchResultsPage } from '../pages/universal/SearchResultsPage';
+import { CategoryPage } from '../pages/universal/CategoryPage';
 import { ProductDetailPage } from '../pages/universal/ProductDetailPage';
 import { Cart } from '../pages/customer/Cart';
 import { WishlistPage } from '../pages/customer/WishlistPage';
@@ -169,6 +170,14 @@ export const AppRoutes = () => {
           element={(
             <StorefrontRoute>
               <SearchResultsPage />
+            </StorefrontRoute>
+          )}
+        />
+        <Route
+          path="categories"
+          element={(
+            <StorefrontRoute>
+              <CategoryPage />
             </StorefrontRoute>
           )}
         />

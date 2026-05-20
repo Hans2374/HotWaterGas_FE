@@ -173,6 +173,22 @@ export const ProductCard = ({
           <HeartIcon active={isWishlisted} />
         </button>
 
+        <button
+          type="button"
+          className="product-action product-action-cart"
+          aria-label="Thêm vào giỏ hàng"
+          disabled={isCartPending || isOutOfStock}
+          title={isOutOfStock ? 'Hết hàng' : 'Thêm vào giỏ hàng'}
+          onMouseDown={handleButtonMouseDown}
+          onClick={(event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            onAddToCart?.(product);
+          }}
+        >
+          <CartIcon />
+        </button>
+
         {product.primaryImageUrl ? (
           <img className="product-card-image" src={product.primaryImageUrl} alt={product.name} />
         ) : (
@@ -188,28 +204,11 @@ export const ProductCard = ({
       <h3 className="product-name">{product.name}</h3>
       <div className="product-price-band">
         <div className="product-price-row">
-          {discountBadge && <span className="product-discount-badge">{discountBadge}</span>}
-        </div>
-        <div className="product-price-bottom">
-          <button
-            type="button"
-            className="product-action product-action-cart"
-            aria-label="Thêm vào giỏ hàng"
-            disabled={isCartPending || isOutOfStock}
-            title={isOutOfStock ? 'Hết hàng' : 'Thêm vào giỏ hàng'}
-            onMouseDown={handleButtonMouseDown}
-            onClick={(event) => {
-              event.preventDefault();
-              event.stopPropagation();
-              onAddToCart?.(product);
-            }}
-          >
-            <CartIcon />
-          </button>
-          <div className="product-price-stack">
+          {basePrice !== finalPrice && (
             <span className="product-original-price">{formatCurrency(basePrice)} ₫</span>
-            <strong className="product-final-price">{formatCurrency(finalPrice)} ₫</strong>
-          </div>
+          )}
+          {discountBadge && <span className="product-discount-badge">{discountBadge}</span>}
+          <strong className="product-final-price">{formatCurrency(finalPrice)} ₫</strong>
         </div>
       </div>
     </article>

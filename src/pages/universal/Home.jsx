@@ -2,8 +2,10 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import { ProductGrid } from '../../components/product/ProductGrid';
+import { CategoryGrid } from '../../components/category/CategoryGrid';
 import { Loader } from '../../components/common/Loader';
 import { getProducts } from '../../api/productApi';
+import { getHomepageCategories } from '../../api/categoriesApi';
 import { useAuth } from '../../hooks/useAuth';
 import { useWishlist } from '../../hooks/useWishlist';
 import { useCart } from '../../hooks/useCart';
@@ -43,6 +45,8 @@ export const Home = () => {
   const [error, setError] = useState('');
   const [pendingWishlistProductIds, setPendingWishlistProductIds] = useState(new Set());
   const [pendingCartProductIds, setPendingCartProductIds] = useState(new Set());
+  const [categories, setCategories] = useState([]);
+  const [categoriesLoading, setCategoriesLoading] = useState(true);
 
   const categoryId = searchParams.get('categoryId');
   const searchQuery = searchParams.get('search');
@@ -69,6 +73,23 @@ export const Home = () => {
 
     fetchProducts();
   }, [logout, navigate, token, categoryId, searchQuery]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      setCategoriesLoading(true);
+      try {
+        const data = await getHomepageCategories();
+        setCategories(Array.isArray(data) ? data : []);
+      } catch {
+        // Non-critical — silently fail and hide section
+        setCategories([]);
+      } finally {
+        setCategoriesLoading(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   const wishlistProductIds = useMemo(() => {
     const ids = new Set();
@@ -125,6 +146,10 @@ export const Home = () => {
 
   const handleViewAllProducts = useCallback(() => {
     navigate('/products/search', { replace: false });
+  }, [navigate]);
+
+  const handleViewAllCategories = useCallback(() => {
+    navigate('/categories', { replace: false });
   }, [navigate]);
 
   const handleAddToCart = useCallback(async (product) => {
@@ -202,6 +227,27 @@ export const Home = () => {
             onAddToCart={handleAddToCart}
             columns={4}
           />
+        )}
+      </section>
+
+      <section className="home-section">
+        <div className="home-section-header">
+          <h2 className="home-section-title">Các Thể Loại Game Thịnh Hành</h2>
+          <button
+            type="button"
+            className="home-view-all-link"
+            onClick={handleViewAllCategories}
+            aria-label="Xem tất cả danh mục"
+          >
+            Xem tất cả
+            <span className="home-view-all-arrow" aria-hidden>→</span>
+          </button>
+        </div>
+
+        {categoriesLoading && <Loader text="Đang tải danh mục..." />}
+
+        {!categoriesLoading && categories.length > 0 && (
+          <CategoryGrid categories={categories} />
         )}
       </section>
     </div>

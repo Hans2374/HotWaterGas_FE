@@ -1,11 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
+import { Upload, X, Image } from 'lucide-react';
 import { Button } from '../common/Button';
+import { uploadCategoryImage } from '../../services/productService';
 import './CategoryFormModal.css';
 
 const createInitialData = (data) => ({
   name: '',
   slug: '',
   isActive: true,
+  imageUrl: '',
   ...data
 });
 
@@ -22,6 +25,10 @@ export const CategoryFormModal = ({
 }) => {
   const [formData, setFormData] = useState(createInitialData(initialData));
   const [errors, setErrors] = useState(createInitialErrors());
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
+  const [imageUploadError, setImageUploadError] = useState('');
+  const fileInputRef = useRef(null);
+  const [fileInputKey, setFileInputKey] = useState(0);
 
   useEffect(() => {
     setFormData(createInitialData(initialData));
@@ -35,6 +42,40 @@ export const CategoryFormModal = ({
       [name]: type === 'checkbox' ? checked : value
     }));
     setErrors((prev) => ({ ...prev, [name]: '' }));
+  };
+
+  const handleImageRemove = () => {
+    setFormData((prev) => ({ ...prev, imageUrl: '' }));
+    setFileInputKey((k) => k + 1);
+  };
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files?.[0] || null;
+    if (!file) return;
+
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+      setImageUploadError('Only JPEG, PNG, or WebP images are allowed.');
+      return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      setImageUploadError('File size must be under 10 MB.');
+      return;
+    }
+
+    setImageUploadError('');
+    setIsUploadingImage(true);
+    try {
+      const uploadedUrl = await uploadCategoryImage(file);
+      if (!uploadedUrl) throw new Error('Upload returned an empty URL.');
+      setFormData((prev) => ({ ...prev, imageUrl: uploadedUrl }));
+    } catch (err) {
+      setImageUploadError(err.message || 'Image upload failed. Please try again.');
+    } finally {
+      setIsUploadingImage(false);
+      setFileInputKey((k) => k + 1);
+    }
   };
 
   const validate = () => {
@@ -53,7 +94,8 @@ export const CategoryFormModal = ({
     const payload = {
       name: formData.name.trim(),
       slug: formData.slug.trim() || null,
-      isActive: formData.isActive
+      isActive: formData.isActive,
+      imageUrl: formData.imageUrl || null
     };
 
     onSubmit(payload);
@@ -76,6 +118,55 @@ export const CategoryFormModal = ({
 
         <form onSubmit={handleSubmit}>
           <div className="modal-body">
+            {/* Image */}
+            <div className="form-field-group">
+              <label className="input-label">Category Image</label>
+              {formData.imageUrl ? (
+                <div className="category-image-preview">
+                  <img src={formData.imageUrl} alt={formData.name || 'Category'} className="category-image-thumb" />
+                  <button
+                    type="button"
+                    className="category-image-remove"
+                    onClick={handleImageRemove}
+                    title="Remove image"
+                    disabled={isSubmitting}
+                    aria-label="Remove image"
+                  >
+                    <X size={12} />
+                  </button>
+                </div>
+              ) : (
+                <div
+                  className={`category-image-upload-area ${isUploadingImage ? 'uploading' : ''}`}
+                  onClick={() => fileInputRef.current?.click()}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') fileInputRef.current?.click(); }}
+                  aria-label="Upload category image"
+                >
+                  <input
+                    key={fileInputKey}
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/jpeg,image/jpg,image/png,image/webp"
+                    className="file-input-hidden"
+                    onChange={handleImageUpload}
+                    disabled={isSubmitting || isUploadingImage}
+                  />
+                  {isUploadingImage ? (
+                    <span className="category-image-upload-hint">Uploading...</span>
+                  ) : (
+                    <>
+                      <Upload size={18} className="category-image-upload-icon" />
+                      <span className="category-image-upload-hint">Click to upload (JPEG, PNG, WebP)</span>
+                    </>
+                  )}
+                </div>
+              )}
+              {imageUploadError && <span className="input-error-message">{imageUploadError}</span>}
+              <span className="input-hint">Optional — shown on the storefront</span>
+            </div>
+
             <div className="form-field-group">
               <label htmlFor="category-name" className="input-label">
                 Category Name
@@ -131,7 +222,7 @@ export const CategoryFormModal = ({
             <Button type="button" variant="secondary" onClick={onClose} disabled={isSubmitting}>
               Cancel
             </Button>
-            <Button type="submit" disabled={isSubmitting}>
+            <Button type="submit" disabled={isSubmitting || isUploadingImage}>
               {submitLabel}
             </Button>
           </div>

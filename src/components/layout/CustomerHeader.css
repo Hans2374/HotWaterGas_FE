@@ -1,15 +1,21 @@
 .customer-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  padding: 12px 32px;
   background: var(--customer-surface);
   border-bottom: 1px solid var(--customer-border);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
   position: sticky;
   top: 0;
   z-index: 100;
+}
+
+.customer-header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  max-width: 1100px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 12px 16px;
 }
 
 .customer-header-left {
@@ -72,34 +78,38 @@
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 12px;
   color: var(--customer-text-secondary);
-  padding: 4px 6px;
-  transition: color 0.15s;
+  padding: 4px;
   display: flex;
   align-items: center;
-  line-height: 1;
+  justify-content: center;
+  border-radius: 4px;
+  transition: color 0.15s, background-color 0.15s;
+  flex-shrink: 0;
 }
 
 .customer-header-search-clear:hover {
   color: var(--customer-text-primary);
+  background-color: rgba(255, 255, 255, 0.08);
 }
 
 .customer-header-search-button {
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 14px;
   color: var(--customer-text-secondary);
   padding: 4px 6px;
-  transition: color 0.15s;
   display: flex;
   align-items: center;
-  line-height: 1;
+  justify-content: center;
+  border-radius: 4px;
+  transition: color 0.15s, background-color 0.15s;
+  flex-shrink: 0;
 }
 
 .customer-header-search-button:hover {
   color: var(--customer-accent);
+  background-color: rgba(220, 38, 38, 0.08);
 }
 
 /* ── Header Right / Actions ───────────────────────────────────────────────────── */
@@ -131,21 +141,21 @@
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
-  border-radius: 6px;
-  transition: background-color 0.2s;
-  font-size: 14px;
-  font-weight: 600;
+  justify-content: center;
+  padding: 8px;
+  border-radius: 8px;
+  transition: background-color 0.2s, color 0.15s;
   color: var(--customer-text-secondary);
 }
 
 .header-wishlist-button:hover {
   background-color: var(--customer-surface-hover);
+  color: #ff5b88;
 }
 
 .header-wishlist-icon {
-  font-size: 16px;
+  display: block;
+  line-height: 1;
 }
 
 .header-wishlist-label {

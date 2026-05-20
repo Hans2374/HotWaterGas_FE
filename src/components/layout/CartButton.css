@@ -5,16 +5,20 @@
   cursor: pointer;
   padding: 8px;
   border-radius: 8px;
-  font-size: 20px;
-  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s, color 0.15s;
+  color: var(--customer-text-secondary);
 }
 
 .cart-button:hover {
   background-color: var(--customer-surface-hover);
+  color: var(--customer-text-primary);
 }
 
 .cart-button-icon {
-  display: inline-block;
+  display: block;
   line-height: 1;
 }
 

@@ -63,12 +63,12 @@ export const SearchResultsPage = () => {
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
   const sortOptions = [
-    { value: 'name-asc', label: 'Tên (A → Z)', sort: 'name', direction: 'asc' },
-    { value: 'name-desc', label: 'Tên (Z → A)', sort: 'name', direction: 'desc' },
-    { value: 'price-asc', label: 'Giá (Thấp → Cao)', sort: 'price', direction: 'asc' },
-    { value: 'price-desc', label: 'Giá (Cao → Thấp)', sort: 'price', direction: 'desc' },
-    { value: 'releasedate-asc', label: 'Ngày phát hành (Cũ → Mới)', sort: 'releasedate', direction: 'asc' },
-    { value: 'releasedate-desc', label: 'Ngày phát hành (Mới → Cũ)', sort: 'releasedate', direction: 'desc' }
+    { value: 'name-asc', label: 'A – Z', sort: 'name', direction: 'asc' },
+    { value: 'name-desc', label: 'Z – A', sort: 'name', direction: 'desc' },
+    { value: 'releasedate-desc', label: 'Mới nhất', sort: 'releasedate', direction: 'desc' },
+    { value: 'releasedate-asc', label: 'Cũ nhất', sort: 'releasedate', direction: 'asc' },
+    { value: 'price-asc', label: 'Giá thấp đến cao', sort: 'price', direction: 'asc' },
+    { value: 'price-desc', label: 'Giá cao đến thấp', sort: 'price', direction: 'desc' }
   ];
 
   useEffect(() => {
@@ -369,28 +369,27 @@ export const SearchResultsPage = () => {
     setCurrentPage(1);
   };
 
-  const clearCategory = () => {
-    const nextFilters = { ...filters, category: '' };
-    // eslint-disable-next-line no-console
-    // console.log('[SearchFilters] Updated filters:', nextFilters);
-    setFilters(nextFilters);
-    updateUrlWithFilters(nextFilters, 1);
-    setCurrentPage(1);
-  };
-
-  const clearAllFilters = () => {
-    // eslint-disable-next-line no-console
-    // console.log('[SearchFilters] Updated filters:', defaultFilters);
+  const clearActiveFilters = () => {
     setPriceValidationError('');
     setPriceDraft({ minPrice: '', maxPrice: '' });
-    setFilters(defaultFilters);
+    setFilters({
+      category: '',
+      tags: [],
+      minPrice: '',
+      maxPrice: ''
+    });
 
     const nextParams = buildSearchQueryParams({
-      searchQuery: '',
+      searchQuery,
       page: 1,
       sortBy,
       sortDirection,
-      filters: defaultFilters
+      filters: {
+        category: '',
+        tags: [],
+        minPrice: '',
+        maxPrice: ''
+      }
     });
 
     setSearchParams(nextParams);
@@ -420,19 +419,34 @@ export const SearchResultsPage = () => {
           <aside className="search-filters-panel">
             <div className="search-filters-header">
               <h3>Bộ lọc</h3>
-              <button type="button" className="search-filters-clear" onClick={clearAllFilters}>Xóa tất cả</button>
+              {(filters.category || filters.tags.length > 0 || filters.minPrice || filters.maxPrice) && (
+                <button type="button" className="search-filters-clear" onClick={clearActiveFilters}>Xóa tất cả</button>
+              )}
             </div>
 
             {filtersLoading && <p className="search-filters-loading">Đang tải bộ lọc...</p>}
             {!filtersLoading && filtersError && <p className="search-filters-error">{filtersError}</p>}
 
-            <div className="search-filter-group">
-              <div className="search-filter-group-title-row">
-                <h4>Danh mục</h4>
-                {filters.category && (
-                  <button type="button" className="search-filter-clear-small" onClick={clearCategory}>Xóa</button>
-                )}
+            <div className="search-filter-group search-filter-sort-group">
+              <h4 className="search-filter-group-title">Sắp xếp theo</h4>
+              <div className="search-filter-list">
+                {sortOptions.map((option) => (
+                  <label className="search-filter-option" key={option.value}>
+                    <input
+                      type="radio"
+                      name="search-sort"
+                      value={option.value}
+                      checked={currentSortValue === option.value}
+                      onChange={handleSortChange}
+                    />
+                    <span>{option.label}</span>
+                  </label>
+                ))}
               </div>
+            </div>
+
+            <div className="search-filter-group">
+              <h4 className="search-filter-group-title">Danh mục</h4>
 
               {!filtersLoading && categories.length > 0 && (
                 <div className="search-filter-list">
@@ -514,26 +528,6 @@ export const SearchResultsPage = () => {
           </aside>
 
           <section className="search-results-main">
-            {searchQuery && (
-              <div className="search-results-controls">
-                <div className="search-results-sort">
-                  <label htmlFor="sort-select">Sắp xếp theo:</label>
-                  <select
-                    id="sort-select"
-                    className="sort-select"
-                    value={currentSortValue}
-                    onChange={handleSortChange}
-                  >
-                    {sortOptions.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-            )}
-
             {isLoading && <Loader text="Đang tải kết quả..." />}
 
             {error && (

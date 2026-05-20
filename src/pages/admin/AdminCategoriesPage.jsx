@@ -19,6 +19,7 @@ const formatDate = (value) => {
 
 const SkeletonRow = ({ cols }) => (
   <tr className="skeleton-row">
+    <td><span className="skeleton-cell w-image-cell" /></td>
     <td><span className="skeleton-cell w-lg" /></td>
     <td><span className="skeleton-cell w-md" /></td>
     <td className="products-cell"><span className="skeleton-cell w-pill" /></td>
@@ -153,7 +154,8 @@ export const AdminCategoriesPage = () => {
         id: category.id,
         name: category.name,
         slug: category.slug,
-        isActive: category.isActive
+        isActive: category.isActive,
+        imageUrl: category.imageUrl || ''
       }
     });
   };
@@ -280,6 +282,7 @@ export const AdminCategoriesPage = () => {
         <table className="categories-table">
           <thead>
             <tr>
+              <th className="col-image-col" />
               <th className="col-name-col">Name</th>
               <th className="col-products-col">Products</th>
               <th className="col-status-col">Status</th>
@@ -294,7 +297,7 @@ export const AdminCategoriesPage = () => {
               ))
             ) : categories.length === 0 && !loadError ? (
               <tr>
-                <td colSpan={5} style={{ padding: 0, border: 'none' }}>
+                <td colSpan={6} style={{ padding: 0, border: 'none' }}>
                   <EmptyState
                     isFiltering={isFiltering}
                     onCreate={handleOpenCreate}
@@ -304,13 +307,25 @@ export const AdminCategoriesPage = () => {
               </tr>
             ) : loadError ? (
               <tr>
-                <td colSpan={5} style={{ padding: 0, border: 'none' }}>
+                <td colSpan={6} style={{ padding: 0, border: 'none' }}>
                   <ErrorState message={loadError} onRetry={loadCategories} />
                 </td>
               </tr>
             ) : (
               categories.map((category) => (
                 <tr key={category.id}>
+                  <td className="image-cell">
+                    {category.imageUrl ? (
+                      <img
+                        src={category.imageUrl}
+                        alt={category.name}
+                        className="category-row-thumb"
+                        onError={(e) => { e.target.style.display = 'none'; }}
+                      />
+                    ) : (
+                      <div className="category-row-thumb-placeholder" aria-hidden="true" />
+                    )}
+                  </td>
                   <td className="name-cell">
                     <span className="name-cell-primary">{category.name}</span>
                   </td>

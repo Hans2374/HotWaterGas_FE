@@ -1,0 +1,113 @@
+.category-card {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  background: linear-gradient(135deg, #252530 0%, #14141b 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  transition:
+    transform 200ms ease-out,
+    box-shadow 200ms ease-out;
+  will-change: transform;
+}
+
+/* ─── Image ─────────────────────────────────────────────────────────────────── */
+
+.category-card-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 350ms ease-out;
+  z-index: 0;
+}
+
+.category-card:hover .category-card-image,
+.category-card:focus-visible .category-card-image {
+  transform: scale(1.06);
+}
+
+/* ─── Overlay ──────────────────────────────────────────────────────────────── */
+
+.category-card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    160deg,
+    rgba(10, 10, 18, 0.35) 0%,
+    rgba(10, 10, 18, 0.70) 100%
+  );
+  z-index: 1;
+  transition: background 250ms ease;
+}
+
+.category-card:hover .category-card-overlay,
+.category-card:focus-visible .category-card-overlay {
+  background: linear-gradient(
+    160deg,
+    rgba(10, 10, 18, 0.50) 0%,
+    rgba(10, 10, 18, 0.82) 100%
+  );
+}
+
+/* ─── Content ──────────────────────────────────────────────────────────────── */
+
+.category-card-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 12px;
+}
+
+.category-card-name {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.92);
+  text-shadow:
+    0 1px 4px rgba(0, 0, 0, 0.6),
+    0 2px 8px rgba(0, 0, 0, 0.4);
+  line-height: 1.2;
+  word-break: break-word;
+}
+
+/* ─── Hover lift ───────────────────────────────────────────────────────────── */
+
+.category-card:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(220, 38, 38, 0.15);
+}
+
+/* ─── Focus state ──────────────────────────────────────────────────────────── */
+
+.category-card:focus-visible {
+  transform: none;
+  outline: 2px solid rgba(220, 38, 38, 0.7);
+  outline-offset: 2px;
+}
+
+/* ─── Touch/mobile — disable hover lift ───────────────────────────────────── */
+
+@media (hover: none), (pointer: coarse) {
+  .category-card:hover {
+    transform: none;
+    box-shadow: none;
+  }
+
+  .category-card-image {
+    transition: none;
+  }
+}
