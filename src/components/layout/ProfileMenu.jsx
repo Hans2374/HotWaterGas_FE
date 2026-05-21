@@ -72,9 +72,6 @@ export const ProfileMenu = ({ onLogout }) => {
             {email && <div className="profile-menu-email">{email}</div>}
           </div>
           <div className="profile-menu-divider" />
-          <div className="profile-menu-role">
-            {isAdmin ? 'Quản trị viên' : 'Khách hàng'}
-          </div>
 
           {!isAdmin && (
             <>
@@ -90,16 +87,6 @@ export const ProfileMenu = ({ onLogout }) => {
               <button className="profile-menu-item profile-menu-item--wishlist" onClick={handleViewWishlist} role="menuitem">
                 <Heart size={15} strokeWidth={1.75} />
                 Yêu thích
-              </button>
-            </>
-          )}
-
-          {isAdmin && (
-            <>
-              <div className="profile-menu-divider" />
-              <button className="profile-menu-item" onClick={handleViewAdminPanel} role="menuitem">
-                <Package size={15} strokeWidth={1.75} />
-                Trang quản trị
               </button>
             </>
           )}

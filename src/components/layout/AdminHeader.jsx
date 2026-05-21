@@ -47,6 +47,11 @@ export const AdminHeader = ({
       </div>
 
       <Link to="/admin/dashboard" className="admin-header-brand">
+        <img
+          src="/icon.png"
+          alt="HotWaterGas logo"
+          className="brand-logo brand-logo--admin"
+        />
         <h1 className="admin-header-title">HotWaterGas</h1>
       </Link>
 

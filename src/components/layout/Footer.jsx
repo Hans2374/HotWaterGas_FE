@@ -16,7 +16,14 @@ export const Footer = () => {
         {/* Column 1: Brand / About */}
         <div className="footer-column">
           <div className="footer-brand">
-            <h3 className="footer-brand-title">HotWaterGas</h3>
+            <div className="footer-brand-group">
+              <img
+                src="/icon.png"
+                alt="HotWaterGas logo"
+                className="brand-logo brand-logo--footer"
+              />
+              <h3 className="footer-brand-title">HotWaterGas</h3>
+            </div>
             <p className="footer-brand-description">
               Thị trường trò chơi kỹ thuật số cho khóa Steam và nội dung trò chơi PC.
             </p>

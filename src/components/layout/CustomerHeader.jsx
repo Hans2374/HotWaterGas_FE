@@ -68,7 +68,12 @@ export const CustomerHeader = () => {
       <div className="customer-header-inner">
         <div className="customer-header-left">
           <Link to="/" className="customer-header-brand">
-            HotWaterGas
+            <img
+              src="/icon.png"
+              alt="HotWaterGas logo"
+              className="brand-logo brand-logo--customer"
+            />
+            <span className="brand-title">HotWaterGas</span>
           </Link>
         </div>
 

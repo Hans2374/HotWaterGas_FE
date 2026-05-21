@@ -23,16 +23,35 @@
 }
 
 .customer-header-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.brand-logo {
+  object-fit: contain;
+  flex-shrink: 0;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.brand-logo--customer {
+  width: 36px;
+  height: 36px;
+}
+
+.brand-title {
   font-size: 20px;
   font-weight: 700;
   color: var(--customer-text-primary);
-  text-decoration: none;
   letter-spacing: -0.3px;
   transition: color 0.15s;
   white-space: nowrap;
 }
 
-.customer-header-brand:hover {
+.customer-header-brand:hover .brand-title {
   color: var(--customer-accent);
 }
 
@@ -225,7 +244,7 @@
     gap: 12px;
   }
 
-  .customer-header-brand {
+  .brand-title {
     font-size: 18px;
   }
 
@@ -259,7 +278,7 @@
     display: none;
   }
 
-  .customer-header-brand {
+  .brand-title {
     font-size: 16px;
   }
 

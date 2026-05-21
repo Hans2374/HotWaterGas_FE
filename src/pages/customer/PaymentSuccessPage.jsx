@@ -5,13 +5,21 @@ import './PaymentReturnPage.css';
 
 const LAST_ORDER_ID_KEY = 'hotwatergas.checkout.lastOrderId';
 
+const PAYMENT_STATUS_VI = {
+  PAID: 'Đã thanh toán',
+  PENDING: 'Đang chờ',
+  CANCELLED: 'Đã hủy',
+  FAILED: 'Thất bại',
+  PROCESSING: 'Đang xử lý',
+};
+
 const PaymentSuccessPage = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { refreshCart } = useCart();
 
   const orderCode = searchParams.get('orderCode') || '';
-  const status = searchParams.get('status') || 'PAID';
+  const status = PAYMENT_STATUS_VI[searchParams.get('status')] ?? (searchParams.get('status') || 'PAID');
 
   const handleViewPurchaseHistory = () => {
     // Try to get the last order ID from session storage

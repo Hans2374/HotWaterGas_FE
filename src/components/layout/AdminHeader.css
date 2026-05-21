@@ -58,6 +58,11 @@
   color: inherit;
 }
 
+.brand-logo--admin {
+  width: 32px;
+  height: 32px;
+}
+
 .admin-header-title {
   font-size: 18px;
   font-weight: 700;
