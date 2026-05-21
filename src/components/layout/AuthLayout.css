@@ -1,24 +1,516 @@
-.auth-container {
+/* ═══════════════════════════════════════════════════════════════════════════════
+   AuthLayout — Neon Split-Screen + Card-Deck Animation
+   Left:  Brand showcase
+   Right: Auth forms with stacked card-deck transitions
+═══════════════════════════════════════════════════════════════════════════════ */
+
+/* ── Root auth shell ────────────────────────────────────────────────────── */
+
+.auth-shell {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: stretch;
+  overflow: hidden;
+  z-index: 1;
+}
+
+/* ── Left panel — brand showcase ──────────────────────────────────────── */
+
+.auth-brand {
+  position: relative;
+  flex: 0 0 42%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 40px;
+  overflow: hidden;
+}
+
+/* Gradient fade from brand panel into form area */
+.auth-brand::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 1px;
+  height: 100%;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(239, 68, 68, 0.2) 20%,
+    rgba(239, 68, 68, 0.15) 50%,
+    rgba(239, 68, 68, 0.2) 80%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+
+/* Ambient glow inside brand panel */
+.auth-brand-glow {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 50%, rgba(239, 68, 68, 0.08) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 40% at 50% 50%, rgba(239, 68, 68, 0.05) 0%, transparent 60%);
+  pointer-events: none;
+  animation: brand-glow-breathe 5s ease-in-out infinite alternate;
+}
+
+@keyframes brand-glow-breathe {
+  from { opacity: 0.7; }
+  to   { opacity: 1.0; }
+}
+
+/* Decorative grid inside brand panel */
+.auth-brand-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(239, 68, 68, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(239, 68, 68, 0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 80%);
+  pointer-events: none;
+}
+
+/* Brand content */
+.auth-brand-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0;
+}
+
+/* Logo button — clickable, navigates to home */
+.auth-logo-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  border-radius: 12px;
+  transition: transform 0.2s ease, filter 0.2s ease;
+  margin-bottom: 20px;
+}
+
+.auth-logo-btn:hover {
+  transform: scale(1.04);
+  filter: drop-shadow(0 0 18px rgba(239, 68, 68, 0.35));
+}
+
+.auth-logo-btn:focus-visible {
+  outline: 2px solid rgba(239, 68, 68, 0.6);
+  outline-offset: 4px;
+}
+
+/* Logo icon */
+.auth-logo-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
-  background-color: var(--customer-bg);
+  background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  box-shadow: 0 0 24px rgba(239, 68, 68, 0.15), 0 8px 32px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
 }
+
+.auth-logo-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Logo text brand */
+.auth-brand-name {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+  color: #ffffff;
+}
+
+.auth-brand-name-hotwater {
+  color: #ffffff;
+}
+
+.auth-brand-name-gas {
+  color: #ef4444;
+  text-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
+}
+
+/* Motto */
+.auth-brand-motto {
+  margin: 14px 0 0;
+  font-size: 14px;
+  color: #6b7280;
+  line-height: 1.65;
+  max-width: 280px;
+}
+
+/* Feature pills under motto */
+.auth-brand-features {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 32px;
+  width: 100%;
+  max-width: 240px;
+}
+
+.auth-brand-feature {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: #9ca3af;
+  text-align: left;
+}
+
+.auth-brand-feature-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ef4444;
+  flex-shrink: 0;
+  box-shadow: 0 0 6px rgba(239, 68, 68, 0.6);
+}
+
+/* ── Right panel — card deck ───────────────────────────────────────────── */
+
+.auth-deck {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 40px;
+  overflow: hidden;
+}
+
+/* Subtle glow on the form side */
+.auth-deck::before {
+  content: '';
+  position: absolute;
+  top: -100px;
+  left: 20%;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.04) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* ── Card deck — stacked cards ────────────────────────────────────────── */
 
 .auth-card {
-  background: var(--customer-surface);
-  padding: 40px;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  position: absolute;
   width: 100%;
-  max-width: 400px;
+  max-width: 440px;
+  background: rgba(11, 11, 20, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 16px;
+  padding: 36px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow:
+    0 24px 80px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(239, 68, 68, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  /* Stack header / subtitle / form / footer */
+  display: flex;
+  flex-direction: column;
 }
 
-.auth-title {
-  font-size: 24px;
-  font-weight: 700;
-  margin-bottom: 24px;
-  color: var(--customer-text-primary);
-  text-align: center;
+/* Card border glow when active */
+.auth-card::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: 17px;
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), transparent 50%, rgba(239, 68, 68, 0.05));
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.auth-card.auth-card--active::before {
+  opacity: 1;
+}
+
+/* Card inner top accent line */
+.auth-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 32px;
+  right: 32px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(239, 68, 68, 0.4), transparent);
+}
+
+/* ── Card title ──────────────────────────────────────────────────────── */
+
+.auth-card-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: #f9fafb;
+  margin: 0 0 4px;
+  letter-spacing: -0.3px;
+  line-height: 1.2;
+}
+
+.auth-card-subtitle {
+  font-size: 13px;
+  color: #6b7280;
+  margin: 0 0 24px;
+  line-height: 1.5;
+}
+
+/* ── Card deck transition animations ─────────────────────────────────── */
+
+/* Default login card state — only reached after mount animation completes.
+   Does NOT include the mount animation (moved to auth-card--initial below). */
+.auth-card-login {
+  z-index: 2;
+  opacity: 1;
+  transform: translateX(0) scale(1) translateZ(0);
+}
+
+/* Default register card state — never reached by normal flow because
+   active register always carries auth-card--active + auth-card--enter-done.
+   Kept as fallback if both flags are somehow absent. */
+.auth-card-register {
+  z-index: 1;
+  opacity: 0;
+  transform: translateX(60px) scale(0.94) translateZ(0);
+  pointer-events: none;
+}
+
+/* Initial mount appearance — one-shot animation on first render only.
+   auth-card--enter-done overrides this once the enter animation completes. */
+.auth-card-login.auth-card--initial {
+  animation: card-appear-login 0.4s cubic-bezier(0.34, 1.4, 0.64, 1) both;
+}
+
+/* When a card is the active target it sits on top and is fully visible. */
+.auth-card-login.auth-card--active {
+  z-index: 2;
+  opacity: 1;
+  transform: translateX(0) scale(1) translateZ(0);
+  pointer-events: auto;
+}
+
+.auth-card-register.auth-card--active {
+  z-index: 2;
+  opacity: 1;
+  transform: translateX(0) scale(1) translateZ(0);
+  pointer-events: auto;
+}
+
+/* Login card exits — slides left and fades out, holds end state (opacity 0). */
+.auth-card-login.auth-card--exit {
+  z-index: 1;
+  animation: card-exit-left 0.35s cubic-bezier(0.4, 0, 0.6, 1) both;
+}
+
+/* Register card exits — slides left and fades out, holds end state (opacity 0). */
+.auth-card-register.auth-card--exit {
+  z-index: 1;
+  animation: card-exit-left 0.35s cubic-bezier(0.4, 0, 0.6, 1) both;
+}
+
+/* Register card enters — slides in from right, holds end state (opacity 1, z 2).
+   animation-fill-mode: both is critical — without it the browser resets to
+   .auth-card-register base (opacity 0) after the animation ends. */
+.auth-card-register.auth-card--enter {
+  z-index: 2;
+  animation: card-enter-right 0.4s cubic-bezier(0.34, 1.4, 0.64, 1) both;
+  pointer-events: auto;
+}
+
+/* Login card enters — slides in from right (same direction, swapped roles). */
+.auth-card-login.auth-card--enter {
+  z-index: 2;
+  animation: card-enter-right 0.4s cubic-bezier(0.34, 1.4, 0.64, 1) both;
+  pointer-events: auto;
+}
+
+/* Persistent resting state for the entering card after animation completes.
+   Overrides the mount-only animation. Explicit z/opacity/transform/pointer-events
+   ensures this card stays fully visible regardless of what base classes say. */
+.auth-card-register.auth-card--enter-done {
+  z-index: 2;
+  opacity: 1;
+  transform: translateX(0) scale(1) translateZ(0);
+  pointer-events: auto;
+  animation: none;
+}
+
+.auth-card-login.auth-card--enter-done {
+  z-index: 2;
+  opacity: 1;
+  transform: translateX(0) scale(1) translateZ(0);
+  pointer-events: auto;
+  animation: none;
+}
+
+/* Inactive (non-exiting, non-entering) cards: hidden but still in DOM for
+   fast return animation. Must not block clicks on the active card. */
+.auth-card-login.auth-card--hidden {
+  z-index: 1;
+  opacity: 0;
+  transform: translateX(60px) scale(0.94) translateZ(0);
+  pointer-events: none;
+}
+
+.auth-card-register.auth-card--hidden {
+  z-index: 1;
+  opacity: 0;
+  transform: translateX(60px) scale(0.94) translateZ(0);
+  pointer-events: none;
+}
+
+@keyframes card-enter-right {
+  from {
+    transform: translateX(60px) scale(0.94);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes card-exit-left {
+  from {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(-60px) scale(0.94);
+    opacity: 0;
+  }
+}
+
+@keyframes card-appear-login {
+  from {
+    transform: translateX(40px) scale(0.96);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────── */
+
+@media (max-width: 900px) {
+  .auth-shell {
+    flex-direction: column;
+    overflow: auto;
+  }
+
+  .auth-brand {
+    flex: 0 0 auto;
+    padding: 36px 24px 28px;
+    border-bottom: 1px solid rgba(239, 68, 68, 0.12);
+  }
+
+  .auth-brand::after {
+    display: none;
+  }
+
+  .auth-brand-content {
+    flex-direction: row;
+    text-align: left;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .auth-logo-btn {
+    margin-bottom: 0;
+    flex-shrink: 0;
+  }
+
+  .auth-logo-icon {
+    width: 52px;
+    height: 52px;
+  }
+
+  .auth-brand-name {
+    font-size: 20px;
+  }
+
+  .auth-brand-motto {
+    margin: 0;
+    font-size: 12px;
+    max-width: none;
+  }
+
+  .auth-brand-features {
+    display: none;
+  }
+
+  .auth-deck {
+    flex: 1;
+    padding: 28px 20px 40px;
+    align-items: flex-start;
+  }
+
+  /* On mobile the cards stack vertically; the inactive card is hidden via
+     auth-card--hidden. The enter/exit animations are disabled on small screens. */
+  .auth-card-login,
+  .auth-card-register {
+    position: relative;
+    transform: none !important;
+    animation: none !important;
+  }
+
+  .auth-card-login.auth-card--active,
+  .auth-card-register.auth-card--active {
+    opacity: 1;
+    pointer-events: auto;
+    z-index: 2;
+  }
+
+  .auth-card-login.auth-card--hidden,
+  .auth-card-register.auth-card--hidden {
+    display: none;
+  }
+
+  .auth-card-login.auth-card--exit,
+  .auth-card-register.auth-card--exit,
+  .auth-card-login.auth-card--enter,
+  .auth-card-register.auth-card--enter,
+  .auth-card-login.auth-card--enter-done,
+  .auth-card-register.auth-card--enter-done {
+    opacity: 1;
+    pointer-events: auto;
+    z-index: 2;
+    transform: none;
+    animation: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-card {
+    padding: 28px 20px;
+    border-radius: 12px;
+  }
+
+  .auth-brand {
+    padding: 24px 16px 20px;
+  }
 }

@@ -112,3 +112,40 @@
   background-color: var(--admin-tags-accent-hover, #059669);
   border-color: var(--admin-tags-accent-hover, #059669);
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   Auth Page — Red Neon Primary Button
+   Scoped via .auth-page so other pages are unaffected.
+═══════════════════════════════════════════════════════════════════════════════ */
+
+.auth-page .btn-primary,
+.auth-page .btn {
+  background: #ef4444;
+  color: #ffffff;
+  border-color: #ef4444;
+  padding: 11px 20px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  border-radius: 8px;
+  box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.1s ease;
+}
+
+.auth-page .btn-primary:hover:not(:disabled),
+.auth-page .btn:hover:not(:disabled) {
+  background: #dc2626;
+  border-color: #dc2626;
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.35);
+  transform: translateY(-1px);
+}
+
+.auth-page .btn-primary:active:not(:disabled),
+.auth-page .btn:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.2);
+}
