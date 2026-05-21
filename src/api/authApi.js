@@ -91,3 +91,34 @@ export const logout = async () => {
     // Logout must not throw – the local session is cleared regardless of the server response.
   }
 };
+
+export const getMyProfile = async () => {
+  try {
+    const response = await axiosClient.get('/api/users/me');
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error;
+  }
+};
+
+export const updateMyProfile = async (displayName) => {
+  try {
+    const response = await axiosClient.put('/api/users/profile', { displayName });
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error;
+  }
+};
+
+export const changeMyPassword = async (currentPassword, newPassword, confirmPassword) => {
+  try {
+    const response = await axiosClient.put('/api/users/change-password', {
+      currentPassword,
+      newPassword,
+      confirmPassword
+    });
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error;
+  }
+};

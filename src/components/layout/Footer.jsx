@@ -49,11 +49,15 @@ export const Footer = () => {
               className="footer-link"
               onClick={() => handleNavigate('/products/search')}
             >
-              Duyệt
+              Steam Key Chính Hãng
             </button>
-            <a href="#" className="footer-link">
-              Danh mục
-            </a>
+            <button
+              type="button"
+              className="footer-link"
+              onClick={() => handleNavigate('/categories')}
+            >
+              Các Thể Loại Game Thịnh Hành
+            </button>
           </nav>
         </div>
 

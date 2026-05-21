@@ -24,6 +24,7 @@ import { AdminTagsPage } from '../pages/admin/AdminTagsPage';
 import { AdminOrderDetailPage } from '../pages/admin/AdminOrderDetailPage';
 import PurchaseHistoryPage from '../pages/customer/PurchaseHistoryPage';
 import PurchaseDetailPage from '../pages/customer/PurchaseDetailPage';
+import { ProfilePage } from '../pages/customer/ProfilePage';
 import { Loader } from '../components/common/Loader';
 import { AdminLayout } from '../components/layout/AdminLayout';
 import { MainLayout } from '../components/layout/MainLayout';
@@ -234,6 +235,14 @@ export const AppRoutes = () => {
           element={(
             <CustomerRoute>
               <PurchaseDetailPage />
+            </CustomerRoute>
+          )}
+        />
+        <Route
+          path="account/profile"
+          element={(
+            <CustomerRoute>
+              <ProfilePage />
             </CustomerRoute>
           )}
         />

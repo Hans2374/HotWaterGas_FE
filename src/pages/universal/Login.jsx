@@ -156,7 +156,11 @@ export const Login = () => {
         </p>
       </div>
       </AuthLayout>
-      <ForgotPasswordModal isOpen={isFpOpen} onClose={() => setIsFpOpen(false)} />
+      <ForgotPasswordModal
+        isOpen={isFpOpen}
+        onClose={() => setIsFpOpen(false)}
+        onSuccess={() => setIsFpOpen(false)}
+      />
     </>
   );
 };
