@@ -58,7 +58,7 @@ export const LoginForm = () => {
       const response = await login(formData.email, formData.password);
       const { accessToken, role } = normalizeLoginResponse(response);
       if (!accessToken) {
-        setApiError('Login succeeded but no access token was returned.');
+        setApiError('Đăng nhập thành công nhưng không nhận được access token.');
         return;
       }
 
@@ -70,7 +70,7 @@ export const LoginForm = () => {
         navigate('/', { replace: true });
       }
     } catch (error) {
-      const msg = error?.message || error?.Message || 'Login failed. Please try again.';
+      const msg = error?.message || error?.Message || 'Đăng nhập thất bại. Vui lòng thử lại.';
       if (typeof msg === 'string' && msg.toLowerCase().includes('not verified')) {
         try { sessionStorage.setItem('hotwatergas.verify.email', formData.email); } catch (_) {}
         navigate('/verify-email', { state: { email: formData.email }, replace: true });
@@ -98,7 +98,7 @@ export const LoginForm = () => {
           label="Email"
           type="email"
           name="email"
-          placeholder="your@email.com"
+          placeholder="email@example.com"
           value={formData.email}
           onChange={handleInputChange}
           error={errors.email}

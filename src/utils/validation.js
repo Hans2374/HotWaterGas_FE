@@ -13,30 +13,30 @@ export const validatePasswordMatch = (password, confirmPassword) => {
 
 export const getEmailError = (email) => {
   if (!email) {
-    return 'Email is required';
+    return 'Email không được để trống';
   }
   if (!validateEmail(email)) {
-    return 'Please enter a valid email address';
+    return 'Vui lòng nhập địa chỉ email hợp lệ';
   }
   return '';
 };
 
 export const getPasswordError = (password) => {
   if (!password) {
-    return 'Password is required';
+    return 'Mật khẩu không được để trống';
   }
   if (!validatePassword(password)) {
-    return 'Password must be at least 6 characters';
+    return 'Mật khẩu phải có ít nhất 6 ký tự';
   }
   return '';
 };
 
 export const getConfirmPasswordError = (password, confirmPassword) => {
   if (!confirmPassword) {
-    return 'Please confirm your password';
+    return 'Vui lòng xác nhận mật khẩu';
   }
   if (!validatePasswordMatch(password, confirmPassword)) {
-    return 'Passwords do not match';
+    return 'Mật khẩu không khớp';
   }
   return '';
 };

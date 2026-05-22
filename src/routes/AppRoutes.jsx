@@ -1,7 +1,6 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { Login } from '../pages/universal/Login';
-import { Register } from '../pages/universal/Register';
+import { AuthPage } from '../pages/universal/AuthPage/AuthPage';
 import VerifyEmail from '../pages/universal/VerifyEmail';
 import { Home } from '../pages/universal/Home';
 import { SearchResultsPage } from '../pages/universal/SearchResultsPage';
@@ -130,12 +129,12 @@ const AdminRoute = ({ children }) => {
 export const AppRoutes = () => {
   return (
     <Routes>
-      {/* Public auth routes */}
+      {/* Public auth routes — both render the same AuthPage with different mode */}
       <Route
         path="/login"
         element={(
           <PublicRoute>
-            <Login />
+            <AuthPage mode="login" />
           </PublicRoute>
         )}
       />
@@ -143,7 +142,7 @@ export const AppRoutes = () => {
         path="/register"
         element={(
           <PublicRoute>
-            <Register />
+            <AuthPage mode="register" />
           </PublicRoute>
         )}
       />

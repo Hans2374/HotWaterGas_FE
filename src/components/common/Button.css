@@ -114,38 +114,45 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════════
-   Auth Page — Red Neon Primary Button
+   Auth Page — Premium Red Neon Primary Button
    Scoped via .auth-page so other pages are unaffected.
+   Gaming CTA: deeper red base, strong glow hover, lift effect, press state.
 ═══════════════════════════════════════════════════════════════════════════════ */
 
 .auth-page .btn-primary,
 .auth-page .btn {
-  background: #ef4444;
+  background: #dc2626;
   color: #ffffff;
-  border-color: #ef4444;
-  padding: 11px 20px;
+  border-color: #dc2626;
+  padding: 12px 22px;
   font-size: 14px;
   font-weight: 700;
   letter-spacing: 0.3px;
   border-radius: 8px;
-  box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
   transition:
     background 0.2s ease,
     border-color 0.2s ease,
     box-shadow 0.2s ease,
-    transform 0.1s ease;
+    transform 0.15s ease;
 }
 
 .auth-page .btn-primary:hover:not(:disabled),
 .auth-page .btn:hover:not(:disabled) {
-  background: #dc2626;
-  border-color: #dc2626;
-  box-shadow: 0 0 20px rgba(239, 68, 68, 0.35);
-  transform: translateY(-1px);
+  background: #b91c1c;
+  border-color: #b91c1c;
+  box-shadow:
+    0 0 22px rgba(220, 38, 38, 0.45),
+    0 0 50px rgba(220, 38, 38, 0.2),
+    0 8px 24px rgba(0, 0, 0, 0.4);
+  transform: translateY(-2px);
 }
 
 .auth-page .btn-primary:active:not(:disabled),
 .auth-page .btn:active:not(:disabled) {
-  transform: translateY(0);
-  box-shadow: 0 0 12px rgba(239, 68, 68, 0.2);
+  background: #991b1b;
+  border-color: #991b1b;
+  transform: translateY(0px);
+  box-shadow:
+    0 0 14px rgba(220, 38, 38, 0.3),
+    0 4px 12px rgba(0, 0, 0, 0.3);
 }

@@ -58,7 +58,7 @@ export const RegisterForm = () => {
       } catch (_) {}
       navigate('/verify-email', { replace: true, state: { email: formData.email, message: response?.message } });
     } catch (error) {
-      const msg = error?.message || error?.Message || 'Registration failed. Please try again.';
+      const msg = error?.message || error?.Message || 'Đăng ký thất bại. Vui lòng thử lại.';
       setApiError(msg);
     } finally {
       setIsLoading(false);
@@ -77,7 +77,7 @@ export const RegisterForm = () => {
         label="Email"
         type="email"
         name="email"
-        placeholder="your@email.com"
+        placeholder="email@example.com"
         value={formData.email}
         onChange={handleInputChange}
         error={errors.email}
