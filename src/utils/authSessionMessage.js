@@ -34,3 +34,17 @@ export const consumeSessionMessage = () => {
     return null;
   }
 };
+
+/**
+ * Stores a custom session message that will be displayed on the login page.
+ * Used for success messages after OAuth flows.
+ */
+export const setSessionMessage = (message) => {
+  if (message) {
+    try {
+      sessionStorage.setItem(SESSION_MESSAGE_KEY, message);
+    } catch {
+      // sessionStorage unavailable
+    }
+  }
+};

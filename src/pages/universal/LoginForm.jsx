@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Input } from '../../components/common/Input';
 import { Button } from '../../components/common/Button';
+import { GoogleAuthButton } from '../../components/auth/GoogleAuthButton';
 import { useAuth } from '../../hooks/useAuth';
 import { login } from '../../api/authApi';
 import { normalizeLoginResponse } from '../../utils/authResponse';
@@ -129,6 +130,10 @@ export const LoginForm = () => {
         <Button type="submit" variant="primary" fullWidth disabled={isLoading}>
           {isLoading ? 'Đang đăng nhập...' : 'Đăng nhập'}
         </Button>
+
+        <div className="auth-divider">hoặc</div>
+
+        <GoogleAuthButton />
       </form>
 
       <div className="auth-footer">

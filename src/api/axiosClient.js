@@ -22,7 +22,7 @@ import { normalizeRefreshResponse } from '../utils/authResponse';
 
 /* ── Axios instances ─────────────────────────────────────────────────────── */
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5140';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://localhost:7140';
 
 /**
  * Main client — used by all API service files.

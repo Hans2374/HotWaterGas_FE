@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Input } from '../../components/common/Input';
 import { Button } from '../../components/common/Button';
+import { GoogleAuthButton } from '../../components/auth/GoogleAuthButton';
 import { register } from '../../api/authApi';
 import {
   getEmailError,
@@ -109,6 +110,10 @@ export const RegisterForm = () => {
       <Button type="submit" variant="primary" fullWidth disabled={isLoading}>
         {isLoading ? 'Đang đăng ký...' : 'Tạo tài khoản'}
       </Button>
+
+      <div className="auth-divider">hoặc</div>
+
+      <GoogleAuthButton />
       </form>
 
       <div className="auth-footer">

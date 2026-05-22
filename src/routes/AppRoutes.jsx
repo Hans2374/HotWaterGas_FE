@@ -2,6 +2,8 @@ import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { AuthPage } from '../pages/universal/AuthPage/AuthPage';
 import VerifyEmail from '../pages/universal/VerifyEmail';
+import GoogleAuthSuccess from '../pages/universal/GoogleAuthSuccess';
+import GoogleAuthError from '../pages/universal/GoogleAuthError';
 import { Home } from '../pages/universal/Home';
 import { SearchResultsPage } from '../pages/universal/SearchResultsPage';
 import { CategoryPage } from '../pages/universal/CategoryPage';
@@ -154,6 +156,10 @@ export const AppRoutes = () => {
           </PublicRoute>
         )}
       />
+
+      {/* Google OAuth callback routes — no auth guard needed */}
+      <Route path="/auth/google/success" element={<GoogleAuthSuccess />} />
+      <Route path="/auth/google/error" element={<GoogleAuthError />} />
 
       {/* Customer routes wrapped in MainLayout */}
       <Route

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import axiosClient from './axiosClient';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5140';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://localhost:7140';
 
 /** Raw axios instance for logout (no interceptors to avoid circular dependencies). */
 const rawAxios = axios.create({
