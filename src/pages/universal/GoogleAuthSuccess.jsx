@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useSearchParams, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { getMyProfile } from '../../api/authApi';
 import { setSessionMessage } from '../../utils/authSessionMessage';
@@ -7,56 +7,56 @@ import { setSessionMessage } from '../../utils/authSessionMessage';
 const GoogleAuthSuccess = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { setToken, isInitializing } = useAuth();
+  const { setToken, isInitializing, isAdmin } = useAuth();
   const [error, setError] = useState(null);
   const [status, setStatus] = useState('initializing');
 
   useEffect(() => {
     const syncAuthState = async () => {
       try {
-        // Check if token was passed in query string
+        // Parse all query params from backend redirect
         const params = new URLSearchParams(location.search);
         const tokenFromQuery = params.get('token');
+        const expiresAt = params.get('expiresAt');
+        const roleFromQuery = params.get('role');
+        const isNewUser = params.get('isNewUser') === 'true';
 
-        if (tokenFromQuery) {
-          // Case A: Backend returns token in query string
-          setStatus('syncing');
-          setToken(tokenFromQuery);
-
-          // Small delay to let AuthContext update
-          await new Promise((resolve) => setTimeout(resolve, 500));
-        } else {
-          // Case B: Token should already be in localStorage (set by refresh cookie)
-          // Wait for AuthContext session restoration
-          setStatus('restoring');
+        if (!tokenFromQuery) {
+          throw new Error('No authentication token received from server');
         }
 
-        // Verify auth state by fetching profile
+        setStatus('syncing');
+
+        // Store token in auth context
+        setToken(tokenFromQuery, roleFromQuery || '');
+
+        // Wait for auth context to update
+        await new Promise((resolve) => setTimeout(resolve, 300));
+
+        // Verify auth by fetching profile
         try {
           await getMyProfile();
         } catch (profileError) {
-          // If profile fetch fails, token might be missing
-          if (tokenFromQuery) {
-            // We had a token but profile failed - try refresh
-            setStatus('refreshing');
-          } else {
-            throw profileError;
-          }
+          // Token might be invalid, try refresh
+          setStatus('refreshing');
         }
 
-        // Store success message for display after redirect
-        setSessionMessage('Đăng nhập Google thành công! Chào mừng bạn quay trở lại.');
+        // Set welcome message
+        if (isNewUser) {
+          setSessionMessage('Đăng nhập Google thành công! Chào mừng bạn đến với HotWaterGas.');
+        } else {
+          setSessionMessage('Đăng nhập Google thành công! Chào mừng bạn quay trở lại.');
+        }
 
-        // Get previous route from session storage or default to home
-        const previousRoute = sessionStorage.getItem('hotwatergas.previousRoute') || '/';
-        sessionStorage.removeItem('hotwatergas.previousRoute');
+        // Redirect based on role
+        const redirectPath = roleFromQuery === 'Admin' ? '/admin/dashboard' : '/';
 
-        // Small delay for smooth UX
         await new Promise((resolve) => setTimeout(resolve, 300));
 
-        navigate(previousRoute, { replace: true });
+        navigate(redirectPath, { replace: true });
       } catch (err) {
-        setError('Không thể khôi phục phiên đăng nhập. Vui lòng thử đăng nhập lại.');
+        console.error('[GoogleAuthSuccess] Auth sync failed:', err);
+        setError('Không thể hoàn tất đăng nhập. Vui lòng thử đăng nhập lại.');
         setStatus('error');
       }
     };
@@ -107,8 +107,8 @@ const GoogleAuthSuccess = () => {
         </div>
         <h2>Đang xác thực...</h2>
         <p>
-          {status === 'syncing' && 'Đang đồng bộ phiên đăng nhập Google của bạn.'}
-          {status === 'restoring' && 'Đang khôi phục phiên đăng nhập của bạn.'}
+          {status === 'syncing' && 'Đang đăng nhập với Google.'}
+          {status === 'restoring' && 'Đang khôi phục phiên đăng nhập.'}
           {status === 'refreshing' && 'Đang làm mới phiên đăng nhập.'}
           {status === 'initializing' && 'Đang khởi tạo...'}
         </p>
