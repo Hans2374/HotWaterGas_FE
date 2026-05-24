@@ -33,12 +33,12 @@ const consumeOAuthToast = () => {
 
 const formatCurrency = (value) => {
   const num = Number(value || 0);
-  if (num >= 1_000_000) return `${(num / 1_000_000).toFixed(1)}M`;
-  if (num >= 1_000) return `${(num / 1_000).toFixed(1)}K`;
-  return num.toLocaleString();
+  if (num >= 1_000_000) return `${(num / 1_000_000).toFixed(1)}M đ`;
+  if (num >= 1_000) return `${(num / 1_000).toFixed(1)}K đ`;
+  return num.toLocaleString('vi-VN') + ' đ';
 };
 
-const formatFullCurrency = (value) => Number(value || 0).toLocaleString();
+const formatFullCurrency = (value) => Number(value || 0).toLocaleString('vi-VN') + ' đ';
 
 const formatDate = (dateStr) => {
   if (!dateStr) return '-';
@@ -301,7 +301,7 @@ export const AdminDashboardPage = () => {
             ) : summaryError ? (
               <span className="kpi-value kpi-error">—</span>
             ) : (
-              <span className="kpi-value">{formatCurrency(summary?.totalRevenue)} VND</span>
+              <span className="kpi-value">{formatCurrency(summary?.totalRevenue)}</span>
             )}
           </div>
         </div>
@@ -726,7 +726,7 @@ export const AdminDashboardPage = () => {
                       <span className="date-cell">{formatDate(order.createdAt)}</span>
                     </td>
                     <td>
-                      <span className="amount-cell">{formatFullCurrency(order.totalAmount)} VND</span>
+                      <span className="amount-cell">{formatFullCurrency(order.totalAmount)}</span>
                     </td>
                     <td>
                       <PaymentStatusBadge status={order.paymentStatus} />

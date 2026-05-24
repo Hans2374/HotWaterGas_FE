@@ -2,9 +2,10 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { toast } from 'sonner';
 import { Search, X, User, Eye, Check, Ban } from 'lucide-react';
 import { getAdminUsers, toggleUserSuspension } from '../../services/userService';
+import { AdminUserDetailModal } from '../../components/admin/AdminUserDetailModal';
 import './AdminUsersPage.css';
 
-const formatCurrency = (value) => Number(value || 0).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+const formatCurrency = (value) => Number(value || 0).toLocaleString('vi-VN') + ' đ';
 
 const formatDate = (value) => {
   if (!value) return '-';
@@ -52,6 +53,7 @@ export const AdminUsersPage = () => {
 
   const [actionTarget, setActionTarget] = useState(null);
   const [isActioning, setIsActioning] = useState(false);
+  const [detailUserId, setDetailUserId] = useState(null);
 
   const loadUsers = useCallback(async () => {
     setIsLoading(true);
@@ -91,6 +93,25 @@ export const AdminUsersPage = () => {
 
   const openSuspendConfirm = (user) => {
     setActionTarget(user);
+  };
+
+  const handleViewUser = (userId) => {
+    setDetailUserId(userId);
+  };
+
+  const closeDetailModal = () => {
+    setDetailUserId(null);
+  };
+
+  const handleDetailActionComplete = (updatedUserId, newIsSuspended) => {
+    // Update the user in the local list
+    setUsers(prevUsers =>
+      prevUsers.map(u =>
+        u.id === updatedUserId
+          ? { ...u, isSuspended: newIsSuspended }
+          : u
+      )
+    );
   };
 
   const closeConfirm = () => {
@@ -285,8 +306,8 @@ export const AdminUsersPage = () => {
                     <div className="actions-group">
                       <button
                         className="action-btn action-btn-view"
-                        title="View Details (Coming Soon)"
-                        disabled
+                        onClick={() => handleViewUser(user.id)}
+                        title="View Details"
                       >
                         <Eye size={13} />
                       </button>
@@ -364,6 +385,15 @@ export const AdminUsersPage = () => {
             </div>
           </div>
         </div>
+      )}
+
+      {/* User Detail Modal */}
+      {detailUserId && (
+        <AdminUserDetailModal
+          userId={detailUserId}
+          onClose={closeDetailModal}
+          onActionComplete={handleDetailActionComplete}
+        />
       )}
     </div>
   );

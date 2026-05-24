@@ -67,3 +67,12 @@ export const toggleUserSuspension = async (userId) => {
     throw apiError;
   }
 };
+
+export const getAdminUserDetail = async (userId) => {
+  try {
+    const response = await axiosClient.get(`/api/admin/users/${userId}`);
+    return response.data;
+  } catch (error) {
+    throw toApiError(error, 'Failed to load user details.');
+  }
+};
