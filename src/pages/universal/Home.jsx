@@ -11,6 +11,22 @@ import { useWishlist } from '../../hooks/useWishlist';
 import { useCart } from '../../hooks/useCart';
 import './Home.css';
 
+const OAUTH_TOAST_KEY = 'hotwatergas.oauth.toast';
+
+const consumeOAuthToast = () => {
+  try {
+    const stored = sessionStorage.getItem(OAUTH_TOAST_KEY);
+    if (stored) {
+      sessionStorage.removeItem(OAUTH_TOAST_KEY);
+      const { type, message } = JSON.parse(stored);
+      return { type, message };
+    }
+  } catch {
+    // ignore
+  }
+  return null;
+};
+
 const normalizeProducts = (payload) => {
   const items = Array.isArray(payload?.data) ? payload.data : [];
 
@@ -89,6 +105,17 @@ export const Home = () => {
     };
 
     fetchCategories();
+  }, []);
+
+  useEffect(() => {
+    const oauthToast = consumeOAuthToast();
+    if (oauthToast) {
+      if (oauthToast.type === 'success') {
+        toast.success(oauthToast.message);
+      } else {
+        toast.error(oauthToast.message);
+      }
+    }
   }, []);
 
   const wishlistProductIds = useMemo(() => {

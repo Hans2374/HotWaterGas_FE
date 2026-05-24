@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 import {
   RefreshCw, DollarSign, ShoppingCart, CircleCheckBig, AlertTriangle, AlertCircle,
   Ban, TrendingUp, Package, BarChart3, Eye
@@ -13,6 +14,22 @@ import {
   getInventoryAlerts, getRecentOrders
 } from '../../api/adminDashboardApi';
 import './AdminDashboardPage.css';
+
+const OAUTH_TOAST_KEY = 'hotwatergas.oauth.toast';
+
+const consumeOAuthToast = () => {
+  try {
+    const stored = sessionStorage.getItem(OAUTH_TOAST_KEY);
+    if (stored) {
+      sessionStorage.removeItem(OAUTH_TOAST_KEY);
+      const { type, message } = JSON.parse(stored);
+      return { type, message };
+    }
+  } catch {
+    // ignore
+  }
+  return null;
+};
 
 const formatCurrency = (value) => {
   const num = Number(value || 0);
@@ -124,6 +141,18 @@ export const AdminDashboardPage = () => {
   const [lowStock, setLowStock] = useState([]);
   const [inventoryLoading, setInventoryLoading] = useState(true);
   const [inventoryError, setInventoryError] = useState('');
+
+  // ─── OAuth Toast ───────────────────────────────────────────────────────────
+  useEffect(() => {
+    const oauthToast = consumeOAuthToast();
+    if (oauthToast) {
+      if (oauthToast.type === 'success') {
+        toast.success(oauthToast.message);
+      } else {
+        toast.error(oauthToast.message);
+      }
+    }
+  }, []);
 
   // ─── Recent Orders ───────────────────────────────────────────────────────────
   const [orders, setOrders] = useState([]);
