@@ -74,6 +74,18 @@
   border-color: #680000;
 }
 
+/* Accent — yellow background with black text */
+.btn-accent {
+  background-color: #FFFF00;
+  color: #000000;
+  border-color: #FFFF00;
+}
+
+.btn-accent:hover:not(:disabled) {
+  background-color: #E6E600;
+  border-color: #E6E600;
+}
+
 .btn-full-width {
   width: 100%;
 }

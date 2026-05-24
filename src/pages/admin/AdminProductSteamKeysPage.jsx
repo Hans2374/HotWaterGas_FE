@@ -269,7 +269,7 @@ export const AdminProductSteamKeysPage = () => {
               <RefreshCw size={14} />
               <span>Refresh</span>
             </Button>
-            <Button onClick={openAddModal}>
+            <Button variant="accent" onClick={openAddModal}>
               <Plus size={14} />
               <span>Add Keys</span>
             </Button>

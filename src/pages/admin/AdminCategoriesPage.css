@@ -1,10 +1,15 @@
 /* ============================================
-   Admin Categories Page — Dark Theme Refinement
+   Admin Categories Page — Blue theme (isolated)
    ============================================ */
 
-/* ── Dark Theme Tokens (scoped to module) ── */
-.categories-page.module-categories,
+/* ── Blue Theme Container ── */
 .categories-page {
+  /* Blue accent tokens */
+  --cat-accent: #3B82F6;
+  --cat-accent-hover: #2563EB;
+  --cat-accent-light: rgba(59, 130, 246, 0.12);
+  --cat-accent-border: rgba(59, 130, 246, 0.25);
+
   /* Surface hierarchy */
   --cat-bg-page: #111827;
   --cat-bg-card: #1F2937;
@@ -20,11 +25,6 @@
   --cat-text-primary: #F3F4F6;
   --cat-text-secondary: #C9D1D9;
   --cat-text-muted: #8B949E;
-
-  /* Accent (blue for categories) */
-  --cat-accent: var(--admin-categories-accent, #3B82F6);
-  --cat-accent-hover: var(--admin-categories-accent-hover, #2563EB);
-  --cat-accent-light: rgba(59, 130, 246, 0.12);
 
   /* Status tokens */
   --cat-status-active-bg: rgba(16, 185, 129, 0.15);
@@ -43,10 +43,8 @@
   --btn-action-bg-hover: rgba(255, 255, 255, 0.11);
   --btn-action-border: rgba(255, 255, 255, 0.14);
   --btn-action-border-hover: rgba(255, 255, 255, 0.26);
-}
 
-/* ── Page Container ── */
-.categories-page {
+  /* Layout */
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -120,15 +118,15 @@
 }
 
 .filter-pill.active {
-  background: var(--cat-accent);
-  border-color: var(--cat-accent);
-  color: #ffffff;
+  background: var(--cat-bg-header);
+  color: #3B82F6;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   font-weight: 600;
 }
 
 .filter-pill.active:hover {
-  background: var(--cat-accent-hover);
-  border-color: var(--cat-accent-hover);
+  background: rgba(59, 130, 246, 0.15);
+  border-color: rgba(59, 130, 246, 0.4);
 }
 
 .filter-divider {

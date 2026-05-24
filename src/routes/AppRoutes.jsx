@@ -16,6 +16,7 @@ import PaymentReturnPage from '../pages/customer/PaymentReturnPage';
 import PaymentSuccessPage from '../pages/customer/PaymentSuccessPage';
 import PaymentCancelPage from '../pages/customer/PaymentCancelPage';
 import { AdminProductsPage } from '../pages/admin/AdminProductsPage';
+import { AdminUsersPage } from '../pages/admin/AdminUsersPage';
 import { AdminDashboardPage } from '../pages/admin/AdminDashboardPage';
 import { AdminProductCreatePage } from '../pages/admin/AdminProductCreatePage';
 import { AdminProductEditPage } from '../pages/admin/AdminProductEditPage';
@@ -292,6 +293,7 @@ export const AppRoutes = () => {
         <Route path="products/:id/keys" element={<AdminProductSteamKeysPage />} />
         <Route path="categories" element={<AdminCategoriesPage />} />
         <Route path="tags" element={<AdminTagsPage />} />
+        <Route path="users" element={<AdminUsersPage />} />
         <Route path="orders/:orderId" element={<AdminOrderDetailPage />} />
       </Route>
 

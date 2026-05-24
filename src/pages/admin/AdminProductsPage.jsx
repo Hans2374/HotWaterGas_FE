@@ -209,14 +209,14 @@ export const AdminProductsPage = () => {
   const isFiltering = filters.search || filters.status || filters.stockState || filters.categoryId;
 
   return (
-    <div className="products-page">
+    <div className="products-page-accent">
       {/* Page Header */}
       <header className="page-header">
         <div className="page-header-left">
           <h1>Products</h1>
           <p>Manage game listings, stock, and visibility.</p>
         </div>
-        <button className="btn btn-primary" onClick={() => navigate('/admin/products/create')}>
+        <button className="btn btn-primary btn-create-product" onClick={() => navigate('/admin/products/create')}>
           <Plus size={14} />
           Create Product
         </button>
@@ -476,7 +476,7 @@ export const AdminProductsPage = () => {
                 Cancel
               </button>
               <button
-                className={`btn ${actionType === 'hard-delete' ? 'btn-danger' : 'btn-warning'}`}
+                className={`btn ${actionType === 'hard-delete' ? 'btn-danger' : actionType === 'disable' ? 'btn-danger' : 'btn-success'}`}
                 onClick={confirmAction}
                 disabled={isActioning}
               >

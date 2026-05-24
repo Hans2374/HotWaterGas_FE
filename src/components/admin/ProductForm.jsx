@@ -742,7 +742,7 @@ export const ProductForm = ({
         </button>
         <button
           type="submit"
-          className="btn btn-primary"
+          className="btn btn-primary btn-create-product"
           disabled={isSubmitting || isUploadingImage}
         >
           {isSubmitting ? 'Saving...' : mode === 'edit' ? 'Save Changes' : 'Create Product'}

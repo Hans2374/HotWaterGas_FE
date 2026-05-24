@@ -164,7 +164,7 @@ export const AdminProductEditPage = () => {
                 <p className="steam-key-card-subtitle">Fulfillment inventory for this product</p>
               </div>
               <button
-                className="btn btn-secondary"
+                className="btn btn-accent"
                 onClick={() => navigate(`/admin/products/${id}/keys`)}
               >
                 Manage Keys

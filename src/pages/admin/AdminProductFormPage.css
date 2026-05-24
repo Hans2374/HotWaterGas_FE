@@ -1,8 +1,8 @@
 /* ============================================
-   Admin Product Form Pages — Dark Theme Refinement
+   Admin Product Form Pages — Yellow Theme
    ============================================ */
 
-/* ── Dark Theme Tokens (scoped to module) ── */
+/* ── Yellow Theme Container ── */
 .admin-form-shell {
   /* Surface hierarchy */
   --cat-bg-page: #111827;
@@ -14,21 +14,36 @@
   --cat-border-surface: rgba(255, 255, 255, 0.13);
   --cat-border-hover: rgba(255, 255, 255, 0.18);
 
-  /* Semantic text hierarchy — tuned for dark-surface readability */
+  /* Semantic text hierarchy */
   --cat-text-primary: #F3F4F6;
   --cat-text-secondary: #C9D1D9;
   --cat-text-muted: #8B949E;
 
-  /* Accent */
-  --cat-accent: var(--admin-products-accent, #F59E0B);
-  --cat-accent-hover: var(--admin-products-accent-hover, #D97706);
-  --cat-accent-light: rgba(245, 158, 11, 0.12);
+  /* Yellow accent */
+  --cat-accent: #FFFF00;
+  --cat-accent-hover: #E6E600;
+  --cat-accent-light: rgba(255, 255, 0, 0.12);
 
   /* Action button affordance */
   --btn-action-bg: rgba(255, 255, 255, 0.07);
   --btn-action-bg-hover: rgba(255, 255, 255, 0.11);
   --btn-action-border: rgba(255, 255, 255, 0.14);
   --btn-action-border-hover: rgba(255, 255, 255, 0.26);
+
+  /* Layout */
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ── Form Button Overrides ── */
+/* Specific class for create/save buttons - black text on yellow */
+.admin-form-shell .btn-create-product {
+  color: #000000;
+}
+
+.admin-form-shell .btn-create-product:hover:not(:disabled) {
+  color: #000000;
 }
 
 /* ── Page Container ── */

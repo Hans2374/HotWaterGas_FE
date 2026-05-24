@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
-import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Package, LayoutGrid, Tag } from 'lucide-react';
+import { NavLink, useLocation } from 'react-router-dom';
+import { LayoutDashboard, Package, LayoutGrid, Tag, Users } from 'lucide-react';
 import './AdminSidebar.css';
 
 const adminNavItems = [
@@ -8,25 +8,37 @@ const adminNavItems = [
     path: '/admin/dashboard',
     label: 'Dashboard',
     icon: LayoutDashboard,
+    theme: 'red',
   },
   {
     path: '/admin/products',
     label: 'Products',
     icon: Package,
+    theme: 'yellow',
   },
   {
     path: '/admin/categories',
     label: 'Categories',
     icon: LayoutGrid,
+    theme: 'blue',
   },
   {
     path: '/admin/tags',
     label: 'Tags',
     icon: Tag,
+    theme: 'green',
+  },
+  {
+    path: '/admin/users',
+    label: 'Users',
+    icon: Users,
+    theme: 'orange',
   },
 ];
 
 export const AdminSidebar = ({ isOpen, onHoverEnter, onHoverLeave, onClose }) => {
+  const location = useLocation();
+
   const handleNavClick = useCallback(() => {
     if (onClose) onClose();
   }, [onClose]);
@@ -38,6 +50,36 @@ export const AdminSidebar = ({ isOpen, onHoverEnter, onHoverLeave, onClose }) =>
   const handleMouseLeave = useCallback(() => {
     if (onHoverLeave) onHoverLeave();
   }, [onHoverLeave]);
+
+  const isActive = (item) => {
+    if (item.path === '/admin/dashboard') {
+      return location.pathname === item.path;
+    }
+    if (item.path === '/admin/products') {
+      return location.pathname.startsWith('/admin/products');
+    }
+    if (item.path === '/admin/categories') {
+      return location.pathname.startsWith('/admin/categories');
+    }
+    if (item.path === '/admin/tags') {
+      return location.pathname.startsWith('/admin/tags');
+    }
+    if (item.path === '/admin/users') {
+      return location.pathname.startsWith('/admin/users');
+    }
+    return false;
+  };
+
+  const getThemeClass = (theme) => {
+    switch (theme) {
+      case 'red': return 'theme-red';
+      case 'yellow': return 'theme-yellow';
+      case 'blue': return 'theme-blue';
+      case 'green': return 'theme-green';
+      case 'orange': return 'theme-orange';
+      default: return '';
+    }
+  };
 
   return (
     <>
@@ -59,13 +101,14 @@ export const AdminSidebar = ({ isOpen, onHoverEnter, onHoverLeave, onClose }) =>
           <ul className="admin-sidebar-menu">
             {adminNavItems.map((item) => {
               const Icon = item.icon;
+              const active = isActive(item);
+              const themeClass = getThemeClass(item.theme);
+
               return (
                 <li key={item.path} className="admin-sidebar-item">
                   <NavLink
                     to={item.path}
-                    className={({ isActive }) =>
-                      `admin-sidebar-link ${isActive ? 'active' : ''}`
-                    }
+                    className={`admin-sidebar-link ${themeClass} ${active ? 'active' : ''}`}
                     onClick={handleNavClick}
                   >
                     <span className="admin-sidebar-icon">
