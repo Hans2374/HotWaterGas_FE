@@ -9,6 +9,12 @@
   margin-bottom: 16px;
 }
 
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
 .input-label {
   font-size: 11.5px;
   font-weight: 700;
@@ -63,6 +69,42 @@
 .input:disabled {
   opacity: 0.45;
   cursor: not-allowed;
+}
+
+.input.input--with-icon {
+  padding-right: 40px;
+}
+
+.input-icon--right {
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.input-icon {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.input-icon > .input-icon-btn {
+  pointer-events: auto;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: #6b7280;
+  transition: color 0.2s ease;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon > .input-icon-btn:hover {
+  color: #9ca3af;
 }
 
 .input-error-message {

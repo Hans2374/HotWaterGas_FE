@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { Eye, EyeOff } from 'lucide-react';
 import { Input } from '../../components/common/Input';
 import { Button } from '../../components/common/Button';
 import { GoogleAuthButton } from '../../components/auth/GoogleAuthButton';
@@ -15,6 +16,7 @@ export const LoginForm = ({ onShowVerifyModal }) => {
   const { setToken } = useAuth();
 
   const [isFpOpen, setIsFpOpen] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const [formData, setFormData] = useState({
     email: '',
@@ -116,13 +118,28 @@ export const LoginForm = ({ onShowVerifyModal }) => {
 
         <Input
           label="Mật khẩu"
-          type="password"
+          type={showPassword ? 'text' : 'password'}
           name="password"
           placeholder="Nhập mật khẩu"
           value={formData.password}
           onChange={handleInputChange}
           error={errors.password}
           autoComplete="current-password"
+          rightIcon={
+            <button
+              type="button"
+              className="input-icon-btn"
+              onClick={() => setShowPassword((v) => !v)}
+              aria-label={showPassword ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
+              tabIndex={-1}
+            >
+              {showPassword ? (
+                <EyeOff size={16} strokeWidth={1.75} />
+              ) : (
+                <Eye size={16} strokeWidth={1.75} />
+              )}
+            </button>
+          }
         />
 
         <div className="auth-options-row">

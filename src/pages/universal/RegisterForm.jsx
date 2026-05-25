@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Eye, EyeOff } from 'lucide-react';
 import { Input } from '../../components/common/Input';
 import { Button } from '../../components/common/Button';
 import { GoogleAuthButton } from '../../components/auth/GoogleAuthButton';
@@ -16,6 +17,9 @@ export const RegisterForm = ({ onRegisterSuccess }) => {
     password: '',
     confirmPassword: ''
   });
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
@@ -82,24 +86,54 @@ export const RegisterForm = ({ onRegisterSuccess }) => {
 
       <Input
         label="Mật khẩu"
-        type="password"
+        type={showPassword ? 'text' : 'password'}
         name="password"
         placeholder="Ít nhất 8 ký tự"
         value={formData.password}
         onChange={handleInputChange}
         error={errors.password}
         autoComplete="new-password"
+        rightIcon={
+          <button
+            type="button"
+            className="input-icon-btn"
+            onClick={() => setShowPassword((v) => !v)}
+            aria-label={showPassword ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
+            tabIndex={-1}
+          >
+            {showPassword ? (
+              <EyeOff size={16} strokeWidth={1.75} />
+            ) : (
+              <Eye size={16} strokeWidth={1.75} />
+            )}
+          </button>
+        }
       />
 
       <Input
         label="Xác nhận mật khẩu"
-        type="password"
+        type={showConfirmPassword ? 'text' : 'password'}
         name="confirmPassword"
         placeholder="Nhập lại mật khẩu"
         value={formData.confirmPassword}
         onChange={handleInputChange}
         error={errors.confirmPassword}
         autoComplete="new-password"
+        rightIcon={
+          <button
+            type="button"
+            className="input-icon-btn"
+            onClick={() => setShowConfirmPassword((v) => !v)}
+            aria-label={showConfirmPassword ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
+            tabIndex={-1}
+          >
+            {showConfirmPassword ? (
+              <EyeOff size={16} strokeWidth={1.75} />
+            ) : (
+              <Eye size={16} strokeWidth={1.75} />
+            )}
+          </button>
+        }
       />
 
       <Button type="submit" variant="primary" fullWidth disabled={isLoading}>
