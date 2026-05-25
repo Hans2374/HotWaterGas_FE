@@ -18,7 +18,8 @@ export const LoginForm = () => {
 
   const [formData, setFormData] = useState({
     email: '',
-    password: ''
+    password: '',
+    rememberMe: false
   });
 
   const [errors, setErrors] = useState({});
@@ -32,8 +33,11 @@ export const LoginForm = () => {
   }, []);
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    const { name, value, type, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
+    }));
     setErrors((prev) => ({ ...prev, [name]: '' }));
     setApiError('');
   };
@@ -56,7 +60,11 @@ export const LoginForm = () => {
     setApiError('');
 
     try {
-      const response = await login(formData.email, formData.password);
+      const response = await login(
+        formData.email,
+        formData.password,
+        formData.rememberMe
+      );
       const { accessToken, role } = normalizeLoginResponse(response);
       if (!accessToken) {
         setApiError('Đăng nhập thành công nhưng không nhận được access token.');
@@ -116,6 +124,20 @@ export const LoginForm = () => {
           error={errors.password}
           autoComplete="current-password"
         />
+
+        <div className="auth-options-row">
+          <label className="auth-checkbox-label">
+            <input
+              type="checkbox"
+              name="rememberMe"
+              checked={formData.rememberMe}
+              onChange={handleInputChange}
+              className="auth-checkbox-input"
+            />
+            <span className="auth-checkbox-custom" />
+            <span className="auth-checkbox-text">Ghi nhớ đăng nhập</span>
+          </label>
+        </div>
 
         <div className="auth-forgot-row">
           <button

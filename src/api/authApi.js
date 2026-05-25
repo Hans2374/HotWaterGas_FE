@@ -10,11 +10,12 @@ const rawAxios = axios.create({
   headers: { 'Content-Type': 'application/json' }
 });
 
-export const login = async (email, password) => {
+export const login = async (email, password, rememberMe = false) => {
   try {
     const response = await axiosClient.post('/api/auth/login', {
       email,
-      password
+      password,
+      rememberMe
     });
     return response.data;
   } catch (error) {
