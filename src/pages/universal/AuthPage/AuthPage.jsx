@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { AuthLayout } from '../../../components/layout/AuthLayout';
 import { LoginForm } from '../LoginForm';
 import { RegisterForm } from '../RegisterForm';
+import EmailVerificationModal from '../../../components/auth/EmailVerificationModal';
+import { useAuth } from '../../../hooks/useAuth';
 import './AuthPage.css';
 
 /* ─────────────────────────────────────────────────────────────────────────────
@@ -29,12 +31,17 @@ import './AuthPage.css';
    ───────────────────────────────────────────────────────────────────────────── */
 export const AuthPage = ({ mode: modeFromRoute }) => {
   const navigate = useNavigate();
+  const { updateIsEmailVerified } = useAuth();
 
   /* Initialise from the route prop. On direct URL navigation (e.g. refreshing
      at /register) this is the only source of truth. */
   const [activeMode, setActiveMode] = useState(() =>
     modeFromRoute === 'register' ? 'register' : 'login'
   );
+
+  /* Email verification modal shown after successful registration. */
+  const [verifyEmail, setVerifyEmail] = useState('');
+  const [showVerifyModal, setShowVerifyModal] = useState(false);
 
   /* Keep local state in sync when the route changes externally (e.g. browser
      back/forward). We use a ref to detect "external" vs "internal" changes:
@@ -62,6 +69,19 @@ export const AuthPage = ({ mode: modeFromRoute }) => {
     setActiveMode(incoming);
   }, [modeFromRoute]);
 
+  /* ── Registration success — open verification modal ──────────────── */
+  const handleRegisterSuccess = (email) => {
+    setVerifyEmail(email);
+    setShowVerifyModal(true);
+  };
+
+  /* ── Verification modal closed (verified or dismissed) — sync context then go to login */
+  const handleVerifyModalClose = async () => {
+    await updateIsEmailVerified();
+    setShowVerifyModal(false);
+    goToLogin();
+  };
+
   /* ── Navigation helpers ──────────────────────────────────────────── */
   const goToLogin = () => {
     isInternalNavigationRef.current = true;
@@ -77,14 +97,29 @@ export const AuthPage = ({ mode: modeFromRoute }) => {
     navigate('/register');
   };
 
+  /* ── Login requests email verification (e.g. unverified user tries to log in) */
+  const handleShowVerifyFromLogin = (email) => {
+    setVerifyEmail(email);
+    setShowVerifyModal(true);
+  };
+
   /* ── Render ─────────────────────────────────────────────────────── */
   return (
-    <AuthLayout
-      activeMode={activeMode}
-      onSwitchToLogin={goToLogin}
-      onSwitchToRegister={goToRegister}
-      loginForm={<LoginForm />}
-      registerForm={<RegisterForm />}
-    />
+    <>
+      <AuthLayout
+        activeMode={activeMode}
+        onSwitchToLogin={goToLogin}
+        onSwitchToRegister={goToRegister}
+        loginForm={<LoginForm onShowVerifyModal={handleShowVerifyFromLogin} />}
+        registerForm={<RegisterForm onRegisterSuccess={handleRegisterSuccess} />}
+      />
+
+      <EmailVerificationModal
+        isOpen={showVerifyModal}
+        email={verifyEmail}
+        onClose={handleVerifyModalClose}
+        onSuccess={handleVerifyModalClose}
+      />
+    </>
   );
 };

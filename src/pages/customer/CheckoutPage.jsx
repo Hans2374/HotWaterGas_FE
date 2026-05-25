@@ -1,9 +1,11 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Loader } from '../../components/common/Loader';
 import { Button } from '../../components/common/Button';
 import { createPayment } from '../../api/paymentApi';
 import { previewCheckout } from '../../api/checkoutApi';
+import { useAuth } from '../../hooks/useAuth';
+import EmailVerificationModal from '../../components/auth/EmailVerificationModal';
 import './CheckoutPage.css';
 
 const CHECKOUT_SELECTION_KEY = 'hotwatergas.checkout.selectedCartItemIds';
@@ -94,11 +96,18 @@ const CheckoutIssueItem = ({ item }) => {
 export const CheckoutPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { email, isEmailVerified, updateIsEmailVerified } = useAuth();
   const selectedCartItemIds = useMemo(() => readSelectedCartItemIds(location.state), [location.state]);
   const [preview, setPreview] = useState(readCheckoutPreview());
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
   const [isSubmittingPayment, setIsSubmittingPayment] = useState(false);
+
+  /* Email verification modal state. */
+  const [showVerifyModal, setShowVerifyModal] = useState(false);
+
+  /* Ref to hold the pending payment action so we can replay it after verification. */
+  const paymentAfterVerifyRef = useRef(null);
 
   useEffect(() => {
     if (selectedCartItemIds.length === 0) {
@@ -145,6 +154,17 @@ export const CheckoutPage = () => {
       canProceed: preview?.canProceed === true
     });
 
+    /* ── Email verification gate ─────────────────────────────────────── */
+    if (!isEmailVerified) {
+      console.log('[Checkout] email not verified — opening verification modal');
+      /* Reset submitting flag so the replay can proceed without hitting the guard. */
+      setIsSubmittingPayment(false);
+      paymentAfterVerifyRef.current = () => handleContinueToPayment();
+      setShowVerifyModal(true);
+      return;
+    }
+
+    /* ── Proceed to payment ─────────────────────────────────────────── */
     setIsSubmittingPayment(true);
     setError('');
 
@@ -181,13 +201,30 @@ export const CheckoutPage = () => {
 
   const canProceed = Boolean(preview?.canProceed);
 
+  /* ── Email verification callback ─────────────────────────────────────── */
+  const handleVerifySuccess = async () => {
+    setShowVerifyModal(false);
+    await updateIsEmailVerified();
+    /* Replay the pending payment after context is updated. */
+    if (paymentAfterVerifyRef.current) {
+      paymentAfterVerifyRef.current();
+      paymentAfterVerifyRef.current = null;
+    }
+  };
+
+  const handleVerifyClose = () => {
+    setShowVerifyModal(false);
+    paymentAfterVerifyRef.current = null;
+  };
+
   return (
-    <section className="checkout-shell">
-      <div className="checkout-main">
-        <div className="checkout-header">
-          <h2>Thanh toán</h2>
-          <p className="checkout-subtitle">Kiểm tra xác thực máy chủ uy tín trước khi thanh toán.</p>
-        </div>
+    <>
+      <div className="checkout-shell">
+        <div className="checkout-main">
+          <div className="checkout-header">
+            <h2>Thanh toán</h2>
+            <p className="checkout-subtitle">Kiểm tra xác thực máy chủ uy tín trước khi thanh toán.</p>
+          </div>
 
         {isLoading && <Loader text="Đang xác thực thanh toán..." />}
 
@@ -232,37 +269,45 @@ export const CheckoutPage = () => {
             )}
           </>
         )}
+        </div>
+
+        <aside className="checkout-summary">
+          <h3 className="checkout-summary-title">Order Summary</h3>
+          <div className="checkout-summary-row">
+            <span>Total</span>
+            <strong>{formatCurrency(preview?.finalTotal)}</strong>
+          </div>
+          <div className="checkout-summary-panel">
+            <span className="checkout-summary-label">Payment Method</span>
+            <div className="checkout-summary-value">PayOS QR</div>
+            <p className="checkout-summary-note">Steam key will be sent to your email after successful payment.</p>
+          </div>
+          {!canProceed && preview?.blockingMessages?.length > 0 && (
+            <div className="checkout-summary-blocker">
+              <strong>Thanh toán bị chặn</strong>
+              <p>{preview.blockingMessages[0]}</p>
+            </div>
+          )}
+          <Button
+            type="button"
+            className="checkout-continue-button"
+            disabled={!canProceed || isSubmittingPayment}
+            onClick={handleContinueToPayment}
+          >
+            {isSubmittingPayment ? 'Đang chuyển hướng...' : 'Tiếp tục thanh toán'}
+          </Button>
+          {!canProceed && (
+            <p className="checkout-summary-helper">Giải quyết các mục bị chặn trước khi tiếp tục.</p>
+          )}
+        </aside>
       </div>
 
-      <aside className="checkout-summary">
-        <h3 className="checkout-summary-title">Order Summary</h3>
-        <div className="checkout-summary-row">
-          <span>Total</span>
-          <strong>{formatCurrency(preview?.finalTotal)}</strong>
-        </div>
-        <div className="checkout-summary-panel">
-          <span className="checkout-summary-label">Payment Method</span>
-          <div className="checkout-summary-value">PayOS QR</div>
-          <p className="checkout-summary-note">Steam key will be sent to your email after successful payment.</p>
-        </div>
-        {!canProceed && preview?.blockingMessages?.length > 0 && (
-          <div className="checkout-summary-blocker">
-            <strong>Thanh toán bị chặn</strong>
-            <p>{preview.blockingMessages[0]}</p>
-          </div>
-        )}
-        <Button
-          type="button"
-          className="checkout-continue-button"
-          disabled={!canProceed || isSubmittingPayment}
-          onClick={handleContinueToPayment}
-        >
-          {isSubmittingPayment ? 'Đang chuyển hướng...' : 'Tiếp tục thanh toán'}
-        </Button>
-        {!canProceed && (
-          <p className="checkout-summary-helper">Giải quyết các mục bị chặn trước khi tiếp tục.</p>
-        )}
-      </aside>
-    </section>
+      <EmailVerificationModal
+        isOpen={showVerifyModal}
+        email={email}
+        onClose={handleVerifyClose}
+        onSuccess={handleVerifySuccess}
+      />
+    </>
   );
 };

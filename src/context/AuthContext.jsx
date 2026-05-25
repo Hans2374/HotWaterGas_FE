@@ -5,7 +5,7 @@ import React, {
   useCallback,
   useRef
 } from 'react';
-import { logout as logoutApi } from '../api/authApi';
+import { logout as logoutApi, getMyProfile } from '../api/authApi';
 import axiosClient from '../api/axiosClient';
 import {
   getAccessToken,
@@ -44,7 +44,8 @@ const deriveStateFromToken = (token) => {
     userId: parsed.userId || '',
     username: parsed.username || '',
     email: parsed.email || '',
-    displayName: parsed.displayName || ''
+    displayName: parsed.displayName || '',
+    isEmailVerified: false
   };
 };
 
@@ -57,6 +58,7 @@ export const AuthProvider = ({ children }) => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [displayName, setDisplayName] = useState('');
+  const [isEmailVerified, setIsEmailVerified] = useState(false);
   /**
    * True during the initial session-restoration handshake on app mount.
    * Protected routes use this to avoid premature redirects on browser-refresh.
@@ -181,6 +183,7 @@ export const AuthProvider = ({ children }) => {
       setUsername('');
       setEmail('');
       setDisplayName('');
+      setIsEmailVerified(false);
     });
 
     const unsubTokenUpdated = subscribeToAuthEvent('tokenUpdated', () => {
@@ -193,6 +196,7 @@ export const AuthProvider = ({ children }) => {
       setUsername(derived.username);
       setEmail(derived.email);
       setDisplayName(derived.displayName);
+      // isEmailVerified is kept from current state — it is only updated via updateIsEmailVerified()
       scheduleProactiveRefresh();
     });
 
@@ -206,6 +210,7 @@ export const AuthProvider = ({ children }) => {
       setUsername('');
       setEmail('');
       setDisplayName('');
+      setIsEmailVerified(false);
     };
 
     window.addEventListener(AUTH_EXPIRED_LISTENER, handleExpired);
@@ -303,6 +308,7 @@ export const AuthProvider = ({ children }) => {
     setUsername('');
     setEmail('');
     setDisplayName('');
+    setIsEmailVerified(false);
     broadcastLogout();
 
     try {
@@ -312,6 +318,20 @@ export const AuthProvider = ({ children }) => {
     }
   }, [cancelProactiveRefresh]);
 
+  /**
+   * Fetches the latest user profile from the backend and syncs isEmailVerified
+   * into context state. Call this after email verification succeeds so that
+   * downstream pages (e.g. CheckoutPage) immediately see the updated flag.
+   */
+  const updateIsEmailVerified = useCallback(async () => {
+    try {
+      const profile = await getMyProfile();
+      setIsEmailVerified(Boolean(profile?.isEmailVerified ?? profile?.IsEmailVerified));
+    } catch {
+      // Non-critical — the user can retry on next payment attempt.
+    }
+  }, []);
+
   const value = {
     token,
     role,
@@ -319,9 +339,11 @@ export const AuthProvider = ({ children }) => {
     username,
     email,
     displayName,
+    isEmailVerified,
     isAdmin: role === 'Admin',
     setToken,
     setAccessTokenOnly,
+    updateIsEmailVerified,
     logout: handleLogout,
     isAuthenticated: !!token,
     isLoading: false,

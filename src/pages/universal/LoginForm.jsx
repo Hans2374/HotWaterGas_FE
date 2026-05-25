@@ -10,7 +10,7 @@ import { getEmailError, getPasswordError } from '../../utils/validation';
 import { consumeSessionMessage } from '../../utils/authSessionMessage';
 import ForgotPasswordModal from '../../components/auth/ForgotPasswordModal';
 
-export const LoginForm = () => {
+export const LoginForm = ({ onShowVerifyModal }) => {
   const navigate = useNavigate();
   const { setToken } = useAuth();
 
@@ -82,7 +82,7 @@ export const LoginForm = () => {
       const msg = error?.message || error?.Message || 'Đăng nhập thất bại. Vui lòng thử lại.';
       if (typeof msg === 'string' && msg.toLowerCase().includes('not verified')) {
         try { sessionStorage.setItem('hotwatergas.verify.email', formData.email); } catch (_) {}
-        navigate('/verify-email', { state: { email: formData.email }, replace: true });
+        onShowVerifyModal?.(formData.email);
         return;
       }
       setApiError(msg);

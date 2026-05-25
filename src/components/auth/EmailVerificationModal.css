@@ -1,0 +1,295 @@
+/* ═══════════════════════════════════════════════════════════════════════════════
+   Email Verification Modal — Same pattern as ForgotPasswordModal
+   ═══════════════════════════════════════════════════════════════════════════════ */
+
+/* ── Modal Overlay ───────────────────────────────────────────────────────── */
+
+.ev-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 16px;
+}
+
+/* ── Modal Container ──────────────────────────────────────────────────── */
+
+.ev-modal {
+  background: var(--customer-surface);
+  border: 1px solid var(--customer-border);
+  border-radius: 16px;
+  width: 420px;
+  max-width: calc(100vw - 32px);
+  padding: 28px 28px 24px;
+  position: relative;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.55);
+}
+
+/* ── Header ────────────────────────────────────────────────────────────── */
+
+.ev-header {
+  margin-bottom: 22px;
+  padding-right: 24px;
+}
+
+.ev-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--customer-text-primary);
+  margin: 0 0 6px;
+  line-height: 1.3;
+}
+
+.ev-subtitle {
+  font-size: 13px;
+  color: var(--customer-text-secondary);
+  margin: 0;
+  line-height: 1.55;
+}
+
+.ev-subtitle strong {
+  color: var(--customer-text-primary);
+  font-weight: 600;
+}
+
+/* ── Close Button ─────────────────────────────────────────────────────── */
+
+.ev-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--customer-text-secondary);
+  font-size: 20px;
+  line-height: 1;
+  padding: 6px 8px;
+  border-radius: 6px;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+
+.ev-close:hover {
+  color: var(--customer-text-primary);
+  background: var(--customer-surface-hover);
+}
+
+.ev-close:focus-visible {
+  outline: 2px solid var(--customer-accent);
+  outline-offset: 1px;
+}
+
+/* ── Form Fields ──────────────────────────────────────────────────────── */
+
+.ev-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.ev-label {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--customer-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.ev-input {
+  width: 100%;
+  height: 44px;
+  padding: 0 14px;
+  background: var(--customer-bg);
+  border: 1px solid var(--customer-border);
+  border-radius: 8px;
+  color: var(--customer-text-primary);
+  font-size: 14px;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  box-sizing: border-box;
+}
+
+.ev-input::placeholder {
+  color: var(--customer-text-secondary);
+  opacity: 0.6;
+}
+
+.ev-input:focus {
+  border-color: var(--customer-accent);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12);
+}
+
+.ev-input:disabled {
+  background: var(--customer-surface);
+  color: var(--customer-text-secondary);
+  cursor: not-allowed;
+}
+
+/* ── OTP Input ────────────────────────────────────────────────────────── */
+
+.ev-otp-input {
+  letter-spacing: 0.3em;
+  font-size: 20px;
+  font-weight: 700;
+  text-align: center;
+  padding: 0 14px;
+  caret-color: var(--customer-accent);
+}
+
+.ev-field-hint {
+  font-size: 12px;
+  color: var(--customer-text-secondary);
+}
+
+/* ── Alert ─────────────────────────────────────────────────────────────── */
+
+.ev-alert {
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 1.45;
+  margin-bottom: 14px;
+}
+
+.ev-alert--error {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: #f87171;
+}
+
+/* ── Footer Actions ────────────────────────────────────────────────────── */
+
+.ev-footer {
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid var(--customer-border);
+}
+
+/* ── Buttons ──────────────────────────────────────────────────────────── */
+
+.ev-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 40px;
+  padding: 0 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background 0.15s ease, border-color 0.15s ease, opacity 0.15s ease, color 0.15s ease;
+  white-space: nowrap;
+}
+
+.ev-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.ev-btn--primary {
+  background: var(--customer-accent);
+  color: #fff;
+  border-color: var(--customer-accent);
+}
+
+.ev-btn--primary:hover:not(:disabled) {
+  background: var(--customer-accent-hover);
+  border-color: var(--customer-accent-hover);
+}
+
+.ev-btn--ghost {
+  background: transparent;
+  color: var(--customer-text-secondary);
+  border-color: var(--customer-border);
+}
+
+.ev-btn--ghost:hover:not(:disabled) {
+  background: var(--customer-surface-hover);
+  color: var(--customer-text-primary);
+}
+
+.ev-cooldown-text {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  font-size: 13px;
+}
+
+/* ── Success Screen ────────────────────────────────────────────────────── */
+
+.ev-modal--success {
+  align-items: center;
+  text-align: center;
+  padding: 48px 28px 36px;
+}
+
+.ev-success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+}
+
+.ev-success-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(34, 197, 94, 0.12);
+  border: 1.5px solid rgba(34, 197, 94, 0.3);
+  color: #22c55e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.ev-success-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--customer-text-primary);
+  margin: 0;
+}
+
+.ev-success-text {
+  font-size: 13px;
+  color: var(--customer-text-secondary);
+  margin: 0;
+  line-height: 1.6;
+  max-width: 280px;
+}
+
+/* ── Responsive ───────────────────────────────────────────────────────── */
+
+@media (max-width: 480px) {
+  .ev-modal {
+    padding: 24px 18px 20px;
+    border-radius: 12px;
+  }
+
+  .ev-header {
+    padding-right: 20px;
+  }
+
+  .ev-footer {
+    flex-direction: column-reverse;
+    gap: 12px;
+  }
+
+  .ev-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}

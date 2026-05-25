@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Input } from '../../components/common/Input';
 import { Button } from '../../components/common/Button';
 import { GoogleAuthButton } from '../../components/auth/GoogleAuthButton';
@@ -10,9 +10,7 @@ import {
   getConfirmPasswordError
 } from '../../utils/validation';
 
-export const RegisterForm = () => {
-  const navigate = useNavigate();
-
+export const RegisterForm = ({ onRegisterSuccess }) => {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -54,10 +52,7 @@ export const RegisterForm = () => {
 
     try {
       const response = await register(formData.email, formData.password);
-      try {
-        sessionStorage.setItem('hotwatergas.verify.email', formData.email);
-      } catch (_) {}
-      navigate('/verify-email', { replace: true, state: { email: formData.email, message: response?.message } });
+      onRegisterSuccess?.(formData.email);
     } catch (error) {
       const msg = error?.message || error?.Message || 'Đăng ký thất bại. Vui lòng thử lại.';
       setApiError(msg);

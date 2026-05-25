@@ -1,12 +1,13 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Eye, EyeOff, Loader } from 'lucide-react';
+import { Eye, EyeOff, Loader, CheckCircle, AlertCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { getMyProfile, updateMyProfile, changeMyPassword } from '../../api/authApi';
+import { getMyProfile, updateMyProfile, changeMyPassword, verifyEmail, resendVerification } from '../../api/authApi';
 import { AUTH_TOKEN_UPDATED_LISTENER } from '../../utils/authEventBridge';
 import { setAccessToken } from '../../utils/tokenManager';
 import { useAuth } from '../../hooks/useAuth';
 import ForgotPasswordModal from '../../components/auth/ForgotPasswordModal';
+import EmailVerificationModal from '../../components/auth/EmailVerificationModal';
 import './ProfilePage.css';
 
 // ── Password input with show/hide toggle ───────────────────────────────────────
@@ -67,6 +68,16 @@ export const ProfilePage = () => {
   // Forgot password modal
   const [showForgotModal, setShowForgotModal] = useState(false);
 
+  // Email verification modal
+  const [showVerifyModal, setShowVerifyModal] = useState(false);
+  const [isEmailVerified, setIsEmailVerified] = useState(false);
+
+  const handleVerificationSuccess = () => {
+    setIsEmailVerified(true);
+    setShowVerifyModal(false);
+    toast.success('Xác minh email thành công');
+  };
+
   // ── Forgot password success — log out and redirect to login ──────────────
   const handleForgotPasswordSuccess = async () => {
     // Modal countdown has finished (or user clicked early); execute logout + redirect
@@ -83,6 +94,7 @@ export const ProfilePage = () => {
         const profile = await getMyProfile();
         setDisplayName(profile.displayName || '');
         setSavedDisplayName(profile.displayName || '');
+        setIsEmailVerified(profile.isEmailVerified || false);
       } catch (err) {
         setProfileError('Không thể tải thông tin hồ sơ.');
       } finally {
@@ -199,15 +211,32 @@ export const ProfilePage = () => {
 
           <div className="profile-field">
             <label className="profile-label" htmlFor="email">Email</label>
-            <input
-              id="email"
-              type="email"
-              className="profile-input profile-input--readonly"
-              value={authEmail || ''}
-              readOnly
-              tabIndex={-1}
-              aria-readonly="true"
-            />
+            <div className="profile-email-row">
+              <input
+                id="email"
+                type="email"
+                className="profile-input profile-input--readonly"
+                value={authEmail || ''}
+                readOnly
+                tabIndex={-1}
+                aria-readonly="true"
+              />
+              {isEmailVerified ? (
+                <div className="profile-verified-badge">
+                  <CheckCircle size={16} strokeWidth={2} />
+                  <span>Đã xác minh</span>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  className="profile-btn profile-btn--warning profile-btn--sm"
+                  onClick={() => setShowVerifyModal(true)}
+                >
+                  <AlertCircle size={14} strokeWidth={2} />
+                  Xác minh email
+                </button>
+              )}
+            </div>
           </div>
 
           <div className="profile-field">
@@ -309,6 +338,13 @@ export const ProfilePage = () => {
         defaultEmail={authEmail || ''}
         onSuccess={handleForgotPasswordSuccess}
         logoutCountdown={5}
+      />
+
+      <EmailVerificationModal
+        isOpen={showVerifyModal}
+        onClose={() => setShowVerifyModal(false)}
+        email={authEmail || ''}
+        onSuccess={handleVerificationSuccess}
       />
     </div>
   );
