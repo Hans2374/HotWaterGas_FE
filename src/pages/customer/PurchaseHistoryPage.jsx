@@ -1,12 +1,15 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import myOrdersApi from '../../api/myOrdersApi';
 import PurchaseHistoryTable from '../../components/customer/PurchaseHistoryTable';
 import './PurchaseHistoryPage.css';
 
+const DEFAULT_PAGE_SIZE = 10;
+
 /**
  * PurchaseHistoryPage - Customer's order history
- * 
+ *
  * Route: /account/orders
  * Access: Authenticated customers only
  */
@@ -16,45 +19,62 @@ export default function PurchaseHistoryPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Fetch orders on mount
-  useEffect(() => {
-    const fetchOrders = async () => {
-      try {
+  const [pagination, setPagination] = useState({
+    pageNumber: 1,
+    pageSize: DEFAULT_PAGE_SIZE,
+    totalCount: 0,
+    totalPages: 0,
+    hasPreviousPage: false,
+    hasNextPage: false
+  });
+
+  const loadOrders = async () => {
+    try {
       setLoading(true);
       setError(null);
-      const data = await myOrdersApi.getMyOrders();
-      setOrders(data);
-      } catch (err) {
-        console.error('Failed to fetch orders:', err);
-        setError('Không thể tải lịch sử đơn hàng');
-      } finally {
-        setLoading(false);
-      }
-    };
+      const data = await myOrdersApi.getMyOrders(pagination.pageNumber, pagination.pageSize);
 
-    fetchOrders();
-  }, []);
+      setOrders(Array.isArray(data.items) ? data.items : []);
+      setPagination((prev) => ({
+        ...prev,
+        pageNumber: data.pageNumber ?? prev.pageNumber,
+        pageSize: data.pageSize ?? prev.pageSize,
+        totalCount: data.totalCount ?? 0,
+        totalPages: data.totalPages ?? 0,
+        hasPreviousPage: data.hasPreviousPage ?? false,
+        hasNextPage: data.hasNextPage ?? false
+      }));
+    } catch (err) {
+      console.error('Failed to fetch orders:', err);
+      setError('Không thể tải lịch sử đơn hàng');
+      setOrders([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadOrders();
+  }, [pagination.pageNumber, pagination.pageSize]);
+
+  const handlePageChange = (newPage) => {
+    if (newPage < 1 || newPage > pagination.totalPages) return;
+    setPagination((prev) => ({ ...prev, pageNumber: newPage }));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const handleOrderClick = (orderId) => {
     navigate(`/account/orders/${orderId}`);
   };
 
   const handleRetry = () => {
-    setError(null);
-    setLoading(true);
-    const fetchOrders = async () => {
-      try {
-        const data = await myOrdersApi.getMyOrders();
-        setOrders(data);
-      } catch (err) {
-        console.error('Failed to fetch orders:', err);
-        setError('Không thể tải lịch sử đơn hàng');
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchOrders();
+    loadOrders();
   };
+
+  const startItem = pagination.totalCount === 0
+    ? 0
+    : (pagination.pageNumber - 1) * pagination.pageSize + 1;
+  const endItem = Math.min(pagination.pageNumber * pagination.pageSize, pagination.totalCount);
 
   return (
     <div className="purchase-history-page">
@@ -86,6 +106,37 @@ export default function PurchaseHistoryPage() {
         error={error}
         onRetry={handleRetry}
       />
+
+      {!loading && !error && orders.length > 0 && pagination.totalPages > 1 && (
+        <div className="orders-pagination-bar">
+          <span className="orders-pagination-meta">
+            Hiển thị <strong>{startItem}–{endItem}</strong> của <strong>{pagination.totalCount}</strong> đơn hàng
+          </span>
+          <div className="orders-pagination-nav">
+            <button
+              className="orders-pagination-btn"
+              onClick={() => handlePageChange(pagination.pageNumber - 1)}
+              disabled={!pagination.hasPreviousPage}
+              aria-label="Trang trước"
+            >
+              <ChevronLeft size={14} />
+              Trước
+            </button>
+            <span className="orders-pagination-label">
+              Trang {pagination.pageNumber} / {pagination.totalPages}
+            </span>
+            <button
+              className="orders-pagination-btn"
+              onClick={() => handlePageChange(pagination.pageNumber + 1)}
+              disabled={!pagination.hasNextPage}
+              aria-label="Trang sau"
+            >
+              Sau
+              <ChevronRight size={14} />
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

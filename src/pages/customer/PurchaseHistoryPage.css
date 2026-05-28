@@ -75,3 +75,103 @@
     font-size: 13px;
   }
 }
+
+/* ── Pagination Bar ─────────────────────────────────────────────────────────── */
+
+.orders-pagination-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background-color: var(--customer-surface);
+  border: 1px solid var(--customer-border);
+  border-radius: 8px;
+  margin-top: 16px;
+}
+
+.orders-pagination-meta {
+  font-size: 14px;
+  color: var(--customer-text-secondary);
+  flex-shrink: 0;
+}
+
+.orders-pagination-meta strong {
+  color: var(--customer-text-primary);
+  font-weight: 600;
+}
+
+.orders-pagination-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.orders-pagination-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 16px;
+  background-color: var(--customer-surface);
+  color: var(--customer-text-secondary);
+  border: 1px solid var(--customer-border);
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+  white-space: nowrap;
+}
+
+.orders-pagination-btn:hover:not(:disabled) {
+  color: var(--customer-text-primary);
+  background-color: var(--customer-surface-hover);
+  border-color: var(--customer-text-secondary);
+}
+
+.orders-pagination-btn:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.orders-pagination-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.orders-pagination-label {
+  padding: 0 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--customer-text-primary);
+  white-space: nowrap;
+  min-width: 80px;
+  text-align: center;
+}
+
+@media (max-width: 480px) {
+  .orders-pagination-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 16px;
+  }
+
+  .orders-pagination-meta {
+    font-size: 13px;
+  }
+
+  .orders-pagination-nav {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .orders-pagination-btn {
+    font-size: 12px;
+    padding: 7px 12px;
+  }
+
+  .orders-pagination-label {
+    font-size: 12px;
+    min-width: 60px;
+  }
+}

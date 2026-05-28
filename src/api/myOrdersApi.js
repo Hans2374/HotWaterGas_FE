@@ -1,10 +1,12 @@
 import axiosClient from './axiosClient';
 
 const myOrdersApi = {
-  getMyOrders: async () => {
+  getMyOrders: async (pageNumber = 1, pageSize = 10) => {
     try {
-      const response = await axiosClient.get('/api/me/orders');
-      console.log('[myOrdersApi.getMyOrders] response', response.data);
+      const response = await axiosClient.get('/api/me/orders', {
+        params: { pageNumber, pageSize }
+      });
+      console.log('[myOrdersApi.getMyOrders] pageNumber=', pageNumber, 'pageSize=', pageSize, 'response', response.data);
       return response.data;
     } catch (error) {
       throw error;
