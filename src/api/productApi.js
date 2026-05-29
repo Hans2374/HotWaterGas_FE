@@ -126,3 +126,14 @@ export const getProductRecommendations = async (productId, limit = 4) => {
     };
   }
 };
+
+export const getFeaturedProducts = async () => {
+  try {
+    const response = await axiosClient.get('/api/products/featured');
+    return response.data || [];
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('[FeaturedProducts] Failed to load featured products', error);
+    return [];
+  }
+};

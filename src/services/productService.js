@@ -325,3 +325,21 @@ export const deleteAdminSteamKey = async (productId, keyId) => {
     throw toApiError(error, 'Failed to delete Steam key.');
   }
 };
+
+export const getAdminFeaturedProducts = async () => {
+  try {
+    const response = await axiosClient.get('/api/admin/products/featured');
+    return normalizeListPayload(response.data);
+  } catch (error) {
+    throw toApiError(error, 'Failed to load featured products.');
+  }
+};
+
+export const updateAdminFeaturedProducts = async (productIds) => {
+  try {
+    const response = await axiosClient.put('/api/admin/products/featured', { productIds });
+    return normalizeListPayload(response.data);
+  } catch (error) {
+    throw toApiError(error, 'Failed to update featured products.');
+  }
+};

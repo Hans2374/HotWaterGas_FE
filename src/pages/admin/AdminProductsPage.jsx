@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { Plus, Pencil, RotateCcw, Trash2, Search, X } from 'lucide-react';
-import { getAdminProductsFiltered, disableAdminProduct, restoreAdminProduct, hardDeleteAdminProduct, getCategories } from '../../services/productService';
+import { Plus, Pencil, RotateCcw, Trash2, Search, X, Star } from 'lucide-react';
+import { getAdminProductsFiltered, disableAdminProduct, restoreAdminProduct, hardDeleteAdminProduct, getCategories, getAdminFeaturedProducts, updateAdminFeaturedProducts } from '../../services/productService';
 import './AdminProductsPage.css';
+
+const MAX_FEATURED = 5;
 
 const formatCurrency = (value) => Number(value || 0).toLocaleString();
 
@@ -72,6 +74,12 @@ export const AdminProductsPage = () => {
   const [actionTarget, setActionTarget] = useState(null);
   const [isActioning, setIsActioning] = useState(false);
   const [actionType, setActionType] = useState('');
+
+  // ── Featured management state ──────────────────────────────────────────────
+  const [isManagingFeatured, setIsManagingFeatured] = useState(false);
+  const [featuredIds, setFeaturedIds] = useState(new Set());
+  const [initialFeaturedIds, setInitialFeaturedIds] = useState(new Set());
+  const [isSavingFeatured, setIsSavingFeatured] = useState(false);
 
   // Client-side filter helpers
   const applyClientFilters = (items) => {
@@ -188,6 +196,61 @@ export const AdminProductsPage = () => {
     }
   };
 
+  // ── Featured management ────────────────────────────────────────────────────
+
+  const openFeaturedManagement = useCallback(async () => {
+    setIsManagingFeatured(true);
+    try {
+      const current = await getAdminFeaturedProducts();
+      const ids = new Set(Array.isArray(current) ? current.map(p => p.id) : []);
+      setFeaturedIds(ids);
+      setInitialFeaturedIds(ids);
+    } catch {
+      setFeaturedIds(new Set());
+      setInitialFeaturedIds(new Set());
+    }
+  }, []);
+
+  const cancelFeaturedManagement = useCallback(() => {
+    setFeaturedIds(new Set());
+    setInitialFeaturedIds(new Set());
+    setIsManagingFeatured(false);
+  }, []);
+
+  const toggleFeaturedSelection = useCallback((productId) => {
+    setFeaturedIds(prev => {
+      const next = new Set(prev);
+      if (next.has(productId)) {
+        next.delete(productId);
+      } else if (next.size >= MAX_FEATURED) {
+        toast.error(`Can only choose up to ${MAX_FEATURED} products.`);
+        return prev;
+      } else {
+        next.add(productId);
+      }
+      return next;
+    });
+  }, []);
+
+  const saveFeaturedProducts = useCallback(async () => {
+    setIsSavingFeatured(true);
+    try {
+      const ids = Array.from(featuredIds);
+      await updateAdminFeaturedProducts(ids);
+      toast.success('Update Homepage Banner successfully.');
+      setIsManagingFeatured(false);
+      setFeaturedIds(new Set());
+      setInitialFeaturedIds(new Set(featuredIds));
+      await loadProducts();
+    } catch (err) {
+      toast.error(err.message || 'Update Homepage Banner failed.');
+    } finally {
+      setIsSavingFeatured(false);
+    }
+  }, [featuredIds, loadProducts]);
+
+  const featuredCount = featuredIds.size;
+
   const getConfirmTitle = () => {
     switch (actionType) {
       case 'disable': return 'Disable Product?';
@@ -216,10 +279,39 @@ export const AdminProductsPage = () => {
           <h1>Products</h1>
           <p>Manage game listings, stock, and visibility.</p>
         </div>
-        <button className="btn btn-primary btn-create-product" onClick={() => navigate('/admin/products/create')}>
-          <Plus size={14} />
-          Create Product
-        </button>
+        {isManagingFeatured ? (
+          <div className="featured-management-actions">
+            <button
+              className="btn btn-secondary"
+              onClick={cancelFeaturedManagement}
+              disabled={isSavingFeatured}
+            >
+              <X size={14} />
+              Cancel
+            </button>
+            <button
+              className="btn btn-primary btn-hero-save"
+              onClick={saveFeaturedProducts}
+              disabled={isSavingFeatured}
+            >
+              {isSavingFeatured ? 'Saving...' : 'Save Homepage Banner'}
+            </button>
+            <span className="featured-selection-count">
+              {featuredCount} / {MAX_FEATURED}
+            </span>
+          </div>
+        ) : (
+          <div className="page-header-actions">
+            <button className="btn btn-hero-banner" onClick={openFeaturedManagement}>
+              <Star size={14} />
+              Manage Homepage Banner
+            </button>
+            <button className="btn btn-primary btn-create-product" onClick={() => navigate('/admin/products/create')}>
+              <Plus size={14} />
+              Create Product
+            </button>
+          </div>
+        )}
       </header>
 
       {/* Filter Toolbar */}
@@ -324,6 +416,13 @@ export const AdminProductsPage = () => {
         <table className="products-table">
           <thead>
             <tr>
+              {isManagingFeatured && (
+                <th className="col-check-col">
+                  <span title="Chọn tất cả trên trang" style={{ cursor: 'pointer', color: 'var(--cat-text-muted)' }}>
+                    Chọn
+                  </span>
+                </th>
+              )}
               <th className="col-product-col">Product</th>
               <th className="col-price-col">Price</th>
               <th className="col-stock-col">Stock</th>
@@ -336,6 +435,9 @@ export const AdminProductsPage = () => {
             {isLoading ? (
               Array.from({ length: 8 }).map((_, i) => (
                 <tr key={i} className="skeleton-row">
+                  {isManagingFeatured && (
+                    <td className="check-cell"><span className="skeleton-cell w-check" /></td>
+                  )}
                   <td>
                     <div className="product-cell">
                       <div className="product-thumb">
@@ -361,7 +463,7 @@ export const AdminProductsPage = () => {
               ))
             ) : loadError ? (
               <tr>
-                <td colSpan={6} style={{ padding: 0, border: 'none' }}>
+                <td colSpan={isManagingFeatured ? 7 : 6} style={{ padding: 0, border: 'none' }}>
                   <div className="table-error">
                     <p className="table-error-title">{loadError}</p>
                     <button className="btn btn-secondary" onClick={loadProducts}>Try again</button>
@@ -370,7 +472,7 @@ export const AdminProductsPage = () => {
               </tr>
             ) : filteredProducts.length === 0 ? (
               <tr>
-                <td colSpan={6} style={{ padding: 0, border: 'none' }}>
+                <td colSpan={isManagingFeatured ? 7 : 6} style={{ padding: 0, border: 'none' }}>
                   <div className="table-empty">
                     <Search size={36} className="empty-icon" />
                     <p className="empty-title">No products found</p>
@@ -393,70 +495,102 @@ export const AdminProductsPage = () => {
                 </td>
               </tr>
             ) : (
-              filteredProducts.map((product) => (
-                <tr key={product.id}>
-                  <td>
-                    <div className="product-cell">
-                      <div className="product-thumb">
-                        {product.primaryImageUrl ? (
-                          <img src={product.primaryImageUrl} alt={product.name} />
+              filteredProducts.map((product) => {
+                const isFeaturedSelected = featuredIds.has(product.id);
+                const isFeaturedInitially = initialFeaturedIds.has(product.id);
+                return (
+                  <tr
+                    key={product.id}
+                    className={isFeaturedSelected ? 'featured-selected-row' : ''}
+                  >
+                    {isManagingFeatured && (
+                      <td className="check-cell">
+                        <label className={`featured-checkbox-wrap ${product.isDeleted ? 'is-disabled' : ''}`} title={product.isDeleted ? 'Can not choose disabled product.' : isFeaturedSelected ? 'Remove from Homepage Banner' : 'Add to Homepage Banner'}>
+                          <input
+                            type="checkbox"
+                            className="featured-checkbox"
+                            checked={isFeaturedSelected}
+                            onChange={() => toggleFeaturedSelection(product.id)}
+                            disabled={product.isDeleted || isSavingFeatured}
+                          />
+                          <span className={`featured-checkbox-custom ${isFeaturedSelected ? 'is-checked' : ''}`}>
+                            {isFeaturedSelected && (
+                              <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+                                <path d="M1 4L3.5 6.5L9 1" stroke={isFeaturedInitially ? '#FFD700' : '#fff'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                              </svg>
+                            )}
+                          </span>
+                        </label>
+                      </td>
+                    )}
+                    <td>
+                      <div className="product-cell">
+                        <div className="product-thumb">
+                          {product.primaryImageUrl ? (
+                            <img src={product.primaryImageUrl} alt={product.name} />
+                          ) : (
+                            <span className="product-thumb-placeholder">No image</span>
+                          )}
+                        </div>
+                        <div className="product-info">
+                          <span className="product-name">
+                            {product.name}
+                            {isFeaturedInitially && (
+                              <span className="featured-badge-inline" title="Đang trong Hero Banner">★ Homepage Banner</span>
+                            )}
+                          </span>
+                          <span className="product-subtitle">{product.subtitle || product.slug || '—'}</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td>{renderPriceCell(product)}</td>
+                    <td>
+                      <StockBadge stock={product.availableSteamKeyCount ?? product.stock ?? 0} />
+                    </td>
+                    <td>
+                      <ProductStatusBadge isDeleted={product.isDeleted} />
+                    </td>
+                    <td className="date-cell">{formatUpdatedAt(product.updatedAt)}</td>
+                    <td className="actions-cell">
+                      <div className="actions-group">
+                        <button
+                          className="action-btn action-btn-edit"
+                          onClick={() => navigate(`/admin/products/${product.id}/edit`)}
+                          title="Edit"
+                        >
+                          <Pencil size={13} />
+                        </button>
+                        {product.isDeleted ? (
+                          <>
+                            <button
+                              className="action-btn action-btn-restore"
+                              onClick={() => openRestoreConfirm(product)}
+                              title="Restore"
+                            >
+                              <RotateCcw size={13} />
+                            </button>
+                            <button
+                              className="action-btn action-btn-delete"
+                              onClick={() => openHardDeleteConfirm(product)}
+                              title="Delete Permanently"
+                            >
+                              <Trash2 size={13} />
+                            </button>
+                          </>
                         ) : (
-                          <span className="product-thumb-placeholder">No image</span>
-                        )}
-                      </div>
-                      <div className="product-info">
-                        <span className="product-name">{product.name}</span>
-                        <span className="product-subtitle">{product.subtitle || product.slug || '—'}</span>
-                      </div>
-                    </div>
-                  </td>
-                  <td>{renderPriceCell(product)}</td>
-                  <td>
-                    <StockBadge stock={product.availableSteamKeyCount ?? product.stock ?? 0} />
-                  </td>
-                  <td>
-                    <ProductStatusBadge isDeleted={product.isDeleted} />
-                  </td>
-                  <td className="date-cell">{formatUpdatedAt(product.updatedAt)}</td>
-                  <td className="actions-cell">
-                    <div className="actions-group">
-                      <button
-                        className="action-btn action-btn-edit"
-                        onClick={() => navigate(`/admin/products/${product.id}/edit`)}
-                        title="Edit"
-                      >
-                        <Pencil size={13} />
-                      </button>
-                      {product.isDeleted ? (
-                        <>
                           <button
-                            className="action-btn action-btn-restore"
-                            onClick={() => openRestoreConfirm(product)}
-                            title="Restore"
-                          >
-                            <RotateCcw size={13} />
-                          </button>
-                          <button
-                            className="action-btn action-btn-delete"
-                            onClick={() => openHardDeleteConfirm(product)}
-                            title="Delete Permanently"
+                            className="action-btn action-btn-disable"
+                            onClick={() => openDisableConfirm(product)}
+                            title="Disable"
                           >
                             <Trash2 size={13} />
                           </button>
-                        </>
-                      ) : (
-                        <button
-                          className="action-btn action-btn-disable"
-                          onClick={() => openDisableConfirm(product)}
-                          title="Disable"
-                        >
-                          <Trash2 size={13} />
-                        </button>
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              ))
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })
             )}
           </tbody>
         </table>

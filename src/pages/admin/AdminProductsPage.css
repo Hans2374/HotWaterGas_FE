@@ -769,13 +769,159 @@
   border-top: 1px solid var(--cat-border-surface);
 }
 
-/* ── Responsive ── */
-@media (max-width: 1024px) {
-  .products-page-accent .filter-select-wrap .filter-select:nth-child(n+3) {
-    /* hide 3rd+ selects on medium screens, keep status + stock */
-  }
+/* ── Featured Management ─────────────────────────────────────────────────────── */
+
+.products-page-accent .page-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
+/* Homepage Banner management button */
+.products-page-accent .btn-hero-banner {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 0, 0.7);
+  background: #FFFF00;
+  color: #000000;
+  transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
+}
+
+.products-page-accent .btn-hero-banner:hover:not(:disabled) {
+  background: #E6E600;
+  border-color: rgba(255, 255, 0, 0.9);
+  color: #000000;
+  box-shadow: 0 0 12px rgba(255, 255, 0, 0.3);
+}
+
+.products-page-accent .btn-hero-banner:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Homepage Banner save button — black text like "Create Product" */
+.products-page-accent .btn-hero-save {
+  color: #000000;
+}
+
+.products-page-accent .btn-hero-save:hover:not(:disabled) {
+  color: #000000;
+}
+
+/* Featured management action bar */
+.products-page-accent .featured-management-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Featured selection counter */
+.products-page-accent .featured-selection-count {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #FFD700;
+  padding: 0 6px;
+  white-space: nowrap;
+}
+
+/* Table checkbox column */
+.products-page-accent .col-check-col {
+  width: 52px;
+  text-align: center;
+}
+
+.products-page-accent .check-cell {
+  text-align: center;
+  padding: 13px 8px !important;
+}
+
+/* Featured checkbox */
+.products-page-accent .featured-checkbox-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  position: relative;
+}
+
+.products-page-accent .featured-checkbox-wrap.is-disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.products-page-accent .featured-checkbox {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.products-page-accent .featured-checkbox-custom {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  border: 2px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.04);
+  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+}
+
+.products-page-accent .featured-checkbox-custom.is-checked {
+  border-color: #FFD700;
+  background: rgba(255, 215, 0, 0.15);
+  box-shadow: 0 0 8px rgba(255, 215, 0, 0.3);
+}
+
+.products-page-accent .featured-checkbox:focus-visible + .featured-checkbox-custom {
+  outline: 2px solid rgba(255, 215, 0, 0.6);
+  outline-offset: 2px;
+}
+
+/* Featured selected row highlight */
+.products-page-accent .featured-selected-row {
+  background: rgba(255, 215, 0, 0.05) !important;
+}
+
+.products-page-accent .featured-selected-row td {
+  border-bottom-color: rgba(255, 215, 0, 0.12) !important;
+}
+
+/* Featured badge inline (shown in product name cell) */
+.products-page-accent .featured-badge-inline {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 6px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+  background: rgba(255, 215, 0, 0.15);
+  color: #FFD700;
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  vertical-align: middle;
+  letter-spacing: 0.2px;
+  white-space: nowrap;
+}
+
+/* Featured skeleton cell */
+.products-page-accent .w-check {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+}
+
+/* Responsive ── */
 @media (max-width: 900px) {
   .products-page-accent .col-updated-col {
     display: none;
@@ -818,5 +964,9 @@
 
   .products-page-accent .modal-footer .btn {
     width: 100%;
+  }
+
+  .products-page-accent .featured-management-actions {
+    flex-wrap: wrap;
   }
 }

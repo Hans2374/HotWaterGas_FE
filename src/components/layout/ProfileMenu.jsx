@@ -98,7 +98,7 @@ export const ProfileMenu = ({ onLogout }) => {
             role="menuitem"
           >
             <LogOut size={15} strokeWidth={1.75} />
-            Đăng xuất
+            {isAdmin ? 'Logout' : 'Đăng xuất'}
           </button>
         </div>
       )}

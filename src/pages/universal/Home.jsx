@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import { ProductGrid } from '../../components/product/ProductGrid';
 import { CategoryGrid } from '../../components/category/CategoryGrid';
+import { HeroBanner } from '../../components/hero/HeroBanner';
 import { Loader } from '../../components/common/Loader';
 import { getProducts } from '../../api/productApi';
 import { getHomepageCategories } from '../../api/categoriesApi';
@@ -220,6 +221,8 @@ export const Home = () => {
 
   return (
     <div className="home-page">
+      <HeroBanner />
+
       <section className="home-section">
         <div className="home-section-header">
           <h2 className="home-section-title">Steam Key Chính Hãng</h2>
