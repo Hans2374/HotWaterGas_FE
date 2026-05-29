@@ -126,22 +126,22 @@ export const HeroBanner = () => {
       opacity = 1;
       zIndex = 4;
     } else if (diff === 1) {
-      x = 52;
+      x = 33;
       scale = 0.88;
-      opacity = 0.45;
+      opacity = 0.6;
       zIndex = 3;
     } else if (diff === total - 1) {
-      x = -52;
+      x = -33;
       scale = 0.88;
-      opacity = 0.45;
+      opacity = 0.6;
       zIndex = 3;
     } else if (diff === 2) {
-      x = 105;
+      x = 66;
       scale = 0.76;
       opacity = 0;
       zIndex = 0;
     } else if (diff === total - 2) {
-      x = -105;
+      x = -66;
       scale = 0.76;
       opacity = 0;
       zIndex = 0;
@@ -166,43 +166,46 @@ export const HeroBanner = () => {
       aria-label="Featured games showcase"
     >
       <div className="hero-carousel-viewport">
-        {/* ── Slides ── */}
-        {slides.map((idx) => {
-          const product = featuredProducts[idx];
-          const style = getSlideStyle(idx);
-          return (
-            <div
-              key={product.id || idx}
-              className="hero-slide"
-              style={style}
-              onClick={() => {
-                const diff = (idx - activeIndex + total) % total;
-                if (diff === 0) navigateToProduct(product);
-                else if (diff === 1) goNext();
-                else if (diff === total - 1) goPrev();
-              }}
-              role="button"
-              tabIndex={0}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
+        {/* ── Slides wrapper ── */}
+        <div className="hero-slides-wrapper">
+          {slides.map((idx) => {
+            const product = featuredProducts[idx];
+            const style = getSlideStyle(idx);
+
+            return (
+              <div
+                key={product.id || idx}
+                className="hero-slide"
+                style={style}
+                onClick={() => {
                   const diff = (idx - activeIndex + total) % total;
                   if (diff === 0) navigateToProduct(product);
                   else if (diff === 1) goNext();
                   else if (diff === total - 1) goPrev();
-                }
-              }}
-              aria-label={product.name}
-            >
-              <img
-                src={product.primaryImageUrl || product.primaryImage || ''}
-                alt={product.name}
-                loading={idx === activeIndex ? 'eager' : 'lazy'}
-                draggable={false}
-              />
-            </div>
-          );
-        })}
+                }}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    const diff = (idx - activeIndex + total) % total;
+                    if (diff === 0) navigateToProduct(product);
+                    else if (diff === 1) goNext();
+                    else if (diff === total - 1) goPrev();
+                  }
+                }}
+                aria-label={product.name}
+              >
+                <img
+                  src={product.primaryImageUrl || product.primaryImage || ''}
+                  alt={product.name}
+                  loading={idx === activeIndex ? 'eager' : 'lazy'}
+                  draggable={false}
+                />
+              </div>
+            );
+          })}
+        </div>
 
         {/* ── Navigation arrows — hover-only ── */}
         {total > 1 && (

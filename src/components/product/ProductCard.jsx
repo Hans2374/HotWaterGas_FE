@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './ProductCard.css';
 
@@ -60,6 +60,16 @@ export const ProductCard = ({
   const cardRef = useRef(null);
   const rafRef = useRef(null);
   const prefersNoHover = useRef(false);
+  const [imageAspectRatio, setImageAspectRatio] = useState(null);
+
+  // Load image natural dimensions for aspect-ratio
+  useEffect(() => {
+    const img = new Image();
+    img.src = product.primaryImageUrl || '';
+    img.onload = () => {
+      setImageAspectRatio(img.naturalWidth / img.naturalHeight);
+    };
+  }, [product.primaryImageUrl]);
 
   const basePrice = Number(product.price || 0);
   const discountPrice = Number(product.discountPrice ?? product.finalPrice ?? 0) || 0;
@@ -157,7 +167,10 @@ export const ProductCard = ({
       onClick={handleNavigateToDetail}
       onKeyDown={handleCardKeyDown}
     >
-      <div className="product-card-image-wrap">
+      <div
+        className="product-card-image-wrap"
+        style={imageAspectRatio ? { aspectRatio: `${imageAspectRatio}` } : undefined}
+      >
         <button
           type="button"
           className={`product-action product-action-wishlist${isWishlisted ? ' is-active' : ''}`}
