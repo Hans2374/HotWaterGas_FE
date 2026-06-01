@@ -1,8 +1,8 @@
 .home-page {
   display: flex;
   flex-direction: column;
-  gap: 48px;
-  margin-top: 30px;
+  gap: 32px;
+  margin-top: 20px;
 }
 
 .home-section {

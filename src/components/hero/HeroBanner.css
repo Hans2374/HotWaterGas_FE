@@ -28,6 +28,8 @@
 .hero-slides-wrapper {
   position: absolute;
   inset: 0;
+  display: flex;
+  align-items: center;
   overflow: hidden;
   border-radius: 14px;
 }
@@ -36,9 +38,8 @@
 
 .hero-slide {
   position: absolute;
-  top: 0;
   left: 50%;
-  height: 100%;
+  width: 55%;
   aspect-ratio: 92 / 43;
   border-radius: 14px;
   overflow: hidden;

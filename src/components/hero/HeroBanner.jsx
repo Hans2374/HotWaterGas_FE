@@ -116,39 +116,33 @@ export const HeroBanner = () => {
     const diff = (idx - activeIndex + total) % total;
 
     let x = 0;
-    let scale = 1;
     let opacity = 1;
     let zIndex = 1;
 
     if (diff === 0) {
       x = 0;
-      scale = 1;
       opacity = 1;
       zIndex = 4;
     } else if (diff === 1) {
-      x = 33;
-      scale = 0.88;
+      x = 55;
       opacity = 0.6;
       zIndex = 3;
     } else if (diff === total - 1) {
-      x = -33;
-      scale = 0.88;
+      x = -55;
       opacity = 0.6;
       zIndex = 3;
     } else if (diff === 2) {
-      x = 66;
-      scale = 0.76;
+      x = 110;
       opacity = 0;
       zIndex = 0;
     } else if (diff === total - 2) {
-      x = -66;
-      scale = 0.76;
+      x = -110;
       opacity = 0;
       zIndex = 0;
     }
 
     return {
-      transform: `translateX(calc(-50% + ${x}%)) scale(${scale})`,
+      transform: `translateX(calc(-50% + ${x}%))`,
       opacity,
       zIndex,
       willChange: 'transform, opacity',
