@@ -197,7 +197,7 @@ export const HeroBanner = () => {
                 aria-label={product.name}
               >
                 <img
-                  src={product.primaryImageUrl || product.primaryImage || ''}
+                  src={product.bannerImageUrl || product.bannerImage || product.primaryImageUrl || product.primaryImage || ''}
                   alt={product.name}
                   loading={idx === activeIndex ? 'eager' : 'lazy'}
                   draggable={false}

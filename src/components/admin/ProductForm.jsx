@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useState, useRef } from 'react';
-import { Plus } from 'lucide-react';
+import React, { useEffect, useMemo, useState, useRef, useCallback } from 'react';
+import { Plus, X, GripVertical, Image as ImageIcon, Layout, Flag, Images } from 'lucide-react';
 import { getCategories, getTags, uploadProductImage } from '../../services/productService';
 import './ProductForm.css';
 
@@ -11,7 +11,7 @@ const createInitialErrors = () => ({
   publisher: '',
   developer: '',
   platform: '',
-  images: '',
+  cardImage: '',
   categoryId: '',
   discountPercentage: ''
 });
@@ -45,6 +45,18 @@ const normalizeImageEntry = (image) => {
   };
 };
 
+const normalizeTagIds = (ids) => (Array.isArray(ids) ? ids.filter(Boolean) : []);
+
+const createInitialImagesData = (initialData) => {
+  const rawImages = normalizeImageEntries(initialData?.images, initialData?.imageUrls);
+
+  return {
+    cardImage: rawImages.find((_, i) => i === 0) || null,
+    heroImage: rawImages.find((_, i) => i === 1) || null,
+    galleryImages: rawImages.slice(2)
+  };
+};
+
 const normalizeImageEntries = (images = [], fallbackUrls = []) => {
   const source = Array.isArray(images) && images.length > 0 ? images : fallbackUrls;
   return source
@@ -67,7 +79,6 @@ const createInitialData = (initialData) => ({
   developer: '',
   releaseDate: '',
   platform: '',
-  images: [],
   categoryId: '',
   tagIds: [],
   systemRequirements: {
@@ -75,14 +86,147 @@ const createInitialData = (initialData) => ({
     recommended: createEmptyRequirementSpec()
   },
   ...initialData,
-  images: normalizeImageEntries(initialData?.images, initialData?.imageUrls),
+  ...createInitialImagesData(initialData),
   systemRequirements: {
     minimum: normalizeRequirementSpec(initialData?.systemRequirements?.minimum),
     recommended: normalizeRequirementSpec(initialData?.systemRequirements?.recommended)
   }
 });
 
-const normalizeTagIds = (ids) => (Array.isArray(ids) ? ids.filter(Boolean) : []);
+const ImageUploadSlot = ({
+  image,
+  onUpload,
+  onRemove,
+  isUploading,
+  uploadError,
+  disabled,
+  label,
+  helperText,
+  aspectRatio = 'square',
+  accent = false
+}) => {
+  const inputRef = useRef(null);
+
+  const handleFileChange = (event) => {
+    const file = event.target.files?.[0] || null;
+    if (file) onUpload(file);
+    event.target.value = '';
+  };
+
+  return (
+    <div className={`image-slot ${image ? 'has-image' : ''} ${aspectRatio === 'banner' ? 'banner-slot' : ''} ${accent ? 'accent-slot' : ''}`}>
+      <input
+        ref={inputRef}
+        id={`file-input-${label.replace(/\s+/g, '-').toLowerCase()}`}
+        className="file-input-hidden"
+        type="file"
+        accept="image/jpeg,image/jpg,image/png,image/webp"
+        onChange={handleFileChange}
+        disabled={disabled || isUploading}
+      />
+
+      {image ? (
+        <div className="image-slot-preview">
+          <img src={image.url} alt={label} />
+          <div className="image-slot-actions">
+            <button
+              type="button"
+              className="image-slot-action-btn replace-btn"
+              onClick={() => inputRef.current?.click()}
+              disabled={disabled || isUploading}
+              title="Replace image"
+            >
+              Replace
+            </button>
+            <button
+              type="button"
+              className="image-slot-action-btn remove-btn"
+              onClick={onRemove}
+              disabled={disabled || isUploading}
+              title="Remove image"
+            >
+              <X size={13} />
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div
+          className={`image-slot-placeholder ${isUploading ? 'uploading' : ''}`}
+          role="button"
+          tabIndex={0}
+          onClick={() => {
+            if (disabled || isUploading) return;
+            inputRef.current?.click();
+          }}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              if (!disabled && !isUploading) inputRef.current?.click();
+            }
+          }}
+        >
+          {isUploading ? (
+            <div className="tile-spinner" />
+          ) : (
+            <>
+              <Plus size={20} className="slot-icon" />
+              <span className="slot-label">Upload Image</span>
+            </>
+          )}
+        </div>
+      )}
+
+      {uploadError && <span className="input-error-message slot-error">{uploadError}</span>}
+    </div>
+  );
+};
+
+const GalleryImageTile = ({
+  image,
+  index,
+  onRemove,
+  onDragStart,
+  onDragOver,
+  onDrop,
+  isDragging,
+  disabled
+}) => {
+  const handleDragStart = (e) => {
+    e.dataTransfer.effectAllowed = 'move';
+    onDragStart(index);
+  };
+
+  return (
+    <div
+      className={`gallery-tile ${isDragging ? 'dragging' : ''}`}
+      draggable
+      onDragStart={handleDragStart}
+      onDragOver={onDragOver}
+      onDrop={onDrop}
+    >
+      <img src={image.url} alt={`Gallery image ${index + 1}`} />
+      <div className="gallery-tile-overlay">
+        <button
+          type="button"
+          className="gallery-drag-handle"
+          title="Drag to reorder"
+          tabIndex={-1}
+        >
+          <GripVertical size={14} />
+        </button>
+        <button
+          type="button"
+          className="gallery-remove-btn"
+          onClick={() => onRemove(index)}
+          disabled={disabled}
+          title="Remove image"
+        >
+          <X size={13} />
+        </button>
+      </div>
+    </div>
+  );
+};
 
 export const ProductForm = ({
   mode,
@@ -97,12 +241,14 @@ export const ProductForm = ({
   const [tags, setTags] = useState([]);
   const [isLookupLoading, setIsLookupLoading] = useState(true);
   const [lookupError, setLookupError] = useState('');
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [isUploadingImage, setIsUploadingImage] = useState(false);
-  const [imageUploadError, setImageUploadError] = useState('');
-  const [fileInputKey, setFileInputKey] = useState(0);
 
-  const fileInputRef = useRef(null);
+  const [uploadingSlot, setUploadingSlot] = useState(null);
+  const [uploadErrors, setUploadErrors] = useState({});
+
+  const [galleryDragIndex, setGalleryDragIndex] = useState(null);
+
+  const [galleryInputKey, setGalleryInputKey] = useState(0);
+  const galleryFileInputRef = useRef(null);
 
   const discountPercentage = Number(formData.discountPercentage || 0);
 
@@ -121,11 +267,11 @@ export const ProductForm = ({
   }, [formData.price, pricePreview]);
 
   useEffect(() => {
-    setFormData(createInitialData(initialData));
+    const fresh = createInitialData(initialData);
+    setFormData(fresh);
     setErrors(createInitialErrors());
-    setSelectedFile(null);
-    setImageUploadError('');
-    setFileInputKey((prev) => prev + 1);
+    setUploadErrors({});
+    setGalleryInputKey((prev) => prev + 1);
   }, [initialData]);
 
   useEffect(() => {
@@ -179,43 +325,86 @@ export const ProductForm = ({
     }));
   };
 
-  const handleRemoveImage = (index) => {
+  const uploadImage = async (file, slotKey) => {
+    setUploadingSlot(slotKey);
+    setUploadErrors((prev) => ({ ...prev, [slotKey]: '' }));
+    try {
+      const uploadedUrl = await uploadProductImage(file);
+      if (!uploadedUrl) throw new Error('Upload returned an empty URL.');
+      return uploadedUrl;
+    } catch (apiError) {
+      setUploadErrors((prev) => ({ ...prev, [slotKey]: apiError.message || 'Failed to upload image.' }));
+      return null;
+    } finally {
+      setUploadingSlot(null);
+    }
+  };
+
+  const handleCardImageUpload = async (file) => {
+    const url = await uploadImage(file, 'cardImage');
+    if (url) {
+      setFormData((prev) => ({ ...prev, cardImage: { id: null, url } }));
+      setErrors((prev) => ({ ...prev, cardImage: '' }));
+    }
+  };
+
+  const handleCardImageRemove = () => {
+    setFormData((prev) => ({ ...prev, cardImage: null }));
+  };
+
+  const handleHeroImageUpload = async (file) => {
+    const url = await uploadImage(file, 'heroImage');
+    if (url) {
+      setFormData((prev) => ({ ...prev, heroImage: { id: null, url } }));
+    }
+  };
+
+  const handleHeroImageRemove = () => {
+    setFormData((prev) => ({ ...prev, heroImage: null }));
+  };
+
+  const handleGalleryFileChange = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    const url = await uploadImage(file, 'gallery');
+    if (url) {
+      setFormData((prev) => ({
+        ...prev,
+        galleryImages: [...prev.galleryImages, { id: null, url }]
+      }));
+    }
+    event.target.value = '';
+  };
+
+  const handleRemoveGalleryImage = (index) => {
     setFormData((prev) => ({
       ...prev,
-      images: prev.images.filter((_, i) => i !== index)
+      galleryImages: prev.galleryImages.filter((_, i) => i !== index)
     }));
   };
 
-  const handleFileChange = (event) => {
-    const file = event.target.files?.[0] || null;
-    setSelectedFile(file);
-    setImageUploadError('');
-    if (file) handleUploadSelectedImage(file);
+  const handleGalleryDragStart = (index) => {
+    setGalleryDragIndex(index);
   };
 
-  const handleUploadSelectedImage = async (fileParam) => {
-    const fileToUpload = fileParam || selectedFile;
-    if (!fileToUpload) {
-      setImageUploadError('Select an image file first.');
+  const handleGalleryDragOver = (e, index) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+  };
+
+  const handleGalleryDrop = (e, dropIndex) => {
+    e.preventDefault();
+    if (galleryDragIndex === null || galleryDragIndex === dropIndex) {
+      setGalleryDragIndex(null);
       return;
     }
-
-    setIsUploadingImage(true);
-    setImageUploadError('');
-    try {
-      const uploadedUrl = await uploadProductImage(fileToUpload);
-      if (!uploadedUrl) throw new Error('Upload returned an empty URL.');
-      setFormData((prev) => ({
-        ...prev,
-        images: [...prev.images, { id: null, url: uploadedUrl }]
-      }));
-      setSelectedFile(null);
-      setFileInputKey((prev) => prev + 1);
-    } catch (apiError) {
-      setImageUploadError(apiError.message || 'Failed to upload image.');
-    } finally {
-      setIsUploadingImage(false);
-    }
+    setFormData((prev) => {
+      const updated = [...prev.galleryImages];
+      const [moved] = updated.splice(galleryDragIndex, 1);
+      updated.splice(dropIndex, 0, moved);
+      return { ...prev, galleryImages: updated };
+    });
+    setGalleryDragIndex(null);
   };
 
   const validate = () => {
@@ -244,8 +433,7 @@ export const ProductForm = ({
     if (!formData.developer.trim()) nextErrors.developer = 'Developer is required.';
     if (!formData.platform.trim()) nextErrors.platform = 'Platform is required.';
 
-    const normalizedImageUrls = formData.images.map((item) => item.url.trim()).filter(Boolean);
-    if (normalizedImageUrls.length === 0) nextErrors.images = 'At least one image is required.';
+    if (!formData.cardImage) nextErrors.cardImage = 'Product Card Image is required.';
     if (!formData.categoryId) nextErrors.categoryId = 'Please select a category.';
 
     setErrors(nextErrors);
@@ -262,6 +450,19 @@ export const ProductForm = ({
       ? discountPct
       : null;
 
+    const builtImages = [];
+    if (formData.cardImage) {
+      builtImages.push({ id: formData.cardImage.id || null, url: formData.cardImage.url.trim() });
+    }
+    if (formData.heroImage) {
+      builtImages.push({ id: formData.heroImage.id || null, url: formData.heroImage.url.trim() });
+    }
+    for (const img of formData.galleryImages) {
+      if (img.url.trim()) {
+        builtImages.push({ id: img.id || null, url: img.url.trim() });
+      }
+    }
+
     const payload = {
       name: formData.name.trim(),
       slug: formData.slug.trim() || null,
@@ -269,8 +470,8 @@ export const ProductForm = ({
       shortDescription: formData.shortDescription.trim(),
       price: Number(formData.price),
       discountPercentage: finalDiscountPercentage,
-      images: formData.images.map((item) => ({ id: item.id || null, url: item.url.trim() })).filter((item) => item.url),
-      imageUrls: formData.images.map((item) => item.url.trim()).filter(Boolean),
+      images: builtImages,
+      imageUrls: builtImages.map((item) => item.url),
       categoryId: formData.categoryId || null,
       tagIds,
       metadata: {
@@ -334,7 +535,7 @@ export const ProductForm = ({
           </div>
 
           <div className="form-field form-field-full">
-            <label className="input-label" htmlFor="field-slug">Slug <span style={{ fontWeight: 400, color: 'var(--cat-text-muted)' }}>(optional)</span></label>
+            <label className="input-label" htmlFor="field-slug">Slug <span className="optional-label">(optional)</span></label>
             <input
               id="field-slug"
               className="form-input"
@@ -418,7 +619,6 @@ export const ProductForm = ({
           </div>
         </div>
 
-        {/* Pricing Preview */}
         {showPricingPreview && (
           <div className="pricing-preview">
             <div className="pricing-preview-row">
@@ -451,62 +651,123 @@ export const ProductForm = ({
         )}
       </section>
 
-      {/* Images */}
+      {/* ── IMAGES ─────────────────────────────────── */}
       <section className="form-card">
         <h3 className="form-card-title">Images</h3>
-        <div className="image-upload-area">
-          <input
-            ref={fileInputRef}
-            id="product-image-file-input"
-            key={fileInputKey}
-            className="file-input-hidden"
-            type="file"
-            accept="image/jpeg,image/jpg,image/png,image/webp"
-            onChange={handleFileChange}
-            disabled={isSubmitting || isUploadingImage}
+
+        {/* ── Product Card Image ── */}
+        <div className="image-role-section">
+          <div className="image-role-header">
+            <div className="image-role-icon card-icon">
+              <Layout size={14} />
+            </div>
+            <div className="image-role-text">
+              <span className="image-role-title">Product Card Image</span>
+              <span className="image-role-badge required">Required</span>
+            </div>
+          </div>
+          <p className="image-role-helper">Used for product cards throughout the store.</p>
+
+          <ImageUploadSlot
+            image={formData.cardImage}
+            onUpload={handleCardImageUpload}
+            onRemove={handleCardImageRemove}
+            isUploading={uploadingSlot === 'cardImage'}
+            uploadError={uploadErrors.cardImage || ''}
+            disabled={isSubmitting}
+            label="Product Card Image"
+            accent
           />
-          <div className="image-grid">
-            <div
-              className={`image-tile add-tile ${isUploadingImage ? 'uploading' : ''}`}
-              role="button"
-              tabIndex={0}
-              onClick={() => {
-                if (isSubmitting || isUploadingImage) return;
-                fileInputRef.current?.click();
-              }}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  fileInputRef.current?.click();
-                }
-              }}
-              aria-label="Add image"
+          {errors.cardImage && <span className="input-error-message slot-error">{errors.cardImage}</span>}
+        </div>
+
+        <div className="image-role-divider" />
+
+        {/* ── Hero Banner Image ── */}
+        <div className="image-role-section">
+          <div className="image-role-header">
+            <div className="image-role-icon hero-icon">
+              <Flag size={14} />
+            </div>
+            <div className="image-role-text">
+              <span className="image-role-title">Hero Banner Image</span>
+              <span className="image-role-badge optional">Optional</span>
+            </div>
+          </div>
+          <p className="image-role-helper">Used for homepage featured banners.</p>
+
+          <ImageUploadSlot
+            image={formData.heroImage}
+            onUpload={handleHeroImageUpload}
+            onRemove={handleHeroImageRemove}
+            isUploading={uploadingSlot === 'heroImage'}
+            uploadError={uploadErrors.heroImage || ''}
+            disabled={isSubmitting}
+            label="Hero Banner Image"
+            aspectRatio="banner"
+          />
+        </div>
+
+        <div className="image-role-divider" />
+
+        {/* ── Gallery Images ── */}
+        <div className="image-role-section">
+          <div className="image-role-header">
+            <div className="image-role-icon gallery-icon">
+              <Images size={14} />
+            </div>
+            <div className="image-role-text">
+              <span className="image-role-title">Gallery Images</span>
+              <span className="image-role-badge optional">Optional</span>
+            </div>
+          </div>
+          <p className="image-role-helper">Additional screenshots shown on the product detail page. Drag to reorder.</p>
+
+          {formData.galleryImages.length > 0 && (
+            <div className="gallery-grid">
+              {formData.galleryImages.map((image, index) => (
+                <GalleryImageTile
+                  key={`gallery-${image.id || index}-${index}`}
+                  image={image}
+                  index={index}
+                  onRemove={handleRemoveGalleryImage}
+                  onDragStart={handleGalleryDragStart}
+                  onDragOver={(e) => handleGalleryDragOver(e, index)}
+                  onDrop={(e) => handleGalleryDrop(e, index)}
+                  isDragging={galleryDragIndex === index}
+                  disabled={isSubmitting || uploadingSlot === 'gallery'}
+                />
+              ))}
+            </div>
+          )}
+
+          <div className="gallery-add-area">
+            <input
+              ref={galleryFileInputRef}
+              id={`gallery-file-input-${galleryInputKey}`}
+              key={galleryInputKey}
+              className="file-input-hidden"
+              type="file"
+              accept="image/jpeg,image/jpg,image/png,image/webp"
+              onChange={handleGalleryFileChange}
+              disabled={isSubmitting || uploadingSlot === 'gallery'}
+            />
+            <button
+              type="button"
+              className={`gallery-add-btn ${uploadingSlot === 'gallery' ? 'uploading' : ''}`}
+              onClick={() => galleryFileInputRef.current?.click()}
+              disabled={isSubmitting || uploadingSlot === 'gallery'}
             >
-              {isUploadingImage ? (
+              {uploadingSlot === 'gallery' ? (
                 <div className="tile-spinner" />
               ) : (
-                <Plus size={22} className="add-icon" />
+                <>
+                  <Plus size={15} />
+                  Add Gallery Image
+                </>
               )}
-            </div>
-            {formData.images.map((image, index) => (
-              <div className="image-tile" key={`img-${image.id || index}`}>
-                <img src={image.url} alt={`Image ${index + 1}`} />
-                {index === 0 && <span className="tile-badge">Primary</span>}
-                <button
-                  type="button"
-                  className="tile-remove"
-                  onClick={() => handleRemoveImage(index)}
-                  disabled={isSubmitting || isUploadingImage}
-                  aria-label="Remove image"
-                >
-                  ×
-                </button>
-              </div>
-            ))}
+            </button>
           </div>
-          {imageUploadError && <span className="input-error-message">{imageUploadError}</span>}
-          {errors.images && <span className="input-error-message">{errors.images}</span>}
-          <p className="upload-hint">First image becomes the primary listing image.</p>
         </div>
       </section>
 
@@ -535,7 +796,7 @@ export const ProductForm = ({
           </div>
 
           <div className="form-field form-field-full">
-            <label className="input-label">Tags <span style={{ fontWeight: 400, color: 'var(--cat-text-muted)' }}>(optional)</span></label>
+            <label className="input-label">Tags <span className="optional-label">(optional)</span></label>
             <div className="tags-grid">
               {tags.map((tag) => {
                 const checked = normalizeTagIds(formData.tagIds).includes(tag.id);
@@ -597,7 +858,7 @@ export const ProductForm = ({
           </div>
 
           <div className="form-field">
-            <label className="input-label" htmlFor="field-release-date">Release Date <span style={{ fontWeight: 400, color: 'var(--cat-text-muted)' }}>(optional)</span></label>
+            <label className="input-label" htmlFor="field-release-date">Release Date <span className="optional-label">(optional)</span></label>
             <input
               id="field-release-date"
               className="form-input"
@@ -669,7 +930,7 @@ export const ProductForm = ({
                   placeholder="50 GB" maxLength={100} disabled={isSubmitting} />
               </div>
               <div className="form-field form-field-full">
-                <label className="input-label" htmlFor="req-min-notes">Notes <span style={{ fontWeight: 400, color: 'var(--cat-text-muted)' }}>(optional)</span></label>
+                <label className="input-label" htmlFor="req-min-notes">Notes <span className="optional-label">(optional)</span></label>
                 <textarea id="req-min-notes" className="form-textarea"
                   value={formData.systemRequirements.minimum.notes}
                   onChange={(e) => handleSystemRequirementChange('minimum', 'notes', e.target.value)}
@@ -718,7 +979,7 @@ export const ProductForm = ({
                   placeholder="60 GB SSD" maxLength={100} disabled={isSubmitting} />
               </div>
               <div className="form-field form-field-full">
-                <label className="input-label" htmlFor="req-rec-notes">Notes <span style={{ fontWeight: 400, color: 'var(--cat-text-muted)' }}>(optional)</span></label>
+                <label className="input-label" htmlFor="req-rec-notes">Notes <span className="optional-label">(optional)</span></label>
                 <textarea id="req-rec-notes" className="form-textarea"
                   value={formData.systemRequirements.recommended.notes}
                   onChange={(e) => handleSystemRequirementChange('recommended', 'notes', e.target.value)}
@@ -736,14 +997,14 @@ export const ProductForm = ({
           type="button"
           className="btn btn-secondary"
           onClick={onCancel}
-          disabled={isSubmitting || isUploadingImage}
+          disabled={isSubmitting}
         >
           Cancel
         </button>
         <button
           type="submit"
           className="btn btn-primary btn-create-product"
-          disabled={isSubmitting || isUploadingImage}
+          disabled={isSubmitting}
         >
           {isSubmitting ? 'Saving...' : mode === 'edit' ? 'Save Changes' : 'Create Product'}
         </button>

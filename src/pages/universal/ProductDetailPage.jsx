@@ -186,7 +186,6 @@ export const ProductDetailPage = () => {
     [product],
   );
 
-  const selectedImage = images[selectedImageIndex] || images[0] || null;
   const productId = getProductId(product);
   const wishlisted = productId ? isWishlisted(productId) : false;
   const hasStock = Boolean(product?.hasStock);
@@ -459,10 +458,9 @@ export const ProductDetailPage = () => {
       <section className="product-detail-hero">
           <div className="product-detail-gallery">
             <div className="product-detail-main-image-wrap">
-              {selectedImage ? (
+              {product.primaryImageUrl ? (
                 <img
-                  key={selectedImage.id || selectedImage.url}
-                  src={selectedImage.url}
+                  src={product.primaryImageUrl}
                   alt={product.name}
                   className="product-detail-main-image"
                 />
