@@ -1,9 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { Loader } from "../../components/common/Loader";
 import { ReviewSection } from "../../components/product/ReviewSection";
 import { ProductCard } from "../../components/product/ProductCard";
+import { ProductImageGallery } from "../../components/product/ProductImageGallery";
 import { useAuth } from "../../hooks/useAuth";
 import { useCart } from "../../hooks/useCart";
 import { useWishlist } from "../../hooks/useWishlist";
@@ -94,7 +95,6 @@ export const ProductDetailPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [notFound, setNotFound] = useState(false);
-  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [isWishlistPending, setIsWishlistPending] = useState(false);
   const [isCartPending, setIsCartPending] = useState(false);
@@ -134,7 +134,6 @@ export const ProductDetailPage = () => {
       //     : [],
       // });
       setProduct(data);
-      setSelectedImageIndex(0);
       setQuantity(1);
     } catch (apiError) {
       if (apiError.status === 404) {
@@ -180,11 +179,6 @@ export const ProductDetailPage = () => {
       active = false;
     };
   }, []);
-
-  const images = useMemo(
-    () => (Array.isArray(product?.images) ? product.images : []),
-    [product],
-  );
 
   const productId = getProductId(product);
   const wishlisted = productId ? isWishlisted(productId) : false;
@@ -457,35 +451,10 @@ export const ProductDetailPage = () => {
     <div className="product-detail-page">
       <section className="product-detail-hero">
           <div className="product-detail-gallery">
-            <div className="product-detail-main-image-wrap">
-              {product.primaryImageUrl ? (
-                <img
-                  src={product.primaryImageUrl}
-                  alt={product.name}
-                  className="product-detail-main-image"
-                />
-              ) : (
-                <div className="product-detail-image-placeholder">
-                  No image available
-                </div>
-              )}
-            </div>
-
-            {images.length > 0 && (
-              <div className="product-detail-thumbnails" role="list">
-                {images.map((image, index) => (
-                  <button
-                    key={image.id || image.url || index}
-                    type="button"
-                    role="listitem"
-                    className={`product-detail-thumbnail${selectedImageIndex === index ? " active" : ""}`}
-                    onClick={() => setSelectedImageIndex(index)}
-                  >
-                    <img src={image.url} alt={`${product.name} ${index + 1}`} />
-                  </button>
-                ))}
-              </div>
-            )}
+            <ProductImageGallery
+              images={product.images || []}
+              productName={product.name}
+            />
           </div>
 
           <aside className="product-detail-purchase">

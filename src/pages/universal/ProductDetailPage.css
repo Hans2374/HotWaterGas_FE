@@ -532,3 +532,201 @@
     min-width: 0;
   }
 }
+
+/* ================================================================
+   Product Image Gallery
+   ================================================================ */
+
+.pdp-gallery-empty {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  display: grid;
+  place-items: center;
+  background: var(--customer-surface-hover);
+  border-radius: 8px;
+  color: var(--customer-text-secondary);
+  font-size: 14px;
+}
+
+/* ── Gallery container ── */
+
+.pdp-gallery {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ── Main image area ── */
+
+.pdp-gallery-main {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--customer-surface-hover);
+  user-select: none;
+}
+
+.pdp-gallery-main-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  pointer-events: none;
+}
+
+/* ── Navigation arrows (hover-only) ── */
+
+.pdp-gallery-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(8, 8, 12, 0.65);
+  color: rgba(255, 255, 255, 0.85);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  line-height: 1;
+  opacity: 0;
+  transition: opacity 0.2s ease, background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.pdp-gallery-main:hover .pdp-gallery-arrow {
+  opacity: 1;
+}
+
+.pdp-gallery-arrow:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+}
+
+.pdp-gallery-arrow:active {
+  transform: translateY(-50%) scale(0.9);
+}
+
+.pdp-gallery-arrow:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.5);
+  outline-offset: 2px;
+}
+
+.pdp-gallery-arrow-prev {
+  left: 12px;
+}
+
+.pdp-gallery-arrow-next {
+  right: 12px;
+}
+
+/* ── Thumbnail strip (horizontal, scrollable) ── */
+
+.pdp-gallery-thumbnails {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--customer-border) transparent;
+}
+
+.pdp-gallery-thumbnails::-webkit-scrollbar {
+  height: 4px;
+}
+
+.pdp-gallery-thumbnails::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.pdp-gallery-thumbnails::-webkit-scrollbar-thumb {
+  background: var(--customer-border);
+  border-radius: 2px;
+}
+
+.pdp-gallery-thumb {
+  flex-shrink: 0;
+  width: 80px;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  overflow: hidden;
+  padding: 0;
+  background: var(--customer-bg);
+  cursor: pointer;
+  transition: border-color 0.15s ease, opacity 0.15s ease;
+}
+
+.pdp-gallery-thumb img {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  display: block;
+  opacity: 0.65;
+  transition: opacity 0.15s ease;
+}
+
+.pdp-gallery-thumb:hover img,
+.pdp-gallery-thumb.active img {
+  opacity: 1;
+}
+
+.pdp-gallery-thumb.active {
+  border-color: var(--customer-accent);
+}
+
+.pdp-gallery-thumb:focus-visible {
+  outline: 2px solid var(--customer-accent);
+  outline-offset: 2px;
+}
+
+/* ── Responsive: tablet ── */
+
+@media (max-width: 768px) {
+  .pdp-gallery-thumb {
+    width: 68px;
+  }
+
+  .pdp-gallery-arrow {
+    width: 34px;
+    height: 34px;
+    font-size: 20px;
+  }
+
+  .pdp-gallery-arrow-prev {
+    left: 8px;
+  }
+
+  .pdp-gallery-arrow-next {
+    right: 8px;
+  }
+}
+
+/* ── Responsive: small mobile ── */
+
+@media (max-width: 480px) {
+  .pdp-gallery-thumb {
+    width: 56px;
+  }
+
+  .pdp-gallery-arrow {
+    width: 30px;
+    height: 30px;
+    font-size: 18px;
+  }
+
+  .pdp-gallery-arrow-prev {
+    left: 6px;
+  }
+
+  .pdp-gallery-arrow-next {
+    right: 6px;
+  }
+}
