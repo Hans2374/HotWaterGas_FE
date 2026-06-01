@@ -112,41 +112,15 @@ export const HeroBanner = () => {
   const total = featuredProducts.length;
   const slides = featuredProducts.map((_, i) => i);
 
-  const getSlideStyle = (idx) => {
+  const getSlideClass = (idx) => {
     const diff = (idx - activeIndex + total) % total;
 
-    let x = 0;
-    let opacity = 1;
-    let zIndex = 1;
-
-    if (diff === 0) {
-      x = 0;
-      opacity = 1;
-      zIndex = 4;
-    } else if (diff === 1) {
-      x = 55;
-      opacity = 0.6;
-      zIndex = 3;
-    } else if (diff === total - 1) {
-      x = -55;
-      opacity = 0.6;
-      zIndex = 3;
-    } else if (diff === 2) {
-      x = 110;
-      opacity = 0;
-      zIndex = 0;
-    } else if (diff === total - 2) {
-      x = -110;
-      opacity = 0;
-      zIndex = 0;
-    }
-
-    return {
-      transform: `translateX(calc(-50% + ${x}%))`,
-      opacity,
-      zIndex,
-      willChange: 'transform, opacity',
-    };
+    if (diff === 0) return 'hero-slide slide-active';
+    if (diff === 1) return 'hero-slide slide-next';
+    if (diff === total - 1) return 'hero-slide slide-prev';
+    if (diff === 2) return 'hero-slide slide-far slide-next';
+    if (diff === total - 2) return 'hero-slide slide-far slide-prev';
+    return 'hero-slide slide-far';
   };
 
   return (
@@ -164,13 +138,12 @@ export const HeroBanner = () => {
         <div className="hero-slides-wrapper">
           {slides.map((idx) => {
             const product = featuredProducts[idx];
-            const style = getSlideStyle(idx);
+            const className = getSlideClass(idx);
 
             return (
               <div
                 key={product.id || idx}
-                className="hero-slide"
-                style={style}
+                className={className}
                 onClick={() => {
                   const diff = (idx - activeIndex + total) % total;
                   if (diff === 0) navigateToProduct(product);
