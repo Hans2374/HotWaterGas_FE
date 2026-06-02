@@ -81,28 +81,26 @@ export const ProductImageGallery = ({ images = [], productName = "" }) => {
         )}
       </div>
 
-      {/* ── Thumbnail strip (horizontal, scrollable) ── */}
-      {total > 1 && (
-        <div className="pdp-gallery-thumbnails" role="list">
-          {images.map((img, i) => (
-            <button
-              key={img.id || img.url || i}
-              type="button"
-              role="listitem"
-              className={`pdp-gallery-thumb${i === activeIndex ? " active" : ""}`}
-              onClick={() => setActiveIndex(i)}
-              aria-label={`View image ${i + 1}`}
-              aria-current={i === activeIndex}
-            >
-              <img
-                src={img.url || ""}
-                alt={`${productName} thumbnail ${i + 1}`}
-                draggable={false}
-              />
-            </button>
-          ))}
-        </div>
-      )}
+      {/* ── Thumbnail strip (always visible, horizontal scrollable) ── */}
+      <div className="pdp-gallery-thumbnails" role="list">
+        {images.map((img, i) => (
+          <button
+            key={img.id || img.url || i}
+            type="button"
+            role="listitem"
+            className={`pdp-gallery-thumb${i === activeIndex ? " active" : ""}`}
+            onClick={() => setActiveIndex(i)}
+            aria-label={`View image ${i + 1}`}
+            aria-current={i === activeIndex}
+          >
+            <img
+              src={img.url || ""}
+              alt={`${productName} thumbnail ${i + 1}`}
+              draggable={false}
+            />
+          </button>
+        ))}
+      </div>
     </div>
   );
 };

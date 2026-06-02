@@ -451,19 +451,34 @@ export const ProductDetailPage = () => {
   return (
     <>
       <div className="product-detail-page">
+        {/* ── Single hero card: gallery (left) + purchase aside (right) ── */}
         <section className="product-detail-hero">
+          {/* Left: gallery + title/dev-publisher (no border, plain text) */}
           <div className="product-detail-gallery">
+            <h1 className="product-detail-title">{product.name}</h1>
+            <p className="product-detail-dev-publisher">
+              {product.subtitle || "Nhà phát hành không xác định"}
+            </p>
             <ProductImageGallery
-              images={product.images || []}
+              images={(product.images || []).filter((img) => img.displayOrder !== 1)}
               productName={product.name}
             />
           </div>
 
+          {/* Right: purchase panel */}
           <aside className="product-detail-purchase">
-            <h1>{product.name}</h1>
-            <p className="product-detail-subtitle">
-              {product.subtitle || "Nhà phát hành không xác định"}
-            </p>
+            {(() => {
+              const heroImage = (product.images || []).find((img) => img.displayOrder === 1);
+              return heroImage ? (
+                <div className="product-detail-hero-image">
+                  <img
+                    src={heroImage.url || ""}
+                    alt={`${product.name} hero`}
+                    className="product-detail-hero-img"
+                  />
+                </div>
+              ) : null;
+            })()}
 
             <div className="product-detail-rating-row">
               <span className="product-detail-rating">
