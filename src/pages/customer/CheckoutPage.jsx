@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Loader } from '../../components/common/Loader';
 import { Button } from '../../components/common/Button';
+import { ScrollToTop } from '../../components/common/ScrollToTop';
 import { createPayment } from '../../api/paymentApi';
 import { previewCheckout } from '../../api/checkoutApi';
 import { useAuth } from '../../hooks/useAuth';
@@ -308,6 +309,8 @@ export const CheckoutPage = () => {
         onClose={handleVerifyClose}
         onSuccess={handleVerifySuccess}
       />
+
+      <ScrollToTop />
     </>
   );
 };

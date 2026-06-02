@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Loader } from '../../components/common/Loader';
 import { Button } from '../../components/common/Button';
+import { ScrollToTop } from '../../components/common/ScrollToTop';
 import { CartItemRow } from '../../components/cart/CartItemRow';
 import { useCart } from '../../hooks/useCart';
 import './Cart.css';
@@ -333,6 +334,8 @@ export const Cart = () => {
           </button>
         </div>
       )}
+
+      <ScrollToTop />
     </div>
   );
 };

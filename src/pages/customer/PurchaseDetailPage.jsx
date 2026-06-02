@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Loader } from '../../components/common/Loader';
+import { ScrollToTop } from '../../components/common/ScrollToTop';
 import myOrdersApi from '../../api/myOrdersApi';
 import PurchaseDetailSummary from '../../components/customer/PurchaseDetailSummary';
 import PurchaseLicenseTable from '../../components/customer/PurchaseLicenseTable';
@@ -137,8 +138,9 @@ export default function PurchaseDetailPage() {
   const statusBadgeClass = getDetailStatusClass(order.status);
 
   return (
-    <div className="order-detail-page">
-      <button
+    <>
+      <div className="order-detail-page">
+        <button
           type="button"
           className="order-detail-back"
           onClick={() => navigate('/account/orders')}
@@ -181,5 +183,8 @@ export default function PurchaseDetailPage() {
           </section>
         )}
       </div>
+
+      <ScrollToTop />
+    </>
   );
 }

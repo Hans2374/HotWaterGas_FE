@@ -6,6 +6,7 @@ import { getCategories } from '../../api/categoriesApi';
 import { getTags } from '../../api/tagsApi';
 import { ProductGrid } from '../../components/product/ProductGrid';
 import { Loader } from '../../components/common/Loader';
+import { ScrollToTop } from '../../components/common/ScrollToTop';
 import { useAuth } from '../../hooks/useAuth';
 import { useWishlist } from '../../hooks/useWishlist';
 import { useCart } from '../../hooks/useCart';
@@ -407,8 +408,9 @@ export const SearchResultsPage = () => {
   const currentSortValue = `${sortBy}-${sortDirection}`;
 
   return (
-    <div className="search-results-page">
-      <section className="search-results-header">
+    <>
+      <div className="search-results-page">
+        <section className="search-results-header">
           <h2 className="search-results-title">
             {searchQuery ? `Kết quả tìm kiếm cho "${searchQuery}"` : 'Tất cả sản phẩm'}
           </h2>
@@ -604,5 +606,8 @@ export const SearchResultsPage = () => {
           </section>
         </div>
       </div>
+
+      <ScrollToTop />
+    </>
   );
 };

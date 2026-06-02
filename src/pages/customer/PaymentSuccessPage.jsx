@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
+import { ScrollToTop } from '../../components/common/ScrollToTop';
 import { useCart } from '../../hooks/useCart';
 import './PaymentReturnPage.css';
 
@@ -102,10 +103,12 @@ const PaymentSuccessPage = () => {
           >
             Tiếp tục mua sắm
           </button>
-        </div>
       </div>
     </div>
-  );
+
+    <ScrollToTop />
+  </div>
+);
 };
 
 export default PaymentSuccessPage;

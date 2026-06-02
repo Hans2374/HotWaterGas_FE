@@ -1,0 +1,56 @@
+/* ============================================
+   ScrollToTop — Customer Dark Theme
+   ============================================ */
+
+.scroll-to-top {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  z-index: 9999;
+
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: none;
+  outline: none;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+
+  background-color: var(--customer-accent, #DC2626);
+  color: #ffffff;
+
+  box-shadow:
+    0 4px 16px rgba(220, 38, 38, 0.35),
+    0 2px 8px rgba(0, 0, 0, 0.3);
+  transition:
+    background-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease,
+    opacity 0.25s ease,
+    visibility 0.25s ease;
+}
+
+.scroll-to-top:hover {
+  background-color: var(--customer-accent-hover, #EF4444);
+  box-shadow:
+    0 6px 24px rgba(220, 38, 38, 0.5),
+    0 4px 12px rgba(0, 0, 0, 0.4);
+  transform: translateY(-3px);
+}
+
+.scroll-to-top:active {
+  background-color: var(--customer-accent-active, #991B1B);
+  box-shadow:
+    0 2px 8px rgba(220, 38, 38, 0.3),
+    0 1px 4px rgba(0, 0, 0, 0.25);
+  transform: translateY(0px);
+}
+
+.scroll-to-top:focus-visible {
+  outline: 2px solid var(--customer-accent, #DC2626);
+  outline-offset: 3px;
+}

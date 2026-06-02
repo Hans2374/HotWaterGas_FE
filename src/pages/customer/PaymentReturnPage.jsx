@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Loader } from '../../components/common/Loader';
+import { ScrollToTop } from '../../components/common/ScrollToTop';
 import { useCart } from '../../hooks/useCart';
 import './PaymentReturnPage.css';
 
@@ -201,10 +202,12 @@ const PaymentReturnPage = () => {
       <div className="payment-return-container">
         <div className="payment-return-content payment-return-pending">
           <Loader text="Đang chuyển hướng..." />
-        </div>
       </div>
     </div>
-  );
+
+    <ScrollToTop />
+  </div>
+);
 };
 
 export default PaymentReturnPage;

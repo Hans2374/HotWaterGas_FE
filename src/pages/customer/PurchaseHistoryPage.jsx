@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ScrollToTop } from '../../components/common/ScrollToTop';
 import myOrdersApi from '../../api/myOrdersApi';
 import PurchaseHistoryTable from '../../components/customer/PurchaseHistoryTable';
 import './PurchaseHistoryPage.css';
@@ -77,8 +78,9 @@ export default function PurchaseHistoryPage() {
   const endItem = Math.min(pagination.pageNumber * pagination.pageSize, pagination.totalCount);
 
   return (
-    <div className="purchase-history-page">
-      <section className="orders-page-header">
+    <>
+      <div className="purchase-history-page">
+        <section className="orders-page-header">
         <button
           type="button"
           className="orders-page-back-btn"
@@ -138,5 +140,8 @@ export default function PurchaseHistoryPage() {
         </div>
       )}
     </div>
+
+    <ScrollToTop />
+    </>
   );
 }

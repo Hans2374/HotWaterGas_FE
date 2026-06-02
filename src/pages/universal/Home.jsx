@@ -5,6 +5,7 @@ import { ProductGrid } from '../../components/product/ProductGrid';
 import { CategoryGrid } from '../../components/category/CategoryGrid';
 import { HeroBanner } from '../../components/hero/HeroBanner';
 import { Loader } from '../../components/common/Loader';
+import { ScrollToTop } from '../../components/common/ScrollToTop';
 import { getProducts } from '../../api/productApi';
 import { getHomepageCategories } from '../../api/categoriesApi';
 import { useAuth } from '../../hooks/useAuth';
@@ -280,6 +281,8 @@ export const Home = () => {
           <CategoryGrid categories={categories} />
         )}
       </section>
+
+      <ScrollToTop />
     </div>
   );
 };

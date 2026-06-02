@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Loader } from '../../components/common/Loader';
+import { ScrollToTop } from '../../components/common/ScrollToTop';
 import { useCart } from '../../hooks/useCart';
 import './PaymentReturnPage.css';
 
@@ -111,8 +112,9 @@ const PaymentCancelPage = () => {
   }
 
   return (
-    <div className="payment-cancel-page">
-      <div className="payment-cancel-container">
+    <>
+      <div className="payment-cancel-page">
+        <div className="payment-cancel-container">
         <div className="payment-cancel-icon">
           <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="40" cy="40" r="38" stroke="#6b7280" strokeWidth="4" fill="none"/>
@@ -172,6 +174,9 @@ const PaymentCancelPage = () => {
         </div>
       </div>
     </div>
+
+    <ScrollToTop />
+    </>
   );
 };
 

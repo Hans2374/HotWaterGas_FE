@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { Loader } from "../../components/common/Loader";
+import { ScrollToTop } from "../../components/common/ScrollToTop";
 import { ReviewSection } from "../../components/product/ReviewSection";
 import { ProductCard } from "../../components/product/ProductCard";
 import { ProductImageGallery } from "../../components/product/ProductImageGallery";
@@ -448,8 +449,9 @@ export const ProductDetailPage = () => {
   );
 
   return (
-    <div className="product-detail-page">
-      <section className="product-detail-hero">
+    <>
+      <div className="product-detail-page">
+        <section className="product-detail-hero">
           <div className="product-detail-gallery">
             <ProductImageGallery
               images={product.images || []}
@@ -709,5 +711,8 @@ export const ProductDetailPage = () => {
             </section>
           )}
       </div>
+
+      <ScrollToTop />
+    </>
   );
 };

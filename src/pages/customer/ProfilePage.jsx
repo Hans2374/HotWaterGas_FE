@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Eye, EyeOff, Loader, CheckCircle, AlertCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import { ScrollToTop } from '../../components/common/ScrollToTop';
 import { getMyProfile, updateMyProfile, changeMyPassword, verifyEmail, resendVerification } from '../../api/authApi';
 import { AUTH_TOKEN_UPDATED_LISTENER } from '../../utils/authEventBridge';
 import { setAccessToken } from '../../utils/tokenManager';
@@ -346,6 +347,8 @@ export const ProfilePage = () => {
         email={authEmail || ''}
         onSuccess={handleVerificationSuccess}
       />
+
+      <ScrollToTop />
     </div>
   );
 };

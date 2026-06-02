@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import { ScrollToTop } from '../../components/common/ScrollToTop';
 import { ProductGrid } from '../../components/product/ProductGrid';
 import { Button } from '../../components/common/Button';
 import { Loader } from '../../components/common/Loader';
@@ -151,8 +152,9 @@ export const WishlistPage = () => {
   };
 
   return (
-    <div className="wishlist-page">
-      <section className="wishlist-header">
+    <>
+      <div className="wishlist-page">
+        <section className="wishlist-header">
         <h2>Yêu thích của tôi</h2>
         {wishlist.length === 0 && !isLoading && (
           <p className="wishlist-header-subtitle">Yêu thích của bạn trống. Tiếp tục mua sắm!</p>
@@ -189,5 +191,8 @@ export const WishlistPage = () => {
         />
       )}
     </div>
+
+    <ScrollToTop />
+    </>
   );
 };

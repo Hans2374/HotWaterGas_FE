@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { getCategories } from '../../api/categoriesApi';
 import { CategoryGrid } from '../../components/category/CategoryGrid';
 import { Loader } from '../../components/common/Loader';
+import { ScrollToTop } from '../../components/common/ScrollToTop';
 import './CategoryPage.css';
 
 export const CategoryPage = () => {
@@ -28,8 +29,9 @@ export const CategoryPage = () => {
   }, []);
 
   return (
-    <div className="category-page">
-      <div className="category-page-header">
+    <>
+      <div className="category-page">
+        <div className="category-page-header">
         <h1 className="category-page-title">Danh Mục Game</h1>
         <p className="category-page-subtitle">
           Khám phá game theo thể loại yêu thích của bạn
@@ -48,5 +50,8 @@ export const CategoryPage = () => {
         <CategoryGrid categories={categories} />
       )}
     </div>
+
+    <ScrollToTop />
+    </>
   );
 };

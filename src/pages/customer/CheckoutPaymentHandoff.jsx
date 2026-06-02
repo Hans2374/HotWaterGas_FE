@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '../../components/common/Button';
 import { Loader } from '../../components/common/Loader';
+import { ScrollToTop } from '../../components/common/ScrollToTop';
 import { createPayment } from '../../api/paymentApi';
 
 const STORAGE_KEY_PREVIEW = 'hotwatergas.checkout.preview';
@@ -132,7 +133,8 @@ export const CheckoutPaymentHandoff = () => {
   };
 
   return (
-    <section className="cart-message" style={{ textAlign: 'center' }}>
+    <>
+      <section className="cart-message" style={{ textAlign: 'center' }}>
         {isInitiatingPayment && !error && (
           <>
             <Loader text="Redirecting to payment..." />
@@ -185,5 +187,8 @@ export const CheckoutPaymentHandoff = () => {
           </>
         )}
       </section>
+
+      <ScrollToTop />
+    </>
   );
 };
