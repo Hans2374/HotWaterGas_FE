@@ -456,8 +456,16 @@ export const ProductDetailPage = () => {
           {/* Left: gallery + title/dev-publisher (no border, plain text) */}
           <div className="product-detail-gallery">
             <h1 className="product-detail-title">{product.name}</h1>
-            <p className="product-detail-dev-publisher">
-              {product.subtitle || "Nhà phát hành không xác định"}
+            <p className="product-detail-meta-inline">
+              Nhà phát triển:{" "}
+              <span className="product-detail-meta-value">
+                {product.developer || "Không xác định"}
+              </span>
+              {" — "}
+              Nhà phát hành:{" "}
+              <span className="product-detail-meta-value">
+                {product.publisher || "Không xác định"}
+              </span>
             </p>
             <ProductImageGallery
               images={(product.images || []).filter((img) => img.displayOrder !== 1)}
@@ -592,7 +600,7 @@ export const ProductDetailPage = () => {
         </section>
 
         <section className="product-detail-section">
-          <h2>Yêu cầu</h2>
+          <h2>Yêu cầu hệ thống</h2>
           <div className="requirements-grid">
             <article className="requirement-card">
               <h3>Tối thiểu</h3>

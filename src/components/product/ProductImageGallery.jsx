@@ -1,15 +1,50 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
 export const ProductImageGallery = ({ images = [], productName = "" }) => {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const timerRef = useRef(null);
+  const activeIndexRef = useRef(0);
   const dragStartX = useRef(null);
   const total = images.length;
+
+  const clearTimer = useCallback(() => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+  }, []);
+
+  const startTimer = useCallback(() => {
+    clearTimer();
+    timerRef.current = setInterval(() => {
+      navigateTo((activeIndexRef.current + 1) % total);
+    }, 5000);
+  }, [clearTimer, total]);
+
+  useEffect(() => {
+    if (total > 1) {
+      startTimer();
+    }
+    return clearTimer;
+  }, [total, startTimer, clearTimer]);
+
+  const navigateTo = useCallback((nextIndex) => {
+    if (nextIndex === activeIndexRef.current) return;
+    setIsTransitioning(true);
+    setTimeout(() => {
+      activeIndexRef.current = nextIndex;
+      setActiveIndex(nextIndex);
+      setIsTransitioning(false);
+      if (total > 1) startTimer();
+    }, 300);
+  }, [startTimer, total]);
 
   const handlePointerDown = useCallback((e) => {
     dragStartX.current = e.clientX;
   }, []);
 
-  const handlePointerMove = useCallback((e) => {
+  const handlePointerMove = useCallback(() => {
     // No visual feedback needed during move
   }, []);
 
@@ -18,13 +53,21 @@ export const ProductImageGallery = ({ images = [], productName = "" }) => {
     const delta = e.clientX - dragStartX.current;
     if (Math.abs(delta) > 50) {
       if (delta < 0) {
-        setActiveIndex((i) => (i + 1) % total);
+        navigateTo((activeIndexRef.current + 1) % total);
       } else {
-        setActiveIndex((i) => (i - 1 + total) % total);
+        navigateTo((activeIndexRef.current - 1 + total) % total);
       }
     }
     dragStartX.current = null;
-  }, [total]);
+  }, [total, navigateTo]);
+
+  const handleMouseEnter = useCallback(() => {
+    clearTimer();
+  }, [clearTimer]);
+
+  const handleMouseLeave = useCallback(() => {
+    if (total > 1) startTimer();
+  }, [total, startTimer]);
 
   if (total === 0) {
     return (
@@ -45,14 +88,17 @@ export const ProductImageGallery = ({ images = [], productName = "" }) => {
         onMouseMove={handlePointerMove}
         onMouseUp={handlePointerUp}
         onMouseLeave={handlePointerUp}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
       >
-        <img
-          key={activeIndex}
-          src={activeImage?.url || ""}
-          alt={`${productName} — image ${activeIndex + 1}`}
-          className="pdp-gallery-main-img"
-          draggable={false}
-        />
+        <div className={`pdp-gallery-main-inner${isTransitioning ? " fade-out" : " fade-in"}`}>
+          <img
+            src={activeImage?.url || ""}
+            alt={`${productName} — image ${activeIndex + 1}`}
+            className="pdp-gallery-main-img"
+            draggable={false}
+          />
+        </div>
 
         {/* Arrows — shown on hover */}
         {total > 1 && (
@@ -61,7 +107,7 @@ export const ProductImageGallery = ({ images = [], productName = "" }) => {
               className="pdp-gallery-arrow pdp-gallery-arrow-prev"
               onClick={(e) => {
                 e.stopPropagation();
-                setActiveIndex((i) => (i - 1 + total) % total);
+                navigateTo((activeIndex - 1 + total) % total);
               }}
               aria-label="Previous image"
             >
@@ -71,7 +117,7 @@ export const ProductImageGallery = ({ images = [], productName = "" }) => {
               className="pdp-gallery-arrow pdp-gallery-arrow-next"
               onClick={(e) => {
                 e.stopPropagation();
-                setActiveIndex((i) => (i + 1) % total);
+                navigateTo((activeIndex + 1) % total);
               }}
               aria-label="Next image"
             >
@@ -89,7 +135,7 @@ export const ProductImageGallery = ({ images = [], productName = "" }) => {
             type="button"
             role="listitem"
             className={`pdp-gallery-thumb${i === activeIndex ? " active" : ""}`}
-            onClick={() => setActiveIndex(i)}
+            onClick={() => navigateTo(i)}
             aria-label={`View image ${i + 1}`}
             aria-current={i === activeIndex}
           >
