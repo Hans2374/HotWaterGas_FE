@@ -100,7 +100,6 @@ export const AdminSteamKeyTable = ({
     return (
       <div className="key-table-empty">
         <p className="empty-title">No keys found</p>
-        <p className="empty-hint">Add Steam keys to manage inventory</p>
       </div>
     );
   }
