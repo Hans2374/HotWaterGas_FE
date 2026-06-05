@@ -104,6 +104,10 @@ export const ProductDetailPage = () => {
   const [recommendationsError, setRecommendationsError] = useState("");
   const [catalogCategories, setCatalogCategories] = useState([]);
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }, [slug]);
+
   const fetchProduct = useCallback(async () => {
     if (!slug) {
       setNotFound(true);

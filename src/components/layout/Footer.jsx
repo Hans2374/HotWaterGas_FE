@@ -58,6 +58,20 @@ export const Footer = () => {
             >
               Các Thể Loại Game Thịnh Hành
             </button>
+            <button
+              type="button"
+              className="footer-link"
+              onClick={() => handleNavigate('/publishers')}
+            >
+              Các Nhà Phát Hành
+            </button>
+            <button
+              type="button"
+              className="footer-link"
+              onClick={() => handleNavigate('/developers')}
+            >
+              Các Nhà Phát Triển
+            </button>
           </nav>
         </div>
 
