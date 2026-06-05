@@ -8,6 +8,10 @@ import { Home } from '../pages/universal/Home';
 import { SearchResultsPage } from '../pages/universal/SearchResultsPage';
 import { CategoryPage } from '../pages/universal/CategoryPage';
 import { ProductDetailPage } from '../pages/universal/ProductDetailPage';
+import { PublisherPage } from '../pages/universal/PublisherPage';
+import { DeveloperPage } from '../pages/universal/DeveloperPage';
+import { PublisherDetailPage } from '../pages/universal/PublisherDetailPage';
+import { DeveloperDetailPage } from '../pages/universal/DeveloperDetailPage';
 import { Cart } from '../pages/customer/Cart';
 import { WishlistPage } from '../pages/customer/WishlistPage';
 import { CheckoutPage } from '../pages/customer/CheckoutPage';
@@ -195,6 +199,38 @@ export const AppRoutes = () => {
           element={(
             <StorefrontRoute>
               <ProductDetailPage />
+            </StorefrontRoute>
+          )}
+        />
+        <Route
+          path="publishers"
+          element={(
+            <StorefrontRoute>
+              <PublisherPage />
+            </StorefrontRoute>
+          )}
+        />
+        <Route
+          path="publishers/:id"
+          element={(
+            <StorefrontRoute>
+              <PublisherDetailPage />
+            </StorefrontRoute>
+          )}
+        />
+        <Route
+          path="developers"
+          element={(
+            <StorefrontRoute>
+              <DeveloperPage />
+            </StorefrontRoute>
+          )}
+        />
+        <Route
+          path="developers/:id"
+          element={(
+            <StorefrontRoute>
+              <DeveloperDetailPage />
             </StorefrontRoute>
           )}
         />

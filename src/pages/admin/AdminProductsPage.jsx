@@ -37,6 +37,14 @@ const formatUpdatedAt = (value) => {
   });
 };
 
+const getProductSubtitle = (product) => {
+  const developerName = String(product?.developerName || product?.developer?.name || product?.metadata?.developer || '').trim();
+  const publisherName = String(product?.publisherName || product?.publisher?.name || product?.metadata?.publisher || '').trim();
+  const subtitle = [developerName, publisherName].filter(Boolean).join(' - ');
+
+  return subtitle || product?.subtitle || '—';
+};
+
 const getStockStatus = (stock) => {
   const numericStock = Number(stock ?? 0);
   if (numericStock === 0) return 'out-of-stock';
@@ -539,7 +547,7 @@ export const AdminProductsPage = () => {
                               <span className="featured-badge-inline" title="Đang trong Hero Banner">★ Homepage Banner</span>
                             )}
                           </span>
-                          <span className="product-subtitle">{product.subtitle || product.slug || '—'}</span>
+                          <span className="product-subtitle">{getProductSubtitle(product)}</span>
                         </div>
                       </div>
                     </td>

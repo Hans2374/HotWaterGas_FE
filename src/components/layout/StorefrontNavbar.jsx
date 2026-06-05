@@ -5,7 +5,9 @@ import './StorefrontNavbar.css';
 const tabs = [
   { label: 'Trang chủ', to: '/' },
   { label: 'Steam Key Chính Hãng', to: '/products/search' },
-  { label: 'Các Thể Loại Game Thịnh Hành', to: '/categories' }
+  { label: 'Các Thể Loại Game Thịnh Hành', to: '/categories' },
+  { label: 'Các nhà phát hành', to: '/publishers' },
+  { label: 'Các nhà phát triển', to: '/developers' }
 ];
 
 export const StorefrontNavbar = () => (

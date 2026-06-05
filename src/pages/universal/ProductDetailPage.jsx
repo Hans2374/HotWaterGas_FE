@@ -380,7 +380,7 @@ export const ProductDetailPage = () => {
   if (loading) {
     return (
       <div className="product-detail-loading">
-        <Loader text="Loading product details..." />
+        <Loader text="Đang tải sản phẩm..." />
       </div>
     );
   }
@@ -388,17 +388,17 @@ export const ProductDetailPage = () => {
   if (notFound) {
     return (
       <section className="product-detail-state">
-        <h2>Product not found</h2>
+        <h2>Sản phẩm không tồn tại</h2>
         <p>
-          The product you are looking for does not exist or is no longer
-          available.
+          Sản phẩm bạn đang tìm kiếm không tồn tại hoặc không còn
+          còn khả dụng.
         </p>
         <button
           type="button"
           className="product-detail-link-btn"
           onClick={() => navigate("/")}
         >
-          Back to homepage
+          Quay lại trang chủ
         </button>
       </section>
     );
@@ -407,7 +407,7 @@ export const ProductDetailPage = () => {
   if (error) {
     return (
       <section className="product-detail-state">
-        <h2>Unable to load product</h2>
+        <h2>Không thể tải sản phẩm</h2>
         <p>{error}</p>
         <div className="product-detail-state-actions">
           <button
@@ -415,14 +415,14 @@ export const ProductDetailPage = () => {
             className="product-detail-link-btn"
             onClick={fetchProduct}
           >
-            Retry
+            Thử lại
           </button>
           <button
             type="button"
             className="product-detail-link-btn ghost"
             onClick={() => navigate("/")}
           >
-            Back
+            Quay lại
           </button>
         </div>
       </section>
