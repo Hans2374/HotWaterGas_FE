@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState, useRef, useCallback } from 'react';
-import { Plus, X, GripVertical, Image as ImageIcon, Layout, Flag, Images } from 'lucide-react';
+import { Plus, X, GripVertical, Image as ImageIcon, Layout, Flag, Images, Search, ChevronDown, Check } from 'lucide-react';
 import { getCategories, getTags, uploadProductImage } from '../../services/productService';
 import { getPublishers } from '../../services/publisherService';
 import { getDevelopers } from '../../services/developerService';
@@ -254,6 +254,19 @@ export const ProductForm = ({
   const [galleryInputKey, setGalleryInputKey] = useState(0);
   const galleryFileInputRef = useRef(null);
 
+  const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(false);
+  const [categorySearchTerm, setCategorySearchTerm] = useState('');
+  const [isTagsMenuOpen, setIsTagsMenuOpen] = useState(false);
+  const [tagSearchTerm, setTagSearchTerm] = useState('');
+  const [isPublisherMenuOpen, setIsPublisherMenuOpen] = useState(false);
+  const [publisherSearchTerm, setPublisherSearchTerm] = useState('');
+  const [isDeveloperMenuOpen, setIsDeveloperMenuOpen] = useState(false);
+  const [developerSearchTerm, setDeveloperSearchTerm] = useState('');
+  const categoryMenuRef = useRef(null);
+  const tagsMenuRef = useRef(null);
+  const publisherMenuRef = useRef(null);
+  const developerMenuRef = useRef(null);
+
   const discountPercentage = Number(formData.discountPercentage || 0);
 
   const pricePreview = useMemo(() => {
@@ -269,6 +282,60 @@ export const ProductForm = ({
     if (!base || Number.isNaN(base)) return 0;
     return base - pricePreview;
   }, [formData.price, pricePreview]);
+
+  const selectedCategory = useMemo(
+    () => categories.find((category) => category.id === formData.categoryId) || null,
+    [categories, formData.categoryId]
+  );
+
+  const selectedPublisher = useMemo(
+    () => publishers.find((publisher) => publisher.id === formData.publisherId) || null,
+    [publishers, formData.publisherId]
+  );
+
+  const selectedDeveloper = useMemo(
+    () => developers.find((developer) => developer.id === formData.developerId) || null,
+    [developers, formData.developerId]
+  );
+
+  const filteredCategories = useMemo(() => {
+    const keyword = categorySearchTerm.trim().toLowerCase();
+    if (!keyword) return categories;
+    return categories.filter((category) =>
+      category.name?.toLowerCase().includes(keyword) || category.slug?.toLowerCase().includes(keyword)
+    );
+  }, [categories, categorySearchTerm]);
+
+  const filteredPublishers = useMemo(() => {
+    const keyword = publisherSearchTerm.trim().toLowerCase();
+    if (!keyword) return publishers;
+    return publishers.filter((publisher) =>
+      publisher.name?.toLowerCase().includes(keyword) || publisher.slug?.toLowerCase().includes(keyword)
+    );
+  }, [publishers, publisherSearchTerm]);
+
+  const filteredDevelopers = useMemo(() => {
+    const keyword = developerSearchTerm.trim().toLowerCase();
+    if (!keyword) return developers;
+    return developers.filter((developer) =>
+      developer.name?.toLowerCase().includes(keyword) || developer.slug?.toLowerCase().includes(keyword)
+    );
+  }, [developers, developerSearchTerm]);
+
+  const selectedTagIds = useMemo(() => normalizeTagIds(formData.tagIds), [formData.tagIds]);
+
+  const filteredTags = useMemo(() => {
+    const keyword = tagSearchTerm.trim().toLowerCase();
+    if (!keyword) return tags;
+    return tags.filter((tag) =>
+      tag.name?.toLowerCase().includes(keyword) || tag.slug?.toLowerCase().includes(keyword)
+    );
+  }, [tags, tagSearchTerm]);
+
+  const selectedTags = useMemo(
+    () => tags.filter((tag) => selectedTagIds.includes(tag.id)),
+    [tags, selectedTagIds]
+  );
 
   useEffect(() => {
     const fresh = createInitialData(initialData);
@@ -302,6 +369,26 @@ export const ProductForm = ({
     loadLookups();
   }, []);
 
+  useEffect(() => {
+    const handlePointerDown = (event) => {
+      if (categoryMenuRef.current && !categoryMenuRef.current.contains(event.target)) {
+        setIsCategoryMenuOpen(false);
+      }
+      if (tagsMenuRef.current && !tagsMenuRef.current.contains(event.target)) {
+        setIsTagsMenuOpen(false);
+      }
+      if (publisherMenuRef.current && !publisherMenuRef.current.contains(event.target)) {
+        setIsPublisherMenuOpen(false);
+      }
+      if (developerMenuRef.current && !developerMenuRef.current.contains(event.target)) {
+        setIsDeveloperMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handlePointerDown);
+    return () => document.removeEventListener('mousedown', handlePointerDown);
+  }, []);
+
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -311,6 +398,62 @@ export const ProductForm = ({
   const handleCategoryChange = (event) => {
     setFormData((prev) => ({ ...prev, categoryId: event.target.value }));
     setErrors((prev) => ({ ...prev, categoryId: '' }));
+  };
+
+  const handleSelectCategory = (categoryId) => {
+    setFormData((prev) => ({ ...prev, categoryId }));
+    setErrors((prev) => ({ ...prev, categoryId: '' }));
+    setIsCategoryMenuOpen(false);
+    setCategorySearchTerm('');
+  };
+
+  const handleToggleCategoryMenu = () => {
+    setIsCategoryMenuOpen((prev) => !prev);
+    setIsTagsMenuOpen(false);
+    setCategorySearchTerm('');
+  };
+
+  const handleToggleTagsMenu = () => {
+    setIsTagsMenuOpen((prev) => !prev);
+    setIsCategoryMenuOpen(false);
+    setTagSearchTerm('');
+  };
+
+  const handleSelectPublisher = (publisherId) => {
+    setFormData((prev) => ({ ...prev, publisherId }));
+    setErrors((prev) => ({ ...prev, publisherId: '' }));
+    setIsPublisherMenuOpen(false);
+    setPublisherSearchTerm('');
+  };
+
+  const handleTogglePublisherMenu = () => {
+    setIsPublisherMenuOpen((prev) => !prev);
+    setIsCategoryMenuOpen(false);
+    setIsTagsMenuOpen(false);
+    setIsDeveloperMenuOpen(false);
+    setPublisherSearchTerm('');
+  };
+
+  const handleSelectDeveloper = (developerId) => {
+    setFormData((prev) => ({ ...prev, developerId }));
+    setErrors((prev) => ({ ...prev, developerId: '' }));
+    setIsDeveloperMenuOpen(false);
+    setDeveloperSearchTerm('');
+  };
+
+  const handleToggleDeveloperMenu = () => {
+    setIsDeveloperMenuOpen((prev) => !prev);
+    setIsCategoryMenuOpen(false);
+    setIsTagsMenuOpen(false);
+    setIsPublisherMenuOpen(false);
+    setDeveloperSearchTerm('');
+  };
+
+  const handleRemoveTag = (tagId) => {
+    setFormData((prev) => ({
+      ...prev,
+      tagIds: normalizeTagIds(prev.tagIds).filter((id) => id !== tagId)
+    }));
   };
 
   const handleToggleTag = (tagId) => {
@@ -784,49 +927,151 @@ export const ProductForm = ({
         <h3 className="form-card-title">Organization</h3>
         <div className="form-grid">
           <div className="form-field">
-            <label className="input-label" htmlFor="field-category">Category</label>
-            <div className="form-select-wrap">
-              <select
-                id="field-category"
-                className={`form-select ${errors.categoryId ? 'error' : ''}`}
-                name="categoryId"
-                value={formData.categoryId}
-                onChange={handleCategoryChange}
+            <label className="input-label" htmlFor="field-category-search">Category</label>
+            <div
+              className={`search-select ${errors.categoryId ? 'error' : ''} ${isCategoryMenuOpen ? 'open' : ''}`}
+              ref={categoryMenuRef}
+            >
+              <button
+                type="button"
+                id="field-category-search"
+                className="search-select-trigger"
+                onClick={handleToggleCategoryMenu}
                 disabled={isSubmitting || isLookupLoading}
+                aria-expanded={isCategoryMenuOpen}
               >
-                <option value="">Select a category</option>
-                {categories.map((cat) => (
-                  <option key={cat.id} value={cat.id}>{cat.name}</option>
-                ))}
-              </select>
+                <span className={`search-select-trigger-text ${selectedCategory ? '' : 'placeholder'}`}>
+                  {selectedCategory?.name || 'Select a category'}
+                </span>
+                <ChevronDown size={16} className="search-select-trigger-icon" />
+              </button>
+
+              {isCategoryMenuOpen && (
+                <div className="search-select-menu" role="listbox">
+                  <div className="search-select-search">
+                    <Search size={14} className="search-select-search-icon" />
+                    <input
+                      type="text"
+                      className="search-select-search-input"
+                      value={categorySearchTerm}
+                      onChange={(event) => setCategorySearchTerm(event.target.value)}
+                      placeholder="Search category..."
+                      autoFocus
+                    />
+                  </div>
+
+                  <div className="search-select-options">
+                    <button
+                      type="button"
+                      className={`search-select-option ${!formData.categoryId ? 'selected' : ''}`}
+                      onClick={() => handleSelectCategory('')}
+                    >
+                      <span>Unassigned</span>
+                      {!formData.categoryId && <Check size={14} className="search-select-check" />}
+                    </button>
+
+                    {filteredCategories.map((category) => {
+                      const selected = formData.categoryId === category.id;
+                      return (
+                        <button
+                          key={category.id}
+                          type="button"
+                          className={`search-select-option ${selected ? 'selected' : ''}`}
+                          onClick={() => handleSelectCategory(category.id)}
+                        >
+                          <span>{category.name}</span>
+                          {selected && <Check size={14} className="search-select-check" />}
+                        </button>
+                      );
+                    })}
+
+                    {filteredCategories.length === 0 && (
+                      <div className="search-select-empty">No categories found.</div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
             {errors.categoryId && <span className="input-error-message">{errors.categoryId}</span>}
           </div>
 
           <div className="form-field form-field-full">
-            <label className="input-label">Tags <span className="optional-label">(optional)</span></label>
-            <div className="tags-grid">
-              {tags.map((tag) => {
-                const checked = normalizeTagIds(formData.tagIds).includes(tag.id);
-                return (
-                  <label
-                    className={`tag-checkbox ${checked ? 'checked' : ''}`}
-                    key={tag.id}
-                  >
+            <label className="input-label" htmlFor="field-tags-search">Tags <span className="optional-label">(optional)</span></label>
+            <div
+              className={`search-select multi ${isTagsMenuOpen ? 'open' : ''}`}
+              ref={tagsMenuRef}
+            >
+              <button
+                type="button"
+                id="field-tags-search"
+                className="search-select-trigger multi"
+                onClick={handleToggleTagsMenu}
+                disabled={isSubmitting || isLookupLoading}
+                aria-expanded={isTagsMenuOpen}
+              >
+                <span className={`search-select-trigger-text ${selectedTags.length > 0 ? '' : 'placeholder'}`}>
+                  {selectedTags.length > 0 ? `${selectedTags.length} tag${selectedTags.length > 1 ? 's' : ''} selected` : 'Select tags'}
+                </span>
+                <ChevronDown size={16} className="search-select-trigger-icon" />
+              </button>
+
+              {isTagsMenuOpen && (
+                <div className="search-select-menu" role="listbox">
+                  <div className="search-select-search">
+                    <Search size={14} className="search-select-search-icon" />
                     <input
-                      type="checkbox"
-                      checked={checked}
-                      onChange={() => handleToggleTag(tag.id)}
-                      disabled={isSubmitting}
+                      type="text"
+                      className="search-select-search-input"
+                      value={tagSearchTerm}
+                      onChange={(event) => setTagSearchTerm(event.target.value)}
+                      placeholder="Search tags..."
+                      autoFocus
                     />
-                    {tag.name}
-                  </label>
-                );
-              })}
-              {tags.length === 0 && (
-                <span className="input-hint">No tags available.</span>
+                  </div>
+
+                  <div className="search-select-options">
+                    {filteredTags.map((tag) => {
+                      const selected = selectedTagIds.includes(tag.id);
+                      return (
+                        <button
+                          key={tag.id}
+                          type="button"
+                          className={`search-select-option ${selected ? 'selected' : ''}`}
+                          onClick={() => handleToggleTag(tag.id)}
+                        >
+                          <span>{tag.name}</span>
+                          {selected && <Check size={14} className="search-select-check" />}
+                        </button>
+                      );
+                    })}
+
+                    {filteredTags.length === 0 && (
+                      <div className="search-select-empty">No tags found.</div>
+                    )}
+                  </div>
+                </div>
               )}
             </div>
+
+            {selectedTags.length > 0 ? (
+              <div className="selected-tags-chips">
+                {selectedTags.map((tag) => (
+                  <button
+                    key={tag.id}
+                    type="button"
+                    className="selected-tag-chip"
+                    onClick={() => handleRemoveTag(tag.id)}
+                    disabled={isSubmitting}
+                    title={`Remove ${tag.name}`}
+                  >
+                    <span>{tag.name}</span>
+                    <X size={12} />
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <span className="input-hint">No tags selected.</span>
+            )}
           </div>
         </div>
       </section>
@@ -836,42 +1081,140 @@ export const ProductForm = ({
         <h3 className="form-card-title">Product Details</h3>
         <div className="form-grid">
           <div className="form-field">
-            <label className="input-label" htmlFor="field-publisher">Publisher</label>
-            <select
-              id="field-publisher"
-              className={`form-input ${errors.publisherId ? 'error' : ''}`}
-              name="publisherId"
-              value={formData.publisherId}
-              onChange={handleChange}
-              disabled={isSubmitting}
+            <label className="input-label" htmlFor="field-publisher-search">Publisher</label>
+            <div
+              className={`search-select ${errors.publisherId ? 'error' : ''} ${isPublisherMenuOpen ? 'open' : ''}`}
+              ref={publisherMenuRef}
             >
-              <option value="">Select publisher...</option>
-              {publishers.map((p) => (
-                <option key={p.id} value={p.id}>
-                  {p.name}
-                </option>
-              ))}
-            </select>
+              <button
+                type="button"
+                id="field-publisher-search"
+                className="search-select-trigger"
+                onClick={handleTogglePublisherMenu}
+                disabled={isSubmitting || isLookupLoading}
+                aria-expanded={isPublisherMenuOpen}
+              >
+                <span className={`search-select-trigger-text ${selectedPublisher ? '' : 'placeholder'}`}>
+                  {selectedPublisher?.name || 'Select publisher'}
+                </span>
+                <ChevronDown size={16} className="search-select-trigger-icon" />
+              </button>
+
+              {isPublisherMenuOpen && (
+                <div className="search-select-menu" role="listbox">
+                  <div className="search-select-search">
+                    <Search size={14} className="search-select-search-icon" />
+                    <input
+                      type="text"
+                      className="search-select-search-input"
+                      value={publisherSearchTerm}
+                      onChange={(event) => setPublisherSearchTerm(event.target.value)}
+                      placeholder="Search publisher..."
+                      autoFocus
+                    />
+                  </div>
+
+                  <div className="search-select-options">
+                    <button
+                      type="button"
+                      className={`search-select-option ${!formData.publisherId ? 'selected' : ''}`}
+                      onClick={() => handleSelectPublisher('')}
+                    >
+                      <span>Unassigned</span>
+                      {!formData.publisherId && <Check size={14} className="search-select-check" />}
+                    </button>
+
+                    {filteredPublishers.map((publisher) => {
+                      const selected = formData.publisherId === publisher.id;
+                      return (
+                        <button
+                          key={publisher.id}
+                          type="button"
+                          className={`search-select-option ${selected ? 'selected' : ''}`}
+                          onClick={() => handleSelectPublisher(publisher.id)}
+                        >
+                          <span>{publisher.name}</span>
+                          {selected && <Check size={14} className="search-select-check" />}
+                        </button>
+                      );
+                    })}
+
+                    {filteredPublishers.length === 0 && (
+                      <div className="search-select-empty">No publishers found.</div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
             {errors.publisherId && <span className="input-error-message">{errors.publisherId}</span>}
           </div>
 
           <div className="form-field">
-            <label className="input-label" htmlFor="field-developer">Developer</label>
-            <select
-              id="field-developer"
-              className={`form-input ${errors.developerId ? 'error' : ''}`}
-              name="developerId"
-              value={formData.developerId}
-              onChange={handleChange}
-              disabled={isSubmitting}
+            <label className="input-label" htmlFor="field-developer-search">Developer</label>
+            <div
+              className={`search-select ${errors.developerId ? 'error' : ''} ${isDeveloperMenuOpen ? 'open' : ''}`}
+              ref={developerMenuRef}
             >
-              <option value="">Select developer...</option>
-              {developers.map((d) => (
-                <option key={d.id} value={d.id}>
-                  {d.name}
-                </option>
-              ))}
-            </select>
+              <button
+                type="button"
+                id="field-developer-search"
+                className="search-select-trigger"
+                onClick={handleToggleDeveloperMenu}
+                disabled={isSubmitting || isLookupLoading}
+                aria-expanded={isDeveloperMenuOpen}
+              >
+                <span className={`search-select-trigger-text ${selectedDeveloper ? '' : 'placeholder'}`}>
+                  {selectedDeveloper?.name || 'Select developer'}
+                </span>
+                <ChevronDown size={16} className="search-select-trigger-icon" />
+              </button>
+
+              {isDeveloperMenuOpen && (
+                <div className="search-select-menu" role="listbox">
+                  <div className="search-select-search">
+                    <Search size={14} className="search-select-search-icon" />
+                    <input
+                      type="text"
+                      className="search-select-search-input"
+                      value={developerSearchTerm}
+                      onChange={(event) => setDeveloperSearchTerm(event.target.value)}
+                      placeholder="Search developer..."
+                      autoFocus
+                    />
+                  </div>
+
+                  <div className="search-select-options">
+                    <button
+                      type="button"
+                      className={`search-select-option ${!formData.developerId ? 'selected' : ''}`}
+                      onClick={() => handleSelectDeveloper('')}
+                    >
+                      <span>Unassigned</span>
+                      {!formData.developerId && <Check size={14} className="search-select-check" />}
+                    </button>
+
+                    {filteredDevelopers.map((developer) => {
+                      const selected = formData.developerId === developer.id;
+                      return (
+                        <button
+                          key={developer.id}
+                          type="button"
+                          className={`search-select-option ${selected ? 'selected' : ''}`}
+                          onClick={() => handleSelectDeveloper(developer.id)}
+                        >
+                          <span>{developer.name}</span>
+                          {selected && <Check size={14} className="search-select-check" />}
+                        </button>
+                      );
+                    })}
+
+                    {filteredDevelopers.length === 0 && (
+                      <div className="search-select-empty">No developers found.</div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
             {errors.developerId && <span className="input-error-message">{errors.developerId}</span>}
           </div>
 
