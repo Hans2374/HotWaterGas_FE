@@ -44,8 +44,8 @@ export const AdminProductEditPage = () => {
       shortDescription: product?.shortDescription || '',
       price: product?.price ?? '',
       discountPercentage: product?.discountPercentage != null ? String(product.discountPercentage) : '',
-      publisher: product?.metadata?.publisher || '',
-      developer: product?.metadata?.developer || '',
+      publisherId: product?.publisherId || '',
+      developerId: product?.developerId || '',
       releaseDate: product?.metadata?.releaseDate ? String(product.metadata.releaseDate).slice(0, 10) : '',
       platform: product?.metadata?.platform || '',
       systemRequirements: {

@@ -217,6 +217,46 @@
   color: #FF8000;
 }
 
+/* Theme: Pink — Publishers hover */
+.admin-sidebar-link.theme-pink:hover {
+  background-color: rgba(236, 72, 153, 0.15);
+  color: #EC4899;
+}
+
+.admin-sidebar-link.theme-pink:hover .admin-sidebar-icon {
+  color: #EC4899;
+}
+
+/* Theme: Pink — Publishers */
+.admin-sidebar-link.theme-pink.active {
+  background-color: rgba(236, 72, 153, 0.15);
+  color: #EC4899;
+}
+
+.admin-sidebar-link.theme-pink.active .admin-sidebar-icon {
+  color: #EC4899;
+}
+
+/* Theme: Purple — Developers hover */
+.admin-sidebar-link.theme-purple:hover {
+  background-color: rgba(139, 92, 246, 0.15);
+  color: #8B5CF6;
+}
+
+.admin-sidebar-link.theme-purple:hover .admin-sidebar-icon {
+  color: #8B5CF6;
+}
+
+/* Theme: Purple — Developers */
+.admin-sidebar-link.theme-purple.active {
+  background-color: rgba(139, 92, 246, 0.15);
+  color: #8B5CF6;
+}
+
+.admin-sidebar-link.theme-purple.active .admin-sidebar-icon {
+  color: #8B5CF6;
+}
+
 /* ── Icon ── */
 .admin-sidebar-icon {
   display: flex;

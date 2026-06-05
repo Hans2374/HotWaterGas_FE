@@ -41,6 +41,20 @@
   --admin-accent-glow: var(--admin-tags-accent-glow, rgba(16, 185, 129, 0.25));
 }
 
+.admin-layout.module-publishers {
+  --admin-accent: var(--admin-publishers-accent, #EC4899);
+  --admin-accent-hover: var(--admin-publishers-accent-hover, #BE185D);
+  --admin-accent-light: var(--admin-publishers-accent-light, rgba(236, 72, 153, 0.12));
+  --admin-accent-glow: var(--admin-publishers-accent-glow, rgba(236, 72, 153, 0.25));
+}
+
+.admin-layout.module-developers {
+  --admin-accent: var(--admin-developers-accent, #8B5CF6);
+  --admin-accent-hover: var(--admin-developers-accent-hover, #6D28D9);
+  --admin-accent-light: var(--admin-developers-accent-light, rgba(139, 92, 246, 0.12));
+  --admin-accent-glow: var(--admin-developers-accent-glow, rgba(139, 92, 246, 0.25));
+}
+
 /* ── Main Content ── */
 .admin-main {
   flex: 1;

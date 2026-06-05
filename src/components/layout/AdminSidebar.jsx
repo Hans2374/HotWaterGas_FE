@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Package, LayoutGrid, Tag, Users } from 'lucide-react';
+import { LayoutDashboard, Package, LayoutGrid, Tag, Users, BookOpen } from 'lucide-react';
 import './AdminSidebar.css';
 
 const adminNavItems = [
@@ -27,6 +27,18 @@ const adminNavItems = [
     label: 'Tags',
     icon: Tag,
     theme: 'green',
+  },
+  {
+    path: '/admin/publishers',
+    label: 'Publishers',
+    icon: BookOpen,
+    theme: 'pink',
+  },
+  {
+    path: '/admin/developers',
+    label: 'Developers',
+    icon: BookOpen,
+    theme: 'purple',
   },
   {
     path: '/admin/users',
@@ -64,6 +76,12 @@ export const AdminSidebar = ({ isOpen, onHoverEnter, onHoverLeave, onClose }) =>
     if (item.path === '/admin/tags') {
       return location.pathname.startsWith('/admin/tags');
     }
+    if (item.path === '/admin/publishers') {
+      return location.pathname.startsWith('/admin/publishers');
+    }
+    if (item.path === '/admin/developers') {
+      return location.pathname.startsWith('/admin/developers');
+    }
     if (item.path === '/admin/users') {
       return location.pathname.startsWith('/admin/users');
     }
@@ -76,6 +94,8 @@ export const AdminSidebar = ({ isOpen, onHoverEnter, onHoverLeave, onClose }) =>
       case 'yellow': return 'theme-yellow';
       case 'blue': return 'theme-blue';
       case 'green': return 'theme-green';
+      case 'pink': return 'theme-pink';
+      case 'purple': return 'theme-purple';
       case 'orange': return 'theme-orange';
       default: return '';
     }

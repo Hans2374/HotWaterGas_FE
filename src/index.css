@@ -53,6 +53,18 @@
   --admin-tags-accent-light: rgba(16, 185, 129, 0.12);
   --admin-tags-accent-glow: rgba(16, 185, 129, 0.25);
 
+  /* Admin Publishers — Pink palette */
+  --admin-publishers-accent: #EC4899;
+  --admin-publishers-accent-hover: #BE185D;
+  --admin-publishers-accent-light: rgba(236, 72, 153, 0.12);
+  --admin-publishers-accent-glow: rgba(236, 72, 153, 0.25);
+
+  /* Admin Developers — Purple palette */
+  --admin-developers-accent: #8B5CF6;
+  --admin-developers-accent-hover: #6D28D9;
+  --admin-developers-accent-light: rgba(139, 92, 246, 0.12);
+  --admin-developers-accent-glow: rgba(139, 92, 246, 0.25);
+
   /* Admin Dashboard — Red palette */
   --admin-dashboard-accent: #EF4444;
   --admin-dashboard-accent-hover: #DC2626;

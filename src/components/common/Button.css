@@ -125,6 +125,28 @@
   border-color: var(--admin-tags-accent-hover, #059669);
 }
 
+.btn-admin-publishers {
+  background-color: var(--admin-publishers-accent, #EC4899);
+  color: #ffffff;
+  border-color: var(--admin-publishers-accent, #EC4899);
+}
+
+.btn-admin-publishers:hover:not(:disabled) {
+  background-color: var(--admin-publishers-accent-hover, #BE185D);
+  border-color: var(--admin-publishers-accent-hover, #BE185D);
+}
+
+.btn-admin-developers {
+  background-color: var(--admin-developers-accent, #8B5CF6);
+  color: #ffffff;
+  border-color: var(--admin-developers-accent, #8B5CF6);
+}
+
+.btn-admin-developers:hover:not(:disabled) {
+  background-color: var(--admin-developers-accent-hover, #6D28D9);
+  border-color: var(--admin-developers-accent-hover, #6D28D9);
+}
+
 /* ═══════════════════════════════════════════════════════════════════════════════
    Auth Page — Premium Red Neon Primary Button
    Scoped via .auth-page so other pages are unaffected.

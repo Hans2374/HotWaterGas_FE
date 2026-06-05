@@ -1,0 +1,668 @@
+/* ============================================
+   Admin Developers Page — Purple theme (isolated)
+   ============================================ */
+
+.developers-page {
+  /* Purple accent tokens */
+  --dev-accent: #8B5CF6;
+  --dev-accent-hover: #7C3AED;
+  --dev-accent-light: rgba(139, 92, 246, 0.12);
+  --dev-accent-border: rgba(139, 92, 246, 0.25);
+
+  /* Surface hierarchy */
+  --dev-bg-page: #111827;
+  --dev-bg-card: #1F2937;
+  --dev-bg-header: #1a2332;
+  --dev-bg-hover: rgba(255, 255, 255, 0.05);
+
+  /* Border tokens */
+  --dev-border: rgba(255, 255, 255, 0.09);
+  --dev-border-surface: rgba(255, 255, 255, 0.13);
+  --dev-border-hover: rgba(255, 255, 255, 0.18);
+
+  /* Semantic text hierarchy */
+  --dev-text-primary: #F3F4F6;
+  --dev-text-secondary: #C9D1D9;
+  --dev-text-muted: #8B949E;
+
+  /* Status tokens */
+  --dev-status-active-bg: rgba(16, 185, 129, 0.15);
+  --dev-status-active-text: #10B981;
+  --dev-status-inactive-bg: rgba(255, 255, 255, 0.05);
+  --dev-status-inactive-text: #8B949E;
+
+  /* Count badge tokens */
+  --dev-count-bg: rgba(255, 255, 255, 0.05);
+  --dev-count-text: #8B949E;
+  --dev-count-hasproducts-bg: rgba(139, 92, 246, 0.12);
+  --dev-count-hasproducts-text: #8B5CF6;
+
+  /* Action button affordance */
+  --btn-action-bg: rgba(255, 255, 255, 0.07);
+  --btn-action-bg-hover: rgba(255, 255, 255, 0.11);
+  --btn-action-border: rgba(255, 255, 255, 0.14);
+  --btn-action-border-hover: rgba(255, 255, 255, 0.26);
+
+  /* Layout */
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ── Page Header ── */
+.developers-page .page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.developers-page .page-header-left h1 {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--dev-text-primary);
+  margin: 0;
+  letter-spacing: -0.3px;
+  line-height: 1.2;
+}
+
+.developers-page .page-header-left p {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--dev-text-secondary);
+  margin: 3px 0 0;
+  line-height: 1.4;
+}
+
+/* ── Filter Toolbar ── */
+.developers-page .filter-toolbar {
+  background: var(--dev-bg-card);
+  border: 1px solid var(--dev-border-surface);
+  border-radius: 10px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.developers-page .filter-pills {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.developers-page .filter-pill {
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 20px;
+  border: 1px solid var(--dev-border-surface);
+  background: var(--dev-bg-card);
+  color: var(--dev-text-secondary);
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+}
+
+.developers-page .filter-pill:hover {
+  border-color: var(--dev-border-hover);
+  background: var(--dev-bg-page);
+  color: var(--dev-text-primary);
+}
+
+.developers-page .filter-pill.active {
+  background: var(--dev-bg-header);
+  color: var(--dev-accent);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  font-weight: 600;
+}
+
+.developers-page .filter-pill.active:hover {
+  background: rgba(139, 92, 246, 0.15);
+  border-color: rgba(139, 92, 246, 0.4);
+}
+
+.developers-page .filter-divider {
+  width: 1px;
+  height: 20px;
+  background: var(--dev-border-surface);
+  flex-shrink: 0;
+}
+
+.developers-page .filter-search {
+  position: relative;
+  flex: 1;
+  min-width: 180px;
+  max-width: 320px;
+}
+
+.developers-page .filter-search-icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--dev-text-muted);
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+}
+
+.developers-page .filter-search-input {
+  width: 100%;
+  height: 34px;
+  padding: 0 34px 0 34px;
+  border: 1px solid var(--dev-border-surface);
+  border-radius: 8px;
+  font-size: 13px;
+  background: var(--dev-bg-page);
+  color: var(--dev-text-primary);
+  transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+}
+
+.developers-page .filter-search-input::placeholder {
+  color: var(--dev-text-muted);
+}
+
+.developers-page .filter-search-input:focus {
+  outline: none;
+  border-color: var(--dev-accent);
+  background: var(--dev-bg-card);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
+}
+
+.developers-page .filter-search-input:not(:placeholder-shown) {
+  background: var(--dev-bg-card);
+}
+
+.developers-page .filter-search-clear {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  padding: 3px;
+  cursor: pointer;
+  color: var(--dev-text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: color 0.15s, background 0.15s;
+}
+
+.developers-page .filter-search-clear:hover {
+  color: var(--dev-text-secondary);
+  background: var(--dev-border-surface);
+}
+
+/* ── Table Wrapper ── */
+.developers-page .table-wrapper {
+  background: var(--dev-bg-card);
+  border: 1px solid var(--dev-border-surface);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+/* ── Table ── */
+.developers-page .developers-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  table-layout: fixed;
+}
+
+.developers-page .col-image-col   { width: 52px; }
+.developers-page .col-name-col    { width: 34%; }
+.developers-page .col-products-col { width: 10%; }
+.developers-page .col-created-col   { width: 19%; }
+.developers-page .col-actions-col  { width: 14%; }
+
+.developers-page thead tr {
+  background: var(--dev-bg-header);
+  border-bottom: 1px solid var(--dev-border-surface);
+}
+
+.developers-page thead th {
+  padding: 11px 16px;
+  font-weight: 600;
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--dev-text-secondary);
+  text-align: left;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.developers-page thead th:last-child,
+.developers-page thead th.col-actions-col {
+  text-align: right;
+}
+
+.developers-page thead th.col-products-col {
+  text-align: center;
+}
+
+.developers-page tbody tr {
+  border-bottom: 1px solid var(--dev-border-surface);
+  transition: background 0.1s;
+}
+
+.developers-page tbody tr:last-child {
+  border-bottom: none;
+}
+
+.developers-page tbody tr:hover {
+  background: var(--dev-bg-page);
+}
+
+.developers-page tbody td {
+  padding: 13px 16px;
+  vertical-align: middle;
+}
+
+.developers-page .name-cell {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--dev-text-primary);
+  line-height: 1.3;
+}
+
+/* Image cell */
+.developers-page .image-cell {
+  width: 52px;
+  text-align: center;
+  padding: 10px 8px;
+}
+
+.developers-page .developer-row-thumb {
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  object-fit: cover;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  display: block;
+}
+
+.developers-page .developer-row-thumb-placeholder {
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.03);
+  display: block;
+  margin: 0 auto;
+}
+
+/* Products count */
+.developers-page .products-cell {
+  text-align: center;
+}
+
+.developers-page .products-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 26px;
+  height: 22px;
+  padding: 0 7px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 600;
+  background: var(--dev-count-bg);
+  color: var(--dev-count-text);
+  transition: background 0.15s, color 0.15s;
+}
+
+.developers-page .products-count.has-products {
+  background: var(--dev-count-hasproducts-bg);
+  color: var(--dev-count-hasproducts-text);
+}
+
+/* Date cell */
+.developers-page .date-cell {
+  font-size: 12.5px;
+  color: var(--dev-text-secondary);
+  white-space: nowrap;
+}
+
+/* Actions cell */
+.developers-page .actions-cell {
+  text-align: right;
+}
+
+.developers-page .actions-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.developers-page .action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s, opacity 0.15s;
+  background: var(--btn-action-bg);
+  border: 1px solid var(--btn-action-border);
+  color: #9CA3AF;
+}
+
+.developers-page .action-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.developers-page .action-btn-edit:hover:not(:disabled) {
+  background: rgba(139, 92, 246, 0.18);
+  border-color: rgba(139, 92, 246, 0.55);
+  color: var(--dev-accent);
+}
+
+.developers-page .action-btn-delete:hover:not(:disabled) {
+  background: rgba(239, 68, 68, 0.18);
+  border-color: rgba(239, 68, 68, 0.55);
+  color: #EF4444;
+}
+
+/* ── Pagination Bar ── */
+.developers-page .pagination-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  border-top: 1px solid var(--dev-border-surface);
+  background: var(--dev-bg-page);
+}
+
+.developers-page .pagination-meta {
+  font-size: 12.5px;
+  color: var(--dev-text-muted);
+}
+
+.developers-page .pagination-meta strong {
+  color: var(--dev-text-secondary);
+  font-weight: 600;
+}
+
+.developers-page .pagination-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.developers-page .pagination-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 7px;
+  border: 1px solid var(--btn-action-border);
+  background: var(--btn-action-bg);
+  color: var(--dev-text-secondary);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.developers-page .pagination-btn:hover:not(:disabled) {
+  background: var(--btn-action-bg-hover);
+  border-color: var(--btn-action-border-hover);
+  color: var(--dev-text-primary);
+}
+
+.developers-page .pagination-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.developers-page .pagination-label {
+  font-size: 12.5px;
+  color: var(--dev-text-secondary);
+  padding: 0 6px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* ── Loading State ── */
+.developers-page .skeleton-row td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--dev-border-surface);
+}
+
+.developers-page .skeleton-row:last-child td {
+  border-bottom: none;
+}
+
+.developers-page .skeleton-cell {
+  height: 16px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, #1F2937 25%, #273449 50%, #1F2937 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.4s ease infinite;
+  width: 100%;
+  display: block;
+}
+
+/* ── Empty State ── */
+.developers-page .table-empty {
+  padding: 56px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.developers-page .empty-icon {
+  color: var(--dev-text-muted);
+  margin-bottom: 4px;
+}
+
+.developers-page .empty-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--dev-text-secondary);
+  margin: 0;
+}
+
+.developers-page .empty-hint {
+  font-size: 13px;
+  color: var(--dev-text-muted);
+  margin: 0;
+  max-width: 280px;
+  line-height: 1.5;
+}
+
+/* Error State */
+.developers-page .table-error {
+  padding: 56px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+}
+
+.developers-page .table-error-title {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: #dc2626;
+  margin: 0;
+}
+
+/* ── Delete Confirm Modal ── */
+.developers-page .modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 1000;
+  backdrop-filter: blur(2px);
+  animation: overlay-in 0.15s ease;
+}
+
+@keyframes overlay-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.developers-page .modal-card {
+  width: 100%;
+  max-width: 400px;
+  background: var(--dev-bg-card);
+  border-radius: 14px;
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+  animation: modal-in 0.15s ease;
+}
+
+@keyframes modal-in {
+  from { opacity: 0; transform: scale(0.96) translateY(8px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.developers-page .modal-header {
+  padding: 20px 20px 16px;
+}
+
+.developers-page .modal-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--dev-text-primary);
+  margin: 0 0 6px;
+}
+
+.developers-page .modal-developer-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--dev-text-secondary);
+  margin: 0 0 8px;
+}
+
+.developers-page .modal-message {
+  font-size: 13px;
+  color: var(--dev-text-muted);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.developers-page .modal-footer {
+  padding: 14px 20px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  border-top: 1px solid var(--dev-border-surface);
+}
+
+/* ── Reusable Button Styles ── */
+.developers-page .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s, box-shadow 0.15s, opacity 0.15s;
+  border: none;
+  white-space: nowrap;
+}
+
+.developers-page .btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.developers-page .btn-primary {
+  background: var(--dev-accent);
+  color: #ffffff;
+}
+
+.developers-page .btn-primary:hover:not(:disabled) {
+  background: var(--dev-accent-hover);
+}
+
+.developers-page .btn-secondary {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--dev-text-secondary);
+  border: 1px solid var(--dev-border-surface);
+}
+
+.developers-page .btn-secondary:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.09);
+  border-color: var(--dev-border-hover);
+  color: var(--dev-text-primary);
+}
+
+.developers-page .btn-danger {
+  background: #dc2626;
+  color: #ffffff;
+}
+
+.developers-page .btn-danger:hover:not(:disabled) {
+  background: #b91c1c;
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .developers-page .col-created-col {
+    display: none;
+  }
+}
+
+@media (max-width: 680px) {
+  .developers-page .filter-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .developers-page .filter-pills {
+    flex-wrap: wrap;
+  }
+
+  .developers-page .filter-search {
+    max-width: none;
+    width: 100%;
+  }
+
+  .developers-page .filter-divider {
+    display: none;
+  }
+
+  .developers-page .col-products-col {
+    display: none;
+  }
+
+  .developers-page .pagination-bar {
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .developers-page .modal-footer {
+    flex-direction: column-reverse;
+  }
+
+  .developers-page .modal-footer .btn {
+    width: 100%;
+  }
+}

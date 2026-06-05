@@ -1,6 +1,8 @@
 import React, { useEffect, useMemo, useState, useRef, useCallback } from 'react';
 import { Plus, X, GripVertical, Image as ImageIcon, Layout, Flag, Images } from 'lucide-react';
 import { getCategories, getTags, uploadProductImage } from '../../services/productService';
+import { getPublishers } from '../../services/publisherService';
+import { getDevelopers } from '../../services/developerService';
 import './ProductForm.css';
 
 const createInitialErrors = () => ({
@@ -8,8 +10,8 @@ const createInitialErrors = () => ({
   description: '',
   shortDescription: '',
   price: '',
-  publisher: '',
-  developer: '',
+  publisherId: '',
+  developerId: '',
   platform: '',
   cardImage: '',
   categoryId: '',
@@ -75,8 +77,8 @@ const createInitialData = (initialData) => ({
   shortDescription: '',
   price: '',
   discountPercentage: '',
-  publisher: '',
-  developer: '',
+  publisherId: '',
+  developerId: '',
   releaseDate: '',
   platform: '',
   categoryId: '',
@@ -239,6 +241,8 @@ export const ProductForm = ({
   const [errors, setErrors] = useState(createInitialErrors());
   const [categories, setCategories] = useState([]);
   const [tags, setTags] = useState([]);
+  const [publishers, setPublishers] = useState([]);
+  const [developers, setDevelopers] = useState([]);
   const [isLookupLoading, setIsLookupLoading] = useState(true);
   const [lookupError, setLookupError] = useState('');
 
@@ -279,12 +283,16 @@ export const ProductForm = ({
       setIsLookupLoading(true);
       setLookupError('');
       try {
-        const [categoryResult, tagResult] = await Promise.all([
+        const [categoryResult, tagResult, publisherResult, developerResult] = await Promise.all([
           getCategories(),
-          getTags()
+          getTags(),
+          getPublishers(),
+          getDevelopers()
         ]);
         setCategories(categoryResult || []);
         setTags(tagResult || []);
+        setPublishers(publisherResult || []);
+        setDevelopers(developerResult || []);
       } catch (apiError) {
         setLookupError(apiError.message || 'Failed to load form data.');
       } finally {
@@ -429,8 +437,8 @@ export const ProductForm = ({
       }
     }
 
-    if (!formData.publisher.trim()) nextErrors.publisher = 'Publisher is required.';
-    if (!formData.developer.trim()) nextErrors.developer = 'Developer is required.';
+    if (!formData.publisherId) nextErrors.publisherId = 'Publisher is required.';
+    if (!formData.developerId) nextErrors.developerId = 'Developer is required.';
     if (!formData.platform.trim()) nextErrors.platform = 'Platform is required.';
 
     if (!formData.cardImage) nextErrors.cardImage = 'Product Card Image is required.';
@@ -474,9 +482,9 @@ export const ProductForm = ({
       imageUrls: builtImages.map((item) => item.url),
       categoryId: formData.categoryId || null,
       tagIds,
+      publisherId: formData.publisherId || null,
+      developerId: formData.developerId || null,
       metadata: {
-        publisher: formData.publisher.trim(),
-        developer: formData.developer.trim(),
         releaseDate: formData.releaseDate || null,
         platform: formData.platform.trim()
       },
@@ -829,32 +837,42 @@ export const ProductForm = ({
         <div className="form-grid">
           <div className="form-field">
             <label className="input-label" htmlFor="field-publisher">Publisher</label>
-            <input
+            <select
               id="field-publisher"
-              className={`form-input ${errors.publisher ? 'error' : ''}`}
-              type="text"
-              name="publisher"
-              value={formData.publisher}
+              className={`form-input ${errors.publisherId ? 'error' : ''}`}
+              name="publisherId"
+              value={formData.publisherId}
               onChange={handleChange}
-              placeholder="Publisher name"
               disabled={isSubmitting}
-            />
-            {errors.publisher && <span className="input-error-message">{errors.publisher}</span>}
+            >
+              <option value="">Select publisher...</option>
+              {publishers.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.name}
+                </option>
+              ))}
+            </select>
+            {errors.publisherId && <span className="input-error-message">{errors.publisherId}</span>}
           </div>
 
           <div className="form-field">
             <label className="input-label" htmlFor="field-developer">Developer</label>
-            <input
+            <select
               id="field-developer"
-              className={`form-input ${errors.developer ? 'error' : ''}`}
-              type="text"
-              name="developer"
-              value={formData.developer}
+              className={`form-input ${errors.developerId ? 'error' : ''}`}
+              name="developerId"
+              value={formData.developerId}
               onChange={handleChange}
-              placeholder="Developer name"
               disabled={isSubmitting}
-            />
-            {errors.developer && <span className="input-error-message">{errors.developer}</span>}
+            >
+              <option value="">Select developer...</option>
+              {developers.map((d) => (
+                <option key={d.id} value={d.id}>
+                  {d.name}
+                </option>
+              ))}
+            </select>
+            {errors.developerId && <span className="input-error-message">{errors.developerId}</span>}
           </div>
 
           <div className="form-field">

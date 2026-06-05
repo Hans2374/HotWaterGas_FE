@@ -23,6 +23,8 @@ import { AdminProductEditPage } from '../pages/admin/AdminProductEditPage';
 import { AdminProductSteamKeysPage } from '../pages/admin/AdminProductSteamKeysPage';
 import { AdminCategoriesPage } from '../pages/admin/AdminCategoriesPage';
 import { AdminTagsPage } from '../pages/admin/AdminTagsPage';
+import { AdminPublishersPage } from '../pages/admin/AdminPublishersPage';
+import { AdminDevelopersPage } from '../pages/admin/AdminDevelopersPage';
 import { AdminOrderDetailPage } from '../pages/admin/AdminOrderDetailPage';
 import PurchaseHistoryPage from '../pages/customer/PurchaseHistoryPage';
 import PurchaseDetailPage from '../pages/customer/PurchaseDetailPage';
@@ -293,6 +295,8 @@ export const AppRoutes = () => {
         <Route path="products/:id/keys" element={<AdminProductSteamKeysPage />} />
         <Route path="categories" element={<AdminCategoriesPage />} />
         <Route path="tags" element={<AdminTagsPage />} />
+        <Route path="publishers" element={<AdminPublishersPage />} />
+        <Route path="developers" element={<AdminDevelopersPage />} />
         <Route path="users" element={<AdminUsersPage />} />
         <Route path="orders/:orderId" element={<AdminOrderDetailPage />} />
       </Route>
