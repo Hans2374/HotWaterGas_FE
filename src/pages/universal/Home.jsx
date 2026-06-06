@@ -66,6 +66,10 @@ export const Home = () => {
   const [categories, setCategories] = useState([]);
   const [categoriesLoading, setCategoriesLoading] = useState(true);
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  }, []);
+
   const categoryId = searchParams.get('categoryId');
   const searchQuery = searchParams.get('search');
 

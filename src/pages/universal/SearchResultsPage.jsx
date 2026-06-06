@@ -56,6 +56,10 @@ export const SearchResultsPage = () => {
   const [pendingWishlistProductIds, setPendingWishlistProductIds] = useState(new Set());
   const [pendingCartProductIds, setPendingCartProductIds] = useState(new Set());
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  }, []);
+
   const searchQuery = searchParams.get('q') || '';
   const sortBy = searchParams.get('sort') || 'name';
   const sortDirection = searchParams.get('direction') || 'asc';
