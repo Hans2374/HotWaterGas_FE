@@ -72,6 +72,10 @@ export const AdminProductsPage = () => {
   const [categories, setCategories] = useState([]);
   const [isLoadingCategories, setIsLoadingCategories] = useState(false);
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  }, []);
+
   const [filters, setFilters] = useState({
     search: '',
     status: '',

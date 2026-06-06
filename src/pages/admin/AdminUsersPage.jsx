@@ -46,6 +46,10 @@ export const AdminUsersPage = () => {
   const [totalItems, setTotalItems] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  }, []);
+
   const [filters, setFilters] = useState({
     search: '',
     status: ''

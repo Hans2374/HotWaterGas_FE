@@ -70,6 +70,10 @@ export const AdminCategoriesPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState('');
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  }, []);
+
   const [pagination, setPagination] = useState({
     pageNumber: 1,
     pageSize: DEFAULT_PAGE_SIZE,
