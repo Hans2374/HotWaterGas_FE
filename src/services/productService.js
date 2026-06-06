@@ -224,6 +224,30 @@ export const uploadProductImage = async (file) => {
   }
 };
 
+export const uploadBulkProductImages = async (files) => {
+  const results = await Promise.allSettled(
+    files.map((file) => uploadProductImage(file))
+  );
+
+  const uploaded = [];
+  const failed = [];
+
+  results.forEach((result, index) => {
+    if (result.status === 'fulfilled' && result.value) {
+      uploaded.push({ id: null, url: result.value });
+    } else {
+      failed.push({
+        fileName: files[index]?.name || `file-${index}`,
+        reason: result.status === 'rejected'
+          ? (result.reason?.message || 'Upload failed.')
+          : 'Empty URL returned.'
+      });
+    }
+  });
+
+  return { uploaded, failed };
+};
+
 export const uploadCategoryImage = async (file) => {
   try {
     const formData = new FormData();

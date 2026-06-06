@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState, useRef, useCallback } from 'react';
-import { Plus, X, GripVertical, Image as ImageIcon, Layout, Flag, Images, Search, ChevronDown, Check } from 'lucide-react';
-import { getCategories, getTags, uploadProductImage } from '../../services/productService';
+import { Plus, X, GripVertical, Image as ImageIcon, Layout, Flag, Images, Search, ChevronDown, Check, Upload } from 'lucide-react';
+import { getCategories, getTags, uploadProductImage, uploadBulkProductImages } from '../../services/productService';
 import { getPublishers } from '../../services/publisherService';
 import { getDevelopers } from '../../services/developerService';
 import './ProductForm.css';
@@ -249,10 +249,13 @@ export const ProductForm = ({
   const [uploadingSlot, setUploadingSlot] = useState(null);
   const [uploadErrors, setUploadErrors] = useState({});
 
+  const [bulkUploadProgress, setBulkUploadProgress] = useState({ active: false, done: 0, total: 0, failed: [] });
+
   const [galleryDragIndex, setGalleryDragIndex] = useState(null);
 
   const [galleryInputKey, setGalleryInputKey] = useState(0);
   const galleryFileInputRef = useRef(null);
+  const galleryBulkFileInputRef = useRef(null);
 
   const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(false);
   const [categorySearchTerm, setCategorySearchTerm] = useState('');
@@ -524,6 +527,23 @@ export const ProductForm = ({
         galleryImages: [...prev.galleryImages, { id: null, url }]
       }));
     }
+    event.target.value = '';
+  };
+
+  const handleGalleryBulkFileChange = async (event) => {
+    const files = Array.from(event.target.files || []);
+    if (files.length === 0) return;
+
+    setBulkUploadProgress({ active: true, done: 0, total: files.length, failed: [] });
+
+    const { uploaded, failed } = await uploadBulkProductImages(files);
+
+    setFormData((prev) => ({
+      ...prev,
+      galleryImages: [...prev.galleryImages, ...uploaded]
+    }));
+
+    setBulkUploadProgress({ active: false, done: files.length, total: files.length, failed });
     event.target.value = '';
   };
 
@@ -901,23 +921,81 @@ export const ProductForm = ({
               type="file"
               accept="image/jpeg,image/jpg,image/png,image/webp"
               onChange={handleGalleryFileChange}
-              disabled={isSubmitting || uploadingSlot === 'gallery'}
+              disabled={isSubmitting || uploadingSlot === 'gallery' || bulkUploadProgress.active}
             />
-            <button
-              type="button"
-              className={`gallery-add-btn ${uploadingSlot === 'gallery' ? 'uploading' : ''}`}
-              onClick={() => galleryFileInputRef.current?.click()}
-              disabled={isSubmitting || uploadingSlot === 'gallery'}
-            >
-              {uploadingSlot === 'gallery' ? (
-                <div className="tile-spinner" />
-              ) : (
-                <>
-                  <Plus size={15} />
-                  Add Gallery Image
-                </>
-              )}
-            </button>
+            <input
+              ref={galleryBulkFileInputRef}
+              id={`gallery-bulk-file-input-${galleryInputKey}`}
+              key={`bulk-${galleryInputKey}`}
+              className="file-input-hidden"
+              type="file"
+              accept="image/jpeg,image/jpg,image/png,image/webp"
+              multiple
+              onChange={handleGalleryBulkFileChange}
+              disabled={isSubmitting || uploadingSlot === 'gallery' || bulkUploadProgress.active}
+            />
+
+            <div className="gallery-add-actions">
+              <button
+                type="button"
+                className={`gallery-add-btn ${uploadingSlot === 'gallery' ? 'uploading' : ''}`}
+                onClick={() => galleryFileInputRef.current?.click()}
+                disabled={isSubmitting || uploadingSlot === 'gallery' || bulkUploadProgress.active}
+              >
+                {uploadingSlot === 'gallery' ? (
+                  <div className="tile-spinner" />
+                ) : (
+                  <>
+                    <Plus size={15} />
+                    Add Gallery Image
+                  </>
+                )}
+              </button>
+
+              <button
+                type="button"
+                className={`gallery-bulk-btn ${bulkUploadProgress.active ? 'uploading' : ''}`}
+                onClick={() => galleryBulkFileInputRef.current?.click()}
+                disabled={isSubmitting || uploadingSlot === 'gallery' || bulkUploadProgress.active}
+                title="Select multiple images at once"
+              >
+                {bulkUploadProgress.active ? (
+                  <div className="tile-spinner" />
+                ) : (
+                  <>
+                    <Upload size={14} />
+                    Bulk Import
+                  </>
+                )}
+              </button>
+            </div>
+
+            {bulkUploadProgress.active && (
+              <div className="bulk-upload-progress">
+                <span className="bulk-upload-label">
+                  Uploading {bulkUploadProgress.total} images...
+                </span>
+              </div>
+            )}
+
+            {!bulkUploadProgress.active && bulkUploadProgress.total > 0 && (
+              <div className="bulk-upload-summary">
+                {bulkUploadProgress.failed.length === 0 ? (
+                  <span className="bulk-upload-success">
+                    {bulkUploadProgress.total} image{bulkUploadProgress.total !== 1 ? 's' : ''} imported successfully.
+                  </span>
+                ) : (
+                  <span className="bulk-upload-partial">
+                    {bulkUploadProgress.total - bulkUploadProgress.failed.length} of {bulkUploadProgress.total} images imported.
+                    {bulkUploadProgress.failed.length > 0 && (
+                      <span className="bulk-upload-failed-list">
+                        {' '}Failed: {bulkUploadProgress.failed.map((f) => f.fileName).join(', ')}
+                      </span>
+                    )}
+                  </span>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </section>
