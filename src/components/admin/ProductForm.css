@@ -1007,7 +1007,9 @@
 
 .gallery-add-area {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .gallery-add-btn {
@@ -1100,20 +1102,12 @@
 
 .bulk-upload-success {
   display: block;
-  padding: 10px 14px;
-  background: rgba(16, 185, 129, 0.08);
-  border: 1px solid rgba(16, 185, 129, 0.25);
-  border-radius: 8px;
   color: #34d399;
   font-weight: 600;
 }
 
 .bulk-upload-partial {
   display: block;
-  padding: 10px 14px;
-  background: rgba(245, 158, 11, 0.08);
-  border: 1px solid rgba(245, 158, 11, 0.25);
-  border-radius: 8px;
   color: #fbbf24;
   font-weight: 500;
 }
