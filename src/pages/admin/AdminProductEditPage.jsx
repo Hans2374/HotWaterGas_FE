@@ -41,7 +41,6 @@ export const AdminProductEditPage = () => {
       name: product?.name || '',
       slug: product?.slug || '',
       description: product?.description || '',
-      shortDescription: product?.shortDescription || '',
       price: product?.price ?? '',
       discountPercentage: product?.discountPercentage != null ? String(product.discountPercentage) : '',
       publisherId: product?.publisherId || '',

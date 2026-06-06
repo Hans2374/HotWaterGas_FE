@@ -8,7 +8,6 @@ import './ProductForm.css';
 const createInitialErrors = () => ({
   name: '',
   description: '',
-  shortDescription: '',
   price: '',
   publisherId: '',
   developerId: '',
@@ -74,7 +73,6 @@ const createInitialData = (initialData) => ({
   name: '',
   slug: '',
   description: '',
-  shortDescription: '',
   price: '',
   discountPercentage: '',
   publisherId: '',
@@ -582,7 +580,6 @@ export const ProductForm = ({
     const nextErrors = createInitialErrors();
     if (!formData.name.trim()) nextErrors.name = 'Name is required.';
     if (!formData.description.trim()) nextErrors.description = 'Description is required.';
-    if (!formData.shortDescription.trim()) nextErrors.shortDescription = 'Short description is required.';
 
     const priceValue = Number(formData.price);
     if (formData.price === '' || Number.isNaN(priceValue)) {
@@ -638,7 +635,6 @@ export const ProductForm = ({
       name: formData.name.trim(),
       slug: formData.slug.trim() || null,
       description: formData.description.trim(),
-      shortDescription: formData.shortDescription.trim(),
       price: Number(formData.price),
       discountPercentage: finalDiscountPercentage,
       images: builtImages,
@@ -717,21 +713,6 @@ export const ProductForm = ({
               placeholder="auto-generated-from-name"
               disabled={isSubmitting}
             />
-          </div>
-
-          <div className="form-field form-field-full">
-            <label className="input-label" htmlFor="field-short-desc">Short Description</label>
-            <textarea
-              id="field-short-desc"
-              className={`form-textarea ${errors.shortDescription ? 'error' : ''}`}
-              name="shortDescription"
-              value={formData.shortDescription}
-              onChange={handleChange}
-              rows={2}
-              placeholder="Brief summary for listing cards"
-              disabled={isSubmitting}
-            />
-            {errors.shortDescription && <span className="input-error-message">{errors.shortDescription}</span>}
           </div>
 
           <div className="form-field form-field-full">
