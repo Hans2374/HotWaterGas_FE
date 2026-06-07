@@ -71,7 +71,6 @@ const normalizeImageEntries = (images = [], fallbackUrls = []) => {
 
 const createInitialData = (initialData) => ({
   name: '',
-  slug: '',
   description: '',
   price: '',
   discountPercentage: '',
@@ -633,7 +632,6 @@ export const ProductForm = ({
 
     const payload = {
       name: formData.name.trim(),
-      slug: formData.slug.trim() || null,
       description: formData.description.trim(),
       price: Number(formData.price),
       discountPercentage: finalDiscountPercentage,
@@ -699,20 +697,6 @@ export const ProductForm = ({
               disabled={isSubmitting}
             />
             {errors.name && <span className="input-error-message">{errors.name}</span>}
-          </div>
-
-          <div className="form-field form-field-full">
-            <label className="input-label" htmlFor="field-slug">Slug <span className="optional-label">(optional)</span></label>
-            <input
-              id="field-slug"
-              className="form-input"
-              type="text"
-              name="slug"
-              value={formData.slug}
-              onChange={handleChange}
-              placeholder="auto-generated-from-name"
-              disabled={isSubmitting}
-            />
           </div>
 
           <div className="form-field form-field-full">

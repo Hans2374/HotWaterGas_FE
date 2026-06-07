@@ -156,7 +156,6 @@ export const AdminTagsPage = () => {
       initialData: {
         id: tag.id,
         name: tag.name,
-        slug: tag.slug,
         isActive: tag.isActive
       }
     });

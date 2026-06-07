@@ -6,7 +6,6 @@ import './DeveloperFormModal.css';
 
 const createInitialData = (data) => ({
   name: '',
-  slug: '',
   description: '',
   logoUrl: '',
   ...data
@@ -89,7 +88,6 @@ export const DeveloperFormModal = ({
 
     const payload = {
       name: formData.name.trim(),
-      slug: formData.slug.trim() || null,
       description: formData.description.trim() || null,
       logoUrl: formData.logoUrl || null
     };
@@ -195,26 +193,6 @@ export const DeveloperFormModal = ({
               {errors.name && (
                 <span className="input-error-message">{errors.name}</span>
               )}
-            </div>
-
-            {/* Slug */}
-            <div className="form-field-group">
-              <label htmlFor="developer-slug" className="input-label">
-                Slug <span className="input-optional">(optional)</span>
-              </label>
-              <input
-                id="developer-slug"
-                name="slug"
-                type="text"
-                className="input"
-                value={formData.slug}
-                onChange={handleChange}
-                placeholder="auto-generated if empty"
-                disabled={isSubmitting}
-              />
-              <span className="input-hint">
-                Leave empty to auto-generate from name
-              </span>
             </div>
 
             {/* Description */}

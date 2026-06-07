@@ -6,7 +6,6 @@ import './CategoryFormModal.css';
 
 const createInitialData = (data) => ({
   name: '',
-  slug: '',
   isActive: true,
   imageUrl: '',
   ...data
@@ -93,7 +92,6 @@ export const CategoryFormModal = ({
 
     const payload = {
       name: formData.name.trim(),
-      slug: formData.slug.trim() || null,
       isActive: formData.isActive,
       imageUrl: formData.imageUrl || null
     };
@@ -183,23 +181,6 @@ export const CategoryFormModal = ({
                 autoFocus
               />
               {errors.name && <span className="input-error-message">{errors.name}</span>}
-            </div>
-
-            <div className="form-field-group">
-              <label htmlFor="category-slug" className="input-label">
-                Slug <span className="input-optional">(optional)</span>
-              </label>
-              <input
-                id="category-slug"
-                name="slug"
-                type="text"
-                className="input"
-                value={formData.slug}
-                onChange={handleChange}
-                placeholder="auto-generated if empty"
-                disabled={isSubmitting}
-              />
-              <span className="input-hint">Leave empty to auto-generate from name</span>
             </div>
 
             <div className="form-field-group">

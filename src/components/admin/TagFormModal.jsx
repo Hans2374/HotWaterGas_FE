@@ -4,7 +4,6 @@ import './TagFormModal.css';
 
 const createInitialData = (data) => ({
   name: '',
-  slug: '',
   isActive: true,
   ...data
 });
@@ -52,7 +51,6 @@ export const TagFormModal = ({
 
     const payload = {
       name: formData.name.trim(),
-      slug: formData.slug.trim() || null,
       isActive: formData.isActive
     };
 
@@ -97,23 +95,6 @@ export const TagFormModal = ({
                 autoFocus
               />
               {errors.name && <span className="input-error-message">{errors.name}</span>}
-            </div>
-
-            <div className="form-field-group">
-              <label htmlFor="tag-slug" className="input-label">
-                Slug <span className="input-optional">(optional)</span>
-              </label>
-              <input
-                id="tag-slug"
-                name="slug"
-                type="text"
-                className="input"
-                value={formData.slug}
-                onChange={handleChange}
-                placeholder="auto-generated if empty"
-                disabled={isSubmitting}
-              />
-              <span className="input-hint">Leave empty to auto-generate from name</span>
             </div>
 
             <div className="form-field-group">

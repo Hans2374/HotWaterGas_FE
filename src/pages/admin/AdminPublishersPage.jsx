@@ -171,7 +171,6 @@ export const AdminPublishersPage = () => {
       initialData: {
         id: publisher.id,
         name: publisher.name,
-        slug: publisher.slug,
         description: publisher.description || '',
         logoUrl: publisher.logoUrl || ''
       }

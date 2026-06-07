@@ -171,7 +171,6 @@ export const AdminDevelopersPage = () => {
       initialData: {
         id: developer.id,
         name: developer.name,
-        slug: developer.slug,
         description: developer.description || '',
         logoUrl: developer.logoUrl || ''
       }

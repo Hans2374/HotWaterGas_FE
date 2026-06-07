@@ -39,7 +39,6 @@ export const AdminProductEditPage = () => {
     if (!product) return null;
     return {
       name: product?.name || '',
-      slug: product?.slug || '',
       description: product?.description || '',
       price: product?.price ?? '',
       discountPercentage: product?.discountPercentage != null ? String(product.discountPercentage) : '',

@@ -157,7 +157,6 @@ export const AdminCategoriesPage = () => {
       initialData: {
         id: category.id,
         name: category.name,
-        slug: category.slug,
         isActive: category.isActive,
         imageUrl: category.imageUrl || ''
       }
