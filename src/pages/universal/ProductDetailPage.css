@@ -65,6 +65,18 @@
   color: var(--customer-text-primary);
 }
 
+.product-detail-meta-link {
+  font-size: 13px;
+  color: var(--customer-text-primary);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.product-detail-meta-link:hover {
+  color: var(--color-primary, #00a8ff);
+  text-decoration: underline;
+}
+
 .product-detail-meta-inline {
   margin: 4px 0 0;
   font-size: 14px;

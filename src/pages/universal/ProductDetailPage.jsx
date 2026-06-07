@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { Loader } from "../../components/common/Loader";
 import { ScrollToTop } from "../../components/common/ScrollToTop";
@@ -462,14 +462,32 @@ export const ProductDetailPage = () => {
             <h1 className="product-detail-title">{product.name}</h1>
             <p className="product-detail-meta-inline">
               Nhà phát triển:{" "}
-              <span className="product-detail-meta-value">
-                {product.developer || "Không xác định"}
-              </span>
+              {product.developerId ? (
+                <Link
+                  to={`/developers/${product.developerId}`}
+                  className="product-detail-meta-link"
+                >
+                  {product.developer || "Không xác định"}
+                </Link>
+              ) : (
+                <span className="product-detail-meta-value">
+                  {product.developer || "Không xác định"}
+                </span>
+              )}
               {" — "}
               Nhà phát hành:{" "}
-              <span className="product-detail-meta-value">
-                {product.publisher || "Không xác định"}
-              </span>
+              {product.publisherId ? (
+                <Link
+                  to={`/publishers/${product.publisherId}`}
+                  className="product-detail-meta-link"
+                >
+                  {product.publisher || "Không xác định"}
+                </Link>
+              ) : (
+                <span className="product-detail-meta-value">
+                  {product.publisher || "Không xác định"}
+                </span>
+              )}
             </p>
             <ProductImageGallery
               images={(product.images || []).filter((img) => img.displayOrder !== 1)}
