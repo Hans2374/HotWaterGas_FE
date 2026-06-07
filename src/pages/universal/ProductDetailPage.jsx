@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { Loader } from "../../components/common/Loader";
 import { ScrollToTop } from "../../components/common/ScrollToTop";
@@ -12,6 +12,8 @@ import { useWishlist } from "../../hooks/useWishlist";
 import {
   getProductDetailBySlug,
   getProductRecommendations,
+  getPublishers,
+  getDevelopers,
 } from "../../api/productApi";
 import { getCategories } from "../../api/categoriesApi";
 import { formatCurrency } from "../../utils/formatters";
@@ -103,6 +105,8 @@ export const ProductDetailPage = () => {
   const [recommendationsLoading, setRecommendationsLoading] = useState(false);
   const [recommendationsError, setRecommendationsError] = useState("");
   const [catalogCategories, setCatalogCategories] = useState([]);
+  const [resolvedDeveloperId, setResolvedDeveloperId] = useState(null);
+  const [resolvedPublisherId, setResolvedPublisherId] = useState(null);
 
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: "auto" });
@@ -193,6 +197,49 @@ export const ProductDetailPage = () => {
     () => new Set((wishlistItems || []).map((i) => i.productId)),
     [wishlistItems],
   );
+
+  // Resolve publisher/developer IDs by name once product is available
+  useEffect(() => {
+    if (!product?.developer && !product?.publisher) {
+      setResolvedDeveloperId(null);
+      setResolvedPublisherId(null);
+      return;
+    }
+
+    let cancelled = false;
+
+    const resolveIds = async () => {
+      try {
+        const [publishers, developers] = await Promise.all([
+          getPublishers(),
+          getDevelopers(),
+        ]);
+
+        if (cancelled) return;
+
+        const devName = (product.developer || "").trim().toLowerCase();
+        const pubName = (product.publisher || "").trim().toLowerCase();
+
+        const foundDev = developers.find(
+          (d) => (d.name || "").trim().toLowerCase() === devName,
+        );
+        const foundPub = publishers.find(
+          (p) => (p.name || "").trim().toLowerCase() === pubName,
+        );
+
+        setResolvedDeveloperId(foundDev?.id || null);
+        setResolvedPublisherId(foundPub?.id || null);
+      } catch {
+        // silently ignore — links simply won't be shown
+      }
+    };
+
+    resolveIds();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [product?.developer, product?.publisher]);
 
   // Recommendation fetch: separate lifecycle from product detail
   useEffect(() => {
@@ -462,13 +509,20 @@ export const ProductDetailPage = () => {
             <h1 className="product-detail-title">{product.name}</h1>
             <p className="product-detail-meta-inline">
               Nhà phát triển:{" "}
-              {product.developerId ? (
-                <Link
-                  to={`/developers/${product.developerId}`}
+              {resolvedDeveloperId ? (
+                <span
+                  role="link"
+                  tabIndex={0}
                   className="product-detail-meta-link"
+                  onClick={() => navigate(`/developers/${resolvedDeveloperId}`)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      navigate(`/developers/${resolvedDeveloperId}`);
+                    }
+                  }}
                 >
                   {product.developer || "Không xác định"}
-                </Link>
+                </span>
               ) : (
                 <span className="product-detail-meta-value">
                   {product.developer || "Không xác định"}
@@ -476,13 +530,20 @@ export const ProductDetailPage = () => {
               )}
               {" — "}
               Nhà phát hành:{" "}
-              {product.publisherId ? (
-                <Link
-                  to={`/publishers/${product.publisherId}`}
+              {resolvedPublisherId ? (
+                <span
+                  role="link"
+                  tabIndex={0}
                   className="product-detail-meta-link"
+                  onClick={() => navigate(`/publishers/${resolvedPublisherId}`)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      navigate(`/publishers/${resolvedPublisherId}`);
+                    }
+                  }}
                 >
                   {product.publisher || "Không xác định"}
-                </Link>
+                </span>
               ) : (
                 <span className="product-detail-meta-value">
                   {product.publisher || "Không xác định"}
