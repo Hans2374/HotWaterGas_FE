@@ -1,9 +1,11 @@
 import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { Plus, Pencil, RotateCcw, Trash2, Search, X, Star } from 'lucide-react';
+import { Plus, Pencil, RotateCcw, Trash2, Search, X, Star, ChevronLeft, ChevronRight } from 'lucide-react';
 import { getAdminProductsFiltered, disableAdminProduct, restoreAdminProduct, hardDeleteAdminProduct, getCategories, getAdminFeaturedProducts, updateAdminFeaturedProducts } from '../../services/productService';
 import './AdminProductsPage.css';
+
+const DEFAULT_PAGE_SIZE = 10;
 
 const MAX_FEATURED = 5;
 
@@ -83,6 +85,15 @@ export const AdminProductsPage = () => {
     categoryId: ''
   });
 
+  const [pagination, setPagination] = useState({
+    pageNumber: 1,
+    pageSize: DEFAULT_PAGE_SIZE,
+    totalCount: 0,
+    totalPages: 0,
+    hasPreviousPage: false,
+    hasNextPage: false
+  });
+
   const [actionTarget, setActionTarget] = useState(null);
   const [isActioning, setIsActioning] = useState(false);
   const [actionType, setActionType] = useState('');
@@ -96,14 +107,6 @@ export const AdminProductsPage = () => {
   // Client-side filter helpers
   const applyClientFilters = (items) => {
     let result = [...items];
-
-    if (filters.status) {
-      if (filters.status === 'available') {
-        result = result.filter(product => !product.isDeleted);
-      } else if (filters.status === 'disabled') {
-        result = result.filter(product => product.isDeleted);
-      }
-    }
 
     if (filters.stockState) {
       result = result.filter((product) => {
@@ -121,11 +124,37 @@ export const AdminProductsPage = () => {
     setIsLoading(true);
     setLoadError('');
     try {
-      const result = await getAdminProductsFiltered({
+      const isDeleted = filters.status === 'disabled' ? true
+        : filters.status === 'available' ? false
+        : undefined;
+
+      const response = await getAdminProductsFiltered({
+        page: pagination.pageNumber,
+        pageSize: DEFAULT_PAGE_SIZE,
         search: filters.search || undefined,
-        categoryId: filters.categoryId || undefined
+        categoryId: filters.categoryId || undefined,
+        isDeleted
       });
-      setProducts(Array.isArray(result) ? result : []);
+
+      const paged = response?.data ? response : {
+        data: Array.isArray(response) ? response : [],
+        page: pagination.pageNumber,
+        pageSize: DEFAULT_PAGE_SIZE,
+        totalCount: Array.isArray(response) ? response.length : 0,
+        totalPages: 1,
+        hasPreviousPage: false,
+        hasNextPage: false
+      };
+
+      setProducts(Array.isArray(paged.data) ? paged.data : []);
+      setPagination({
+        pageNumber: paged.page ?? pagination.pageNumber,
+        pageSize: paged.pageSize ?? DEFAULT_PAGE_SIZE,
+        totalCount: paged.totalItems ?? paged.totalCount ?? 0,
+        totalPages: paged.totalPages ?? 1,
+        hasPreviousPage: (paged.page ?? 1) > 1,
+        hasNextPage: (paged.page ?? 1) < (paged.totalPages ?? 1)
+      });
     } catch (err) {
       setLoadError(err.message || 'Failed to load products.');
       setProducts([]);
@@ -148,7 +177,7 @@ export const AdminProductsPage = () => {
 
   useEffect(() => {
     loadProducts();
-  }, [filters.search, filters.categoryId]);
+  }, [filters.search, filters.categoryId, filters.status, pagination.pageNumber]);
 
   useEffect(() => {
     loadCategories();
@@ -156,10 +185,17 @@ export const AdminProductsPage = () => {
 
   const handleFilterChange = (key, value) => {
     setFilters(prev => ({ ...prev, [key]: value }));
+    setPagination(prev => ({ ...prev, pageNumber: 1 }));
   };
 
   const handleClearFilters = () => {
     setFilters({ search: '', status: '', stockState: '', categoryId: '' });
+    setPagination(prev => ({ ...prev, pageNumber: 1 }));
+  };
+
+  const handlePageChange = (newPage) => {
+    if (newPage < 1 || newPage > pagination.totalPages) return;
+    setPagination(prev => ({ ...prev, pageNumber: newPage }));
   };
 
   const openDisableConfirm = (product) => {
@@ -607,6 +643,36 @@ export const AdminProductsPage = () => {
           </tbody>
         </table>
       </div>
+
+      {/* Pagination Bar */}
+      {!isLoading && !loadError && filteredProducts.length > 0 && (
+        <div className="pagination-bar">
+          <span className="pagination-meta">
+            Showing <strong>{pagination.totalCount === 0 ? 0 : (pagination.pageNumber - 1) * pagination.pageSize + 1}–{Math.min(pagination.pageNumber * pagination.pageSize, pagination.totalCount)}</strong> of <strong>{pagination.totalCount}</strong>
+          </span>
+          <div className="pagination-nav">
+            <button
+              className="pagination-btn"
+              onClick={() => handlePageChange(pagination.pageNumber - 1)}
+              disabled={!pagination.hasPreviousPage}
+              aria-label="Previous"
+            >
+              <ChevronLeft size={14} />
+            </button>
+            <span className="pagination-label">
+              {pagination.pageNumber} / {pagination.totalPages || 1}
+            </span>
+            <button
+              className="pagination-btn"
+              onClick={() => handlePageChange(pagination.pageNumber + 1)}
+              disabled={!pagination.hasNextPage}
+              aria-label="Next"
+            >
+              <ChevronRight size={14} />
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Confirm Modal */}
       {actionTarget && (

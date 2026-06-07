@@ -76,20 +76,34 @@ export const getAdminProducts = async () => {
 export const getAdminProductsFiltered = async (filters = {}) => {
   try {
     const params = {
-      page: 1,
-      pageSize: 100,
-      ...filters
+      page: filters.page ?? 1,
+      pageSize: filters.pageSize ?? 10,
+      search: filters.search || undefined,
+      categoryId: filters.categoryId || undefined,
+      isDeleted: filters.isDeleted
     };
 
     const response = await axiosClient.get('/api/products/admin', { params });
 
-    // Handle paginated response - extract data array from the paginated response
+    // Handle paginated response - extract data + metadata
     if (response.data?.data && Array.isArray(response.data.data)) {
-      return response.data.data;
+      return normalizePagedPayload(response.data);
     }
 
-    // Fallback for backward compatibility
-    return normalizeListPayload(response.data);
+    // Handle direct paged payload
+    if (response.data?.items && Array.isArray(response.data.items)) {
+      return normalizePagedPayload(response.data);
+    }
+
+    // Fallback: treat as plain array
+    const items = normalizeListPayload(response.data);
+    return {
+      data: items,
+      page: 1,
+      pageSize: items.length,
+      totalItems: items.length,
+      totalPages: 1
+    };
   } catch (error) {
     throw toApiError(error, 'Failed to load products.');
   }
