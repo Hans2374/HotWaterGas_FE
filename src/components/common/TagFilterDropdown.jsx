@@ -67,7 +67,10 @@ export const TagFilterDropdown = ({
             className="tag-filter-search"
             placeholder="Tìm kiếm tag..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setIsOpen(true);
+            }}
             onClick={(e) => e.stopPropagation()}
           />
         </div>
