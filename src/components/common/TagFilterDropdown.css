@@ -1,0 +1,237 @@
+.tag-filter-dropdown {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* ── Search row: always visible ── */
+
+.tag-filter-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ── Search input ── */
+
+.tag-filter-search-wrap {
+  position: relative;
+  flex: 1;
+}
+
+.tag-filter-search-icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--customer-text-secondary);
+  pointer-events: none;
+}
+
+.tag-filter-search {
+  width: 100%;
+  border: 1px solid var(--customer-border);
+  border-radius: 8px;
+  padding: 7px 10px 7px 32px;
+  font-size: 13px;
+  background: var(--customer-surface-hover);
+  color: var(--customer-text-primary);
+  box-sizing: border-box;
+  transition: border-color 150ms ease;
+}
+
+.tag-filter-search::placeholder {
+  color: var(--customer-text-secondary);
+  opacity: 0.6;
+}
+
+.tag-filter-search:focus {
+  outline: none;
+  border-color: var(--customer-accent);
+}
+
+/* ── Toggle chevron button ── */
+
+.tag-filter-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--customer-border);
+  border-radius: 8px;
+  background: var(--customer-surface-hover);
+  color: var(--customer-text-secondary);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: border-color 150ms ease, color 150ms ease, background 150ms ease;
+}
+
+.tag-filter-toggle-btn:hover {
+  border-color: var(--customer-accent);
+  color: var(--customer-accent);
+}
+
+.tag-filter-toggle-btn.open {
+  border-color: var(--customer-accent);
+  color: var(--customer-accent);
+  background: var(--customer-accent-light);
+}
+
+.tag-filter-toggle-btn svg {
+  transition: transform 200ms ease;
+}
+
+.tag-filter-toggle-btn.open svg {
+  transform: rotate(180deg);
+}
+
+/* ── Selected tags area — below search row, above dropdown ── */
+
+.tag-filter-selected-area {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* ── Tag badge ── */
+
+.tag-filter-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px 3px 10px;
+  background: var(--customer-accent-light);
+  color: var(--customer-accent);
+  border: 1px solid var(--customer-accent);
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.tag-filter-badge-remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border: none;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  border-radius: 50%;
+  padding: 0;
+  transition: background 150ms ease;
+  opacity: 0.7;
+}
+
+.tag-filter-badge-remove:hover {
+  background: rgba(220, 38, 38, 0.15);
+  opacity: 1;
+}
+
+/* ── Dropdown body — overlays below the component ── */
+
+.tag-filter-body {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 4px);
+  z-index: 100;
+  background: var(--customer-surface);
+  border: 1px solid var(--customer-border);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+}
+
+/* ── Scrollable options list ── */
+
+.tag-filter-list {
+  max-height: 220px;
+  overflow-y: auto;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.tag-filter-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.tag-filter-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.tag-filter-list::-webkit-scrollbar-thumb {
+  background: var(--customer-border);
+  border-radius: 2px;
+}
+
+/* ── Option row ── */
+
+.tag-filter-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--customer-text-secondary);
+  cursor: pointer;
+  transition: background 150ms ease, color 150ms ease;
+}
+
+.tag-filter-option:hover {
+  background: var(--customer-surface-hover);
+  color: var(--customer-text-primary);
+}
+
+.tag-filter-option.selected {
+  color: var(--customer-accent);
+  font-weight: 600;
+}
+
+.tag-filter-option input[type="checkbox"] {
+  accent-color: var(--customer-accent);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+/* ── Empty state ── */
+
+.tag-filter-empty {
+  margin: 0;
+  padding: 16px 12px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--customer-text-secondary);
+}
+
+/* ── Footer ── */
+
+.tag-filter-footer {
+  border-top: 1px solid var(--customer-border);
+  padding: 8px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.tag-filter-clear-all {
+  border: none;
+  background: transparent;
+  color: var(--customer-accent);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: background 150ms ease;
+}
+
+.tag-filter-clear-all:hover {
+  background: var(--customer-accent-light);
+}

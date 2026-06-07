@@ -5,6 +5,7 @@ import { getProducts } from '../../api/productApi';
 import { getCategories } from '../../api/categoriesApi';
 import { getTags } from '../../api/tagsApi';
 import { ProductGrid } from '../../components/product/ProductGrid';
+import { TagFilterDropdown } from '../../components/common/TagFilterDropdown';
 import { Loader } from '../../components/common/Loader';
 import { ScrollToTop } from '../../components/common/ScrollToTop';
 import { useAuth } from '../../hooks/useAuth';
@@ -321,6 +322,13 @@ export const EntityDetailPage = ({
     setCurrentPage(1);
   };
 
+  const handleClearAllTags = () => {
+    const nextFilters = { ...filters, tags: [] };
+    setFilters(nextFilters);
+    updateUrlWithFilters(nextFilters, 1);
+    setCurrentPage(1);
+  };
+
   const handlePriceDraftChange = (field, value) => {
     const sanitized = value.replace(/[^0-9]/g, '');
     setPriceDraft((prev) => ({ ...prev, [field]: sanitized }));
@@ -470,20 +478,14 @@ export const EntityDetailPage = ({
               </div>
 
               <div className="search-filter-group">
-                <h4>Thẻ</h4>
+                <h4 className="search-filter-group-title">Tag</h4>
                 {!filtersLoading && tags.length > 0 && (
-                  <div className="search-filter-list">
-                    {tags.map((tag) => (
-                      <label className="search-filter-option" key={tag.id}>
-                        <input
-                          type="checkbox"
-                          checked={filters.tags.includes(tag.slug)}
-                          onChange={() => handleTagToggle(tag.slug)}
-                        />
-                        <span>{tag.name}</span>
-                      </label>
-                    ))}
-                  </div>
+                  <TagFilterDropdown
+                    tags={tags}
+                    selectedTagSlugs={filters.tags}
+                    onTagToggle={handleTagToggle}
+                    onClearAll={handleClearAllTags}
+                  />
                 )}
               </div>
 
