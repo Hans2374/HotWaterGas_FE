@@ -65,7 +65,7 @@ export const SearchResultsPage = () => {
   const sortBy = searchParams.get('sort') || 'name';
   const sortDirection = searchParams.get('direction') || 'asc';
 
-  const itemsPerPage = 36;
+  const itemsPerPage = 20;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
   const sortOptions = [
