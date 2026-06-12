@@ -127,15 +127,7 @@ export const getDeletedAdminProducts = async () => {
 export const getAdminProductDetail = async (id) => {
   try {
     const response = await axiosClient.get(`/api/products/${id}`);
-    // DEBUG: raw API response for admin product detail
-    // eslint-disable-next-line no-console
-    console.log('[ProductDetail] Raw API response (by id):', response.data);
-
-    const normalized = response.data;
-    // eslint-disable-next-line no-console
-    console.log('[ProductDetail] Normalized product (by id):', normalized);
-
-    return normalized;
+    return response.data;
   } catch (error) {
     throw toApiError(error, 'Failed to load product.');
   }
@@ -151,20 +143,6 @@ export const createAdminProduct = async (payload) => {
 
 export const updateAdminProduct = async (id, payload) => {
   try {
-    console.groupCollapsed('[AdminProductEdit] API request payload');
-    console.log('productId', id);
-    console.log('imagesLength', Array.isArray(payload?.images) ? payload.images.length : 0);
-    console.log('images', Array.isArray(payload?.images)
-      ? payload.images.map((image, index) => ({
-          id: image?.id ?? null,
-          imageUrl: image?.url ?? image?.imageUrl ?? '',
-          isPrimary: index === 0,
-          displayOrder: index
-        }))
-      : []);
-    console.log('requestBody', payload);
-    console.groupEnd();
-
     await axiosClient.put(`/api/products/${id}`, payload);
   } catch (error) {
     throw toApiError(error, 'Failed to update product.');

@@ -145,19 +145,13 @@ export const CheckoutPage = () => {
     }
 
     if (isSubmittingPayment) {
-      console.log('[Checkout] payment create blocked: already submitting');
       return;
     }
 
     const paymentCartItemIds = [...selectedCartItemIds];
-    console.log('[Checkout] payment create clicked', {
-      selectedCartItemIds: paymentCartItemIds,
-      canProceed: preview?.canProceed === true
-    });
 
     /* ── Email verification gate ─────────────────────────────────────── */
     if (!isEmailVerified) {
-      console.log('[Checkout] email not verified — opening verification modal');
       /* Reset submitting flag so the replay can proceed without hitting the guard. */
       setIsSubmittingPayment(false);
       paymentAfterVerifyRef.current = () => handleContinueToPayment();
@@ -171,25 +165,13 @@ export const CheckoutPage = () => {
 
     try {
       const response = await createPayment(paymentCartItemIds);
-      console.log('[Checkout] payment create response', {
-        checkoutUrl: response.checkoutUrl,
-        orderId: response.orderId,
-        paymentTransactionId: response.paymentTransactionId,
-        status: response.status
-      });
 
       if (!response.checkoutUrl) {
         throw new Error('Dịch vụ thanh toán không trả lại URL thanh toán. Vui lòng thử lại.');
       }
 
-      console.log('[Checkout] redirecting to PayOS', { checkoutUrl: response.checkoutUrl });
       window.location.href = response.checkoutUrl;
     } catch (apiError) {
-      console.log('[Checkout] payment create failed', {
-        status: apiError?.status,
-        message: apiError?.message
-      });
-
       if (apiError.status === 401) {
         navigate('/login', { replace: true });
         return;

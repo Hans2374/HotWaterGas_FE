@@ -180,11 +180,8 @@ export const Cart = () => {
     // Skip API call if quantity hasn't actually changed.
     const currentQuantity = Number(item.quantity || 0);
     if (nextQuantity === currentQuantity) {
-      console.log('[Cart] Quantity unchanged, skipping update. productId:', productId, 'qty:', nextQuantity);
       return;
     }
-
-    console.log('[Cart] Quantity update start. productId:', productId, 'from:', currentQuantity, 'to:', nextQuantity);
 
     setUpdatingProductIds((previous) => {
       const next = new Set(previous);
@@ -194,10 +191,8 @@ export const Cart = () => {
 
     try {
       await updateCartItemQuantity(productId, nextQuantity);
-      console.log('[Cart] Quantity update success. productId:', productId, 'qty:', nextQuantity);
       setPageError('');
     } catch (error) {
-      console.error('[Cart] Quantity update failed. productId:', productId, 'error:', error?.message);
       if (error.status === 401) {
         navigate('/login', { replace: true });
         return;

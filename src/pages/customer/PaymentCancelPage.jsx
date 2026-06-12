@@ -35,10 +35,7 @@ const PaymentCancelPage = () => {
       const amountPaidStr = searchParams.get('amountPaid');
       const amountPaid = amountPaidStr ? parseFloat(amountPaidStr) : undefined;
 
-      console.log('[PaymentCancelPage] Processing. orderCode:', orderCode, 'status:', status);
-
       if (!orderCode) {
-        console.log('[PaymentCancelPage] No orderCode — skip backend call');
         setIsLoading(false);
         return;
       }
@@ -47,12 +44,10 @@ const PaymentCancelPage = () => {
         const { getPaymentReturn } = await import('../../api/paymentApi');
         const res = await getPaymentReturn(orderCode, status, success, transactionId, amountPaid);
 
-        console.log('[PaymentCancelPage] Backend result:', res);
         setResult(res);
 
         // Edge case: PayOS status changed between cancel and now — redirect to success.
         if (isSuccessStatus(res.status) || res.success) {
-          console.log('[PaymentCancelPage] Backend confirmed SUCCESS — redirecting to success page');
           navigate(
             `/purchase/success?orderCode=${encodeURIComponent(res.orderCode || '')}&status=${encodeURIComponent(res.status || 'PAID')}`,
             { replace: true }
@@ -61,11 +56,8 @@ const PaymentCancelPage = () => {
         }
 
         if (isCancelledStatus(res.status)) {
-          console.log('[PaymentCancelPage] Cancellation confirmed — refreshing cart');
           await refreshCart();
-          console.log('[PaymentCancelPage] Cart refreshed');
         } else {
-          console.log('[PaymentCancelPage] Non-cancel status from backend:', res.status);
           setProcessError('Không thể xác minh thanh toán. Giỏ hàng của bạn vẫn được bảo toàn.');
         }
       } catch (err) {

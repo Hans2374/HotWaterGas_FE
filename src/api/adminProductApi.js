@@ -62,20 +62,6 @@ export const createProduct = async (data) => {
 
 export const updateProduct = async (id, data) => {
   try {
-    console.groupCollapsed('[AdminProductEdit] API request payload (legacy adminProductApi)');
-    console.log('productId', id);
-    console.log('imagesLength', Array.isArray(data?.images) ? data.images.length : 0);
-    console.log('images', Array.isArray(data?.images)
-      ? data.images.map((image, index) => ({
-          id: image?.id ?? null,
-          imageUrl: image?.url ?? image?.imageUrl ?? '',
-          isPrimary: index === 0,
-          displayOrder: index
-        }))
-      : []);
-    console.log('requestBody', data);
-    console.groupEnd();
-
     const response = await axiosClient.put(`/api/products/${id}`, data);
     return response.data;
   } catch (error) {

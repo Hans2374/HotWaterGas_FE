@@ -11,7 +11,6 @@ const normalizeStatus = (status) => {
   const raw = String(status ?? '').trim();
 
   if (!raw) {
-    console.warn('[SteamKeyStatusBadge] Received empty status value');
     return 'Disabled';
   }
 
@@ -28,7 +27,6 @@ const normalizeStatus = (status) => {
     if (numeric === 2) return 'Sold';
   }
 
-  console.warn(`[SteamKeyStatusBadge] Unknown status "${raw}" — defaulting to Disabled`);
   return 'Disabled';
 };
 

@@ -72,31 +72,16 @@ export const CheckoutPaymentHandoff = () => {
     }
 
     if (isInitiatingPayment || paymentInitiated) {
-      console.log('[CheckoutPaymentHandoff] payment create blocked', {
-        isInitiatingPayment,
-        paymentInitiated
-      });
       return;
     }
 
     const paymentCartItemIds = [...selectedCartItemIds];
-    console.log('[CheckoutPaymentHandoff] payment create clicked', {
-      selectedCartItemIds: paymentCartItemIds,
-      canProceed: preview?.canProceed === true
-    });
 
     setIsInitiatingPayment(true);
     setError('');
 
     try {
       const response = await createPayment(paymentCartItemIds);
-
-      console.log('[CheckoutPaymentHandoff] payment create response', {
-        checkoutUrl: response.checkoutUrl,
-        orderId: response.orderId,
-        paymentTransactionId: response.paymentTransactionId,
-        status: response.status
-      });
 
       if (!response.checkoutUrl) {
         setError('Payment service did not return checkout URL. Please try again.');
@@ -113,14 +98,8 @@ export const CheckoutPaymentHandoff = () => {
       }
 
       setPaymentInitiated(true);
-      console.log('[CheckoutPaymentHandoff] redirecting to PayOS', { checkoutUrl: response.checkoutUrl });
       window.location.href = response.checkoutUrl;
     } catch (apiError) {
-      console.log('[CheckoutPaymentHandoff] payment create failed', {
-        status: apiError?.status,
-        message: apiError?.message
-      });
-
       if (apiError.status === 401) {
         navigate('/login', { replace: true });
         return;

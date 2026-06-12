@@ -28,12 +28,10 @@ export const createPayment = async (selectedCartItemIds = []) => {
       throw new Error('At least one cart item must be selected for payment');
     }
 
-    console.log('[paymentApi.createPayment] request payload', { selectedCartItemIds });
     const response = await axiosClient.post('/api/payments/create', {
       selectedCartItemIds
     });
 
-    console.log('[paymentApi.createPayment] response', response.data);
     return normalizePaymentResponse(response.data);
   } catch (error) {
     if (error.response) {
@@ -86,9 +84,7 @@ export const getPaymentReturn = async (orderCode, status, success, transactionId
       queryParams.append('amountPaid', String(amountPaid));
     }
 
-    console.log('[paymentApi.getPaymentReturn] query', { orderCode, status, success, transactionId, amountPaid });
     const response = await axiosClient.get(`/api/payments/return?${queryParams.toString()}`);
-    console.log('[paymentApi.getPaymentReturn] response', response.data);
 
     return normalizePaymentReturnResponse(response.data);
   } catch (error) {

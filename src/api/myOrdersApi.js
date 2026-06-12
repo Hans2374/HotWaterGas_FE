@@ -6,7 +6,6 @@ const myOrdersApi = {
       const response = await axiosClient.get('/api/me/orders', {
         params: { pageNumber, pageSize }
       });
-      console.log('[myOrdersApi.getMyOrders] pageNumber=', pageNumber, 'pageSize=', pageSize, 'response', response.data);
       return response.data;
     } catch (error) {
       throw error;
@@ -16,7 +15,6 @@ const myOrdersApi = {
   getMyOrderDetail: async (orderId) => {
     try {
       const response = await axiosClient.get(`/api/me/orders/${orderId}`);
-      console.log('[myOrdersApi.getMyOrderDetail] orderId=', orderId, 'response=', response.data);
       return response.data;
     } catch (error) {
       throw error;

@@ -10,8 +10,6 @@ const CHECKOUT_PREVIEW_KEY = 'hotwatergas.checkout.preview';
 const CHECKOUT_PAYMENT_TRANSIENT_PREFIXES = ['hotwatergas.checkout.', 'hotwatergas.payment.'];
 
 const clearCheckoutPaymentTransientState = () => {
-  console.log('[PaymentReturnPage] clearCheckoutPaymentTransientState called');
-
   const keysToRemove = [];
 
   for (let index = 0; index < sessionStorage.length; index += 1) {
@@ -32,8 +30,6 @@ const clearCheckoutPaymentTransientState = () => {
   if (!keysToRemove.includes(CHECKOUT_PREVIEW_KEY)) {
     keysToRemove.push(CHECKOUT_PREVIEW_KEY);
   }
-
-  console.log('[PaymentReturnPage] Clearing sessionStorage keys:', keysToRemove);
 
   keysToRemove.forEach((key) => {
     sessionStorage.removeItem(key);
@@ -69,7 +65,6 @@ const PaymentReturnPage = () => {
     // StrictMode second mount (after cleanup): skipped — effect body does NOT run.
     // No cleanup returned, so cancelled flag is NOT set on second mount.
     if (hasProcessedRef.current) {
-      console.log('[PaymentReturnPage] StrictMode double-mount — second mount skipped by ref guard');
       return;
     }
     hasProcessedRef.current = true;
@@ -86,8 +81,6 @@ const PaymentReturnPage = () => {
         const amountPaidStr = searchParams.get('amountPaid');
         const amountPaid = amountPaidStr ? parseFloat(amountPaidStr) : undefined;
 
-        console.log('[PaymentReturnPage] Received query:', { orderCode, status, success, transactionId, amountPaid });
-
         if (!orderCode) {
           setError('Thông tin thanh toán không đầy đủ. Vui lòng liên hệ hỗ trợ.');
           setIsLoading(false);
@@ -103,19 +96,14 @@ const PaymentReturnPage = () => {
           amountPaid
         );
 
-        console.log('[PaymentReturnPage] Backend result:', paymentResult);
         setResult(paymentResult);
 
         if (isSuccessStatus(paymentResult.status) || paymentResult.success) {
-          console.log('[PaymentReturnPage] SUCCESS — refreshing cart and routing to success page');
-
           clearCheckoutPaymentTransientState();
 
           try {
             await refreshCartRef.current();
-            console.log('[PaymentReturnPage] Cart refreshed');
           } catch {
-            console.warn('[PaymentReturnPage] Cart refresh failed (best-effort)');
           }
 
           const targetUrl = paymentResult.orderCode
@@ -124,15 +112,12 @@ const PaymentReturnPage = () => {
 
           setRouteTarget(targetUrl);
         } else if (isCancelledStatus(paymentResult.status)) {
-          console.log('[PaymentReturnPage] CANCELLED — routing to cancel page. status:', paymentResult.status);
           setRouteTarget('/purchase/cancel');
         } else {
-          console.log('[PaymentReturnPage] FAILED/OTHER — routing to cancel page. status:', paymentResult.status);
           setRouteTarget('/purchase/cancel');
         }
       } catch (apiError) {
         if (apiError.status === 401) {
-          console.log('[PaymentReturnPage] 401 — redirecting to login');
           setRouteTarget('/login');
           return;
         }

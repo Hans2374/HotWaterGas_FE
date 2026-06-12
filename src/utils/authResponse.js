@@ -19,17 +19,6 @@
  * }
  */
 
-const isDev = import.meta.env.DEV;
-
-/* ── Dev diagnostics ─────────────────────────────────────────────────────── */
-
-const devLog = (message, data) => {
-  if (isDev) {
-    // eslint-disable-next-line no-console
-    console.debug(`[Auth] ${message}`, data);
-  }
-};
-
 /* ── Core extraction ───────────────────────────────────────────────────── */
 
 const EXTRACT_TOKEN = (data) => {
@@ -68,20 +57,10 @@ const EXTRACT_EXPIRES_AT = (data) => {
  * @returns {{ accessToken: string|null, role: string, user: object|null, expiresAt: string|null }}
  */
 export const normalizeLoginResponse = (data) => {
-  devLog('Login response keys:', data ? Object.keys(data) : null);
-  devLog('accessToken present:', !!(data?.accessToken));
-
   const accessToken = EXTRACT_TOKEN(data);
   const role = EXTRACT_ROLE(data);
   const user = EXTRACT_USER(data);
   const expiresAt = EXTRACT_EXPIRES_AT(data);
-
-  devLog('Normalized login:', {
-    accessTokenPresent: !!accessToken,
-    role,
-    userEmail: user?.email,
-    expiresAt
-  });
 
   return { accessToken, role, user, expiresAt };
 };
@@ -93,16 +72,8 @@ export const normalizeLoginResponse = (data) => {
  * @returns {{ accessToken: string|null, expiresAt: string|null }}
  */
 export const normalizeRefreshResponse = (data) => {
-  devLog('Refresh response keys:', data ? Object.keys(data) : null);
-  devLog('Refresh accessToken present:', !!(data?.accessToken));
-
   const accessToken = EXTRACT_TOKEN(data);
   const expiresAt = EXTRACT_EXPIRES_AT(data);
-
-  devLog('Normalized refresh:', {
-    accessTokenPresent: !!accessToken,
-    expiresAt
-  });
 
   return { accessToken, expiresAt };
 };
@@ -115,9 +86,7 @@ export const normalizeRefreshResponse = (data) => {
  * @returns {string|null}
  */
 export const extractAccessToken = (data) => {
-  const token = EXTRACT_TOKEN(data);
-  devLog('extractAccessToken — present:', !!token);
-  return token;
+  return EXTRACT_TOKEN(data);
 };
 
 /**
