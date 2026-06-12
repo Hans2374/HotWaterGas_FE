@@ -569,7 +569,7 @@ export const SearchResultsPage = () => {
                       onClick={() => handlePageChange(currentPage - 1)}
                       disabled={currentPage === 1}
                     >
-                      ← Trang trước
+                      ←
                     </button>
 
                     <div className="pagination-numbers">
@@ -602,7 +602,7 @@ export const SearchResultsPage = () => {
                       onClick={() => handlePageChange(currentPage + 1)}
                       disabled={currentPage === totalPages}
                     >
-                      Trang sau →
+                      →
                     </button>
                   </div>
                 )}
