@@ -79,7 +79,7 @@ export const Home = () => {
       setError('');
 
       try {
-        const response = await getProducts(1, 36, categoryId, searchQuery);
+        const response = await getProducts(1, 20, categoryId, searchQuery);
         setProducts(normalizeProducts(response));
       } catch (apiError) {
         if (apiError.status === 401 && token) {
