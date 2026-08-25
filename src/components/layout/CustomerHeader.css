@@ -514,48 +514,23 @@
 @media (max-width: 768px) {
   .customer-header-inner {
     padding: 10px 16px;
-    gap: 16px;
+    gap: 12px;
   }
 
   .brand-title {
-    font-size: 18px;
+    display: none;
   }
 
   .customer-header-search-shell--desktop {
-    display: none;
+    display: block;
   }
 
   .customer-header-search-trigger--mobile {
-    display: flex;
-  }
-
-  .customer-header-guest-actions {
-    flex-direction: column;
-  }
-
-  .customer-header-search-dropdown {
-    max-height: 320px;
-  }
-
-  .customer-header-search-item {
-    padding: 10px 12px;
-    gap: 10px;
-  }
-
-  .customer-header-search-item-media,
-  .customer-header-search-item-image,
-  .customer-header-search-item-fallback {
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
-  }
-
-  .header-wishlist-label {
     display: none;
   }
 
-  .header-wishlist-button {
-    padding: 6px;
+  .customer-header-search-shell--desktop {
+    max-width: none;
   }
 
   .customer-header-search-overlay-content {
@@ -578,7 +553,7 @@
 @media (max-width: 480px) {
   .customer-header-inner {
     padding: 10px 12px;
-    gap: 12px;
+    gap: 8px;
   }
 
   .brand-logo--customer {
@@ -586,18 +561,22 @@
     height: 32px;
   }
 
-  .brand-title {
-    font-size: 16px;
+  .customer-header-search-input {
+    font-size: 14px;
   }
 
-  .customer-header-search-trigger {
-    padding: 8px;
+  .customer-header-search-input::placeholder {
+    font-size: 13px;
+  }
+
+  .customer-header-search-box {
+    padding: 5px 8px;
   }
 
   .customer-header-guest-btn {
     padding: 6px 12px;
     font-size: 12px;
-    min-width: 85px;
+    min-width: 80px;
   }
 
   .customer-header-search-overlay-header {
