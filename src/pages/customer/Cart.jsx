@@ -270,7 +270,6 @@ export const Cart = () => {
               <span>Sản phẩm</span>
               <span>Giá đơn vị</span>
               <span>Số lượng</span>
-              <span>Tổng cộng</span>
             </div>
 
             <div className="cart-list">
@@ -300,14 +299,6 @@ export const Cart = () => {
             <div className="cart-summary-row">
               <span>Các mục được chọn</span>
               <strong>{selectedItems.length}</strong>
-            </div>
-            <div className="cart-summary-row">
-              <span>Tạm tính</span>
-              <strong>{formatCurrency(selectedSubtotal)}</strong>
-            </div>
-            <div className="cart-summary-row">
-              <span>Tổng cộng</span>
-              <strong>{formatCurrency(selectedSubtotal)}</strong>
             </div>
             <Button
               type="button"

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Trash2 } from 'lucide-react';
 import './CartItemRow.css';
 
 const formatCurrency = (value) => Number(value || 0).toLocaleString();
@@ -45,7 +46,7 @@ export const CartItemRow = ({ item, onQuantityChange, onRemove, isUpdatingQuanti
       </div>
 
       <button type="button" className="cart-item-remove-icon-button" onClick={onRemove} disabled={isUpdatingQuantity} aria-label={`Xóa ${item.productName} khỏi giỏ hàng`}>
-        <span aria-hidden="true">×</span>
+        <Trash2 size={14} />
       </button>
 
       <div className="cart-item-product">
