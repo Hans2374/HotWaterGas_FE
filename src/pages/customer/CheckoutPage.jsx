@@ -202,12 +202,13 @@ export const CheckoutPage = () => {
 
   return (
     <>
-      <div className="checkout-shell">
-        <div className="checkout-main">
-          <div className="checkout-header">
-            <h2>Thanh toán</h2>
-            <p className="checkout-subtitle">Kiểm tra xác thực máy chủ uy tín trước khi thanh toán.</p>
-          </div>
+      <div className="checkout-page">
+        <div className="checkout-shell">
+          <div className="checkout-main">
+            <div className="checkout-header">
+              <h2>Thanh toán</h2>
+              <p className="checkout-subtitle">Kiểm tra xác thực máy chủ uy tín trước khi thanh toán.</p>
+            </div>
 
         {isLoading && <Loader text="Đang xác thực thanh toán..." />}
 
@@ -217,7 +218,7 @@ export const CheckoutPage = () => {
           <>
             {preview.validItems.length > 0 && (
               <section className="checkout-section">
-                <h3 className="checkout-section-title">Items</h3>
+                <h3 className="checkout-section-title">Sản phẩm</h3>
                 <div className="checkout-item-list">
                   {preview.validItems.map((item) => (
                     <CheckoutLineItem key={item.cartItemId} item={item} />
@@ -228,9 +229,9 @@ export const CheckoutPage = () => {
 
             {preview.invalidItems.length > 0 && (
               <section className="checkout-section checkout-section-warning">
-                <h3 className="checkout-section-title">Blocked Items</h3>
+                <h3 className="checkout-section-title">Sản phẩm bị chặn</h3>
                 <p className="checkout-warning-text">
-                  Some selected items are no longer valid and must be removed before payment.
+                  Một số mục đã chọn không còn hợp lệ và phải được xóa trước khi thanh toán.
                 </p>
                 <div className="checkout-issue-list">
                   {preview.invalidItems.map((item) => (
@@ -248,22 +249,22 @@ export const CheckoutPage = () => {
             )}
 
             {preview.validItems.length === 0 && preview.invalidItems.length === 0 && (
-              <p className="checkout-message">No checkout items were returned.</p>
+              <p className="checkout-message">Không có mục thanh toán nào được trả về.</p>
             )}
           </>
         )}
         </div>
 
         <aside className="checkout-summary">
-          <h3 className="checkout-summary-title">Order Summary</h3>
-          <div className="checkout-summary-row">
-            <span>Total</span>
+          <h3 className="checkout-summary-title">Tóm tắt đơn hàng</h3>
+          <div className="checkout-summary-row checkout-summary-row--total">
+            <span>Tổng cộng</span>
             <strong>{formatCurrency(preview?.finalTotal)}</strong>
           </div>
           <div className="checkout-summary-panel">
-            <span className="checkout-summary-label">Payment Method</span>
+            <span className="checkout-summary-label">Phương thức thanh toán</span>
             <div className="checkout-summary-value">PayOS QR</div>
-            <p className="checkout-summary-note">Steam key will be sent to your email after successful payment.</p>
+            <p className="checkout-summary-note">Steam key sẽ được gửi đến email của bạn sau khi thanh toán thành công.</p>
           </div>
           {!canProceed && preview?.blockingMessages?.length > 0 && (
             <div className="checkout-summary-blocker">
@@ -283,6 +284,7 @@ export const CheckoutPage = () => {
             <p className="checkout-summary-helper">Giải quyết các mục bị chặn trước khi tiếp tục.</p>
           )}
         </aside>
+      </div>
       </div>
 
       <EmailVerificationModal

@@ -300,6 +300,10 @@ export const Cart = () => {
               <span>Các mục được chọn</span>
               <strong>{selectedItems.length}</strong>
             </div>
+            <div className="cart-summary-row cart-summary-row--total">
+              <span>Tổng cộng</span>
+              <strong>{formatCurrency(selectedSubtotal)}</strong>
+            </div>
             <Button
               type="button"
               className="cart-checkout-button"

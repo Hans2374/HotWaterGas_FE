@@ -1,6 +1,6 @@
 .cart-item-row {
   display: grid;
-  grid-template-columns: 28px minmax(0, 1.6fr) 120px 170px 130px;
+  grid-template-columns: 28px minmax(0, 1.6fr) 120px 170px;
   gap: 14px;
   padding: 16px;
   padding-right: 44px;
@@ -61,6 +61,20 @@
   gap: 12px;
   flex: 1;
   min-width: 0;
+}
+
+.cart-item-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.cart-item-mobile-price {
+  display: none;
+  font-size: 14px;
+  color: var(--customer-text-primary);
+  font-weight: 600;
+  margin-top: 2px;
 }
 
 .cart-item-name {
@@ -170,27 +184,83 @@
 
 @media (max-width: 720px) {
   .cart-item-row {
-    grid-template-columns: 1fr;
-    gap: 12px;
-    padding-right: 16px;
+    grid-template-columns: auto auto minmax(0, 1fr) auto;
+    grid-template-areas: "select image product quantity";
+    column-gap: 12px;
+    row-gap: 0;
+    padding: 12px 44px 12px 12px;
+    align-items: center;
   }
 
-  .cart-item-select-cell,
-  .cart-item-product,
-  .cart-item-column {
-    width: 100%;
+  .cart-item-select-cell {
+    grid-area: select;
+    width: auto;
+  }
+
+  .cart-item-row-image-wrap {
+    width: 64px;
+    height: 64px;
   }
 
   .cart-item-product {
-    grid-template-columns: 88px minmax(0, 1fr);
+    grid-area: product;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 10px;
+    width: auto;
   }
 
   .cart-item-title-row {
     width: 100%;
+    align-items: center;
+  }
+
+  .cart-item-info {
+    justify-content: center;
+  }
+
+  .cart-item-name {
+    font-size: 14px;
+  }
+
+  .cart-item-mobile-price {
+    display: block;
   }
 
   .cart-item-column {
-    align-items: flex-start;
-    text-align: left;
+    display: none;
+  }
+
+  .cart-item-quantity-column {
+    grid-area: quantity;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .cart-quantity-input {
+    width: 64px;
+    height: 30px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 420px) {
+  .cart-item-row {
+    grid-template-columns: auto auto minmax(0, 1fr) auto;
+    column-gap: 8px;
+    padding: 10px 40px 10px 10px;
+  }
+
+  .cart-item-row-image-wrap {
+    width: 56px;
+    height: 56px;
+  }
+
+  .cart-item-product {
+    gap: 8px;
+  }
+
+  .cart-item-quantity-input {
+    width: 56px;
   }
 }

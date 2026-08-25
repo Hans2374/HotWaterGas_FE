@@ -1,8 +1,18 @@
+.checkout-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px 20px;
+}
+
 .checkout-shell {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 320px;
   gap: 20px;
   align-items: start;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .checkout-main {
@@ -209,6 +219,16 @@
   color: var(--customer-text-primary);
 }
 
+.checkout-summary-row--total {
+  padding-top: 4px;
+  font-size: 16px;
+}
+
+.checkout-summary-row--total strong {
+  color: var(--customer-accent);
+  font-size: 18px;
+}
+
 .checkout-summary-panel {
   padding: 12px;
   border: 1px solid var(--customer-border);
@@ -251,6 +271,10 @@
 }
 
 @media (max-width: 960px) {
+  .checkout-page {
+    padding: 20px 16px;
+  }
+
   .checkout-shell {
     grid-template-columns: 1fr;
   }
@@ -261,5 +285,11 @@
 
   .checkout-line-item {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .checkout-page {
+    padding: 16px 12px;
   }
 }

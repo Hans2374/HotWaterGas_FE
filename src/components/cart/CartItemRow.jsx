@@ -9,7 +9,6 @@ export const CartItemRow = ({ item, onQuantityChange, onRemove, isUpdatingQuanti
   const navigate = useNavigate();
   const quantity = Number(item.quantity || 1);
   const unitPrice = Number(item.finalPrice || 0);
-  const subtotal = Number(item.subtotal ?? (unitPrice * quantity) ?? 0);
   const [draftQuantity, setDraftQuantity] = useState(String(quantity));
 
   useEffect(() => {
@@ -59,7 +58,7 @@ export const CartItemRow = ({ item, onQuantityChange, onRemove, isUpdatingQuanti
         </div>
 
         <div className="cart-item-title-row">
-          <div>
+          <div className="cart-item-info">
             {item.productSlug ? (
               <button type="button" className="cart-item-name-link" onClick={handleNavigateToProduct}>
                 <h3 className="cart-item-name">{item.productName}</h3>
@@ -67,6 +66,7 @@ export const CartItemRow = ({ item, onQuantityChange, onRemove, isUpdatingQuanti
             ) : (
               <h3 className="cart-item-name">{item.productName}</h3>
             )}
+            <span className="cart-item-mobile-price">{formatCurrency(unitPrice)}</span>
             {item.inStock === false && <p className="cart-item-warning">Temporarily unavailable for checkout.</p>}
           </div>
         </div>
@@ -95,10 +95,6 @@ export const CartItemRow = ({ item, onQuantityChange, onRemove, isUpdatingQuanti
           disabled={isUpdatingQuantity}
           aria-label={`Số lượng của ${item.productName}`}
         />
-      </div>
-
-      <div className="cart-item-column">
-        <strong className="cart-item-column-value">{formatCurrency(subtotal)}</strong>
       </div>
     </article>
   );

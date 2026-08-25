@@ -37,7 +37,7 @@
 
 .cart-table-header {
   display: grid;
-  grid-template-columns: 28px minmax(0, 1.6fr) 120px 170px 130px;
+  grid-template-columns: 28px minmax(0, 1.6fr) 120px 170px;
   gap: 14px;
   margin-bottom: 12px;
   padding: 0 16px;
@@ -46,10 +46,6 @@
   text-transform: uppercase;
   letter-spacing: 0.04em;
   color: var(--customer-text-secondary);
-}
-
-.cart-table-header span:last-child {
-  text-align: left;
 }
 
 .cart-actions-bar {
@@ -99,6 +95,17 @@
   gap: 12px;
   font-size: 14px;
   color: var(--customer-text-primary);
+}
+
+.cart-summary-row--total {
+  padding-top: 10px;
+  border-top: 1px solid var(--customer-border);
+  font-size: 16px;
+}
+
+.cart-summary-row--total strong {
+  color: var(--customer-accent);
+  font-size: 18px;
 }
 
 .cart-checkout-button {
