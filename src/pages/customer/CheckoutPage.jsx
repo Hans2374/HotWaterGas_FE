@@ -76,7 +76,9 @@ const CheckoutLineItem = ({ item }) => {
         <p className="checkout-line-item-price-line">
           {formatCurrency(finalPrice)} × {quantity}
         </p>
-        <p className="checkout-line-item-subtotal">Tổng cộng: {formatCurrency(subtotal)}</p>
+      </div>
+      <div className="checkout-line-item-subtotal">
+        <strong>{formatCurrency(subtotal)}</strong>
       </div>
     </div>
   );

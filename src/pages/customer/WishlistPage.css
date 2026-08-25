@@ -1,3 +1,7 @@
+.wishlist-page {
+  padding: 24px 20px;
+}
+
 .wishlist-header {
   padding: 24px 0px;
   border-bottom: 1px solid var(--customer-border);
@@ -23,7 +27,7 @@
   color: var(--customer-accent-hover);
   border: 1px solid var(--customer-accent);
   border-radius: 4px;
-  margin: 0 24px 24px 24px;
+  margin: 0 0 24px 0;
 }
 
 .wishlist-empty-state {
@@ -32,7 +36,7 @@
   background-color: var(--customer-surface);
   border: 1px solid var(--customer-border);
   border-radius: 8px;
-  margin: 24px;
+  margin: 0;
 }
 
 .wishlist-empty-content {
@@ -53,8 +57,12 @@
 }
 
 @media (max-width: 768px) {
+  .wishlist-page {
+    padding: 20px 16px;
+  }
+
   .wishlist-header {
-    padding: 16px;
+    padding: 16px 0px;
     margin-bottom: 16px;
   }
 
@@ -63,6 +71,12 @@
   }
 
   .wishlist-error {
-    margin: 0 16px 16px 16px;
+    margin: 0 0 16px 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .wishlist-page {
+    padding: 16px 12px;
   }
 }

@@ -1,8 +1,16 @@
 /* Shared with Purchase History — matches Home / Cart page title rhythm */
+.order-detail-page {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 24px 20px;
+}
+
 .order-detail-loading {
   min-height: 280px;
   display: grid;
   place-items: center;
+  padding: 24px 20px;
 }
 
 .orders-page-header {
@@ -234,6 +242,14 @@
 }
 
 @media (max-width: 768px) {
+  .order-detail-page {
+    padding: 20px 16px;
+  }
+
+  .order-detail-loading {
+    padding: 20px 16px;
+  }
+
   .orders-page-header h2 {
     font-size: 20px;
   }
@@ -252,5 +268,15 @@
 
   .orders-state-card {
     padding: 32px 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .order-detail-page {
+    padding: 16px 12px;
+  }
+
+  .order-detail-loading {
+    padding: 16px 12px;
   }
 }

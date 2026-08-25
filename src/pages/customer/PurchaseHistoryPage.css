@@ -1,6 +1,6 @@
 /* Page title block — same rhythm as Home (.home-header) / Cart (.cart-header) */
 .purchase-history-page {
-  padding-bottom: 48px;
+  padding: 24px 20px 48px 20px;
 }
 
 .orders-page-header {
@@ -62,6 +62,10 @@
 }
 
 @media (max-width: 768px) {
+  .purchase-history-page {
+    padding: 20px 16px 40px 16px;
+  }
+
   .orders-page-back-btn {
     font-size: 12px;
     padding: 6px 12px;
@@ -73,6 +77,12 @@
 
   .orders-page-subtitle {
     font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .purchase-history-page {
+    padding: 16px 12px 32px 12px;
   }
 }
 
