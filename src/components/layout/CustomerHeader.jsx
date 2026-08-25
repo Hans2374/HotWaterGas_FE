@@ -63,6 +63,7 @@ export const CustomerHeader = () => {
   const [isSuggestionsLoading, setIsSuggestionsLoading] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(-1);
+  const [isSearchOverlayOpen, setIsSearchOverlayOpen] = useState(false);
   const searchContainerRef = useRef(null);
   const abortControllerRef = useRef(null);
   const latestQueryRef = useRef('');
@@ -226,113 +227,167 @@ export const CustomerHeader = () => {
   const handleLogin = () => navigate('/login');
   const handleRegister = () => navigate('/register');
 
+  const handleOpenSearchOverlay = () => {
+    setIsSearchOverlayOpen(true);
+  };
+
+  const handleCloseSearchOverlay = () => {
+    setIsSearchOverlayOpen(false);
+    setIsDropdownOpen(false);
+    setActiveSuggestionIndex(-1);
+  };
+
+  useEffect(() => {
+    if (isSearchOverlayOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isSearchOverlayOpen]);
+
   return (
-    <nav className="customer-header">
-      <div className="customer-header-inner">
-        <div className="customer-header-left">
-          <Link to="/" className="customer-header-brand">
-            <img
-              src="/icon.png"
-              alt="HotWaterGas logo"
-              className="brand-logo brand-logo--customer"
-            />
-            <span className="brand-title">HotWaterGas</span>
-          </Link>
-        </div>
-
-        <div className="customer-header-center">
-          <div className="customer-header-search-shell" ref={searchContainerRef}>
-            <div className="customer-header-search-box">
-              <input
-                type="text"
-                className="customer-header-search-input"
-                placeholder="Tìm theo tên game, nhà phát hành hoặc nhà làm game"
-                value={searchInput}
-                onChange={(e) => setSearchInput(e.target.value)}
-                onFocus={() => {
-                  if (searchInput.trim().length >= 2) {
-                    setIsDropdownOpen(true);
-                  }
-                }}
-                onKeyDown={handleSearchKeyDown}
-                aria-expanded={shouldShowDropdown}
-                aria-autocomplete="list"
-                aria-controls="customer-header-search-suggestions"
+    <>
+      <nav className="customer-header">
+        <div className="customer-header-inner">
+          <div className="customer-header-left">
+            <Link to="/" className="customer-header-brand">
+              <img
+                src="/icon.png"
+                alt="HotWaterGas logo"
+                className="brand-logo brand-logo--customer"
               />
-              {hasSearchText && (
-                <button
-                  className="customer-header-search-clear"
-                  onClick={handleClearSearch}
-                  title="Xóa tìm kiếm"
-                  type="button"
-                >
-                  <X size={14} />
-                </button>
-              )}
-              <button
-                className="customer-header-search-button"
-                onClick={handleSearch}
-                title="Tìm kiếm"
-                type="button"
-              >
-                <Search size={16} strokeWidth={2} />
-              </button>
-            </div>
+              <span className="brand-title">HotWaterGas</span>
+            </Link>
+          </div>
 
-            {shouldShowDropdown && (
-              <div className="customer-header-search-dropdown" id="customer-header-search-suggestions" role="listbox">
-                {isSuggestionsLoading ? (
-                  <div className="customer-header-search-status">Đang tìm kiếm...</div>
-                ) : suggestions.length === 0 ? (
-                  <div className="customer-header-search-status">Không tìm thấy kết quả</div>
-                ) : (
-                  suggestions.map((suggestion, index) => {
-                    const SuggestionIcon = getSuggestionIcon(suggestion.type);
-                    const isActive = index === activeSuggestionIndex;
+          <div className="customer-header-center">
+            <button
+              className="customer-header-search-trigger"
+              onClick={handleOpenSearchOverlay}
+              title="Tìm kiếm"
+              type="button"
+            >
+              <Search size={20} strokeWidth={2} />
+            </button>
+          </div>
 
-                    return (
-                      <button
-                        key={`${suggestion.type}-${suggestion.id}-${index}`}
-                        type="button"
-                        className={`customer-header-search-item ${isActive ? 'is-active' : ''}`}
-                        onMouseEnter={() => setActiveSuggestionIndex(index)}
-                        onMouseDown={(event) => event.preventDefault()}
-                        onClick={() => handleSuggestionSelect(suggestion)}
-                        role="option"
-                        aria-selected={isActive}
-                      >
-                        <div className="customer-header-search-item-media">
-                          {suggestion.imageUrl ? (
-                            <img src={suggestion.imageUrl} alt="" className="customer-header-search-item-image" />
-                          ) : (
-                            <div className="customer-header-search-item-fallback" aria-hidden="true">
-                              <SuggestionIcon size={20} />
-                            </div>
-                          )}
-                        </div>
-                        <div className="customer-header-search-item-content">
-                          <span className="customer-header-search-item-name">{suggestion.name}</span>
-                        </div>
-                        <span className={getSuggestionBadgeClassName(suggestion.type)}>{getSuggestionBadgeLabel(suggestion.type)}</span>
-                      </button>
-                    );
-                  })
-                )}
-              </div>
+          <div className="customer-header-right">
+            {isInitializing ? (
+              <div className="customer-header-skeleton" aria-hidden="true" />
+            ) : token ? (
+              <AuthHeaderActions onLogout={handleLogout} />
+            ) : (
+              <GuestHeaderActions onLogin={handleLogin} onRegister={handleRegister} />
             )}
           </div>
         </div>
+      </nav>
 
-        <div className="customer-header-right">
-          {isInitializing ? (
-            <div className="customer-header-skeleton" aria-hidden="true" />
-          ) : token ? (
-            <AuthHeaderActions onLogout={handleLogout} />
-          ) : (
-            <GuestHeaderActions onLogin={handleLogin} onRegister={handleRegister} />
-          )}
+      {isSearchOverlayOpen && (
+        <div className="customer-header-search-overlay">
+          <div className="customer-header-search-overlay-backdrop" onClick={handleCloseSearchOverlay} />
+          <div className="customer-header-search-overlay-content">
+            <div className="customer-header-search-overlay-header">
+              <button
+                className="customer-header-search-overlay-close"
+                onClick={handleCloseSearchOverlay}
+                title="Đóng"
+                type="button"
+              >
+                <X size={24} />
+              </button>
+            </div>
+
+            <div className="customer-header-search-overlay-body">
+              <div className="customer-header-search-shell" ref={searchContainerRef}>
+                <div className="customer-header-search-box">
+                  <input
+                    type="text"
+                    className="customer-header-search-input"
+                    placeholder="Tìm theo tên game, nhà phát hành hoặc nhà làm game"
+                    value={searchInput}
+                    onChange={(e) => setSearchInput(e.target.value)}
+                    onFocus={() => {
+                      if (searchInput.trim().length >= 2) {
+                        setIsDropdownOpen(true);
+                      }
+                    }}
+                    onKeyDown={handleSearchKeyDown}
+                    aria-expanded={shouldShowDropdown}
+                    aria-autocomplete="list"
+                    aria-controls="customer-header-search-suggestions"
+                    autoFocus
+                  />
+                  {hasSearchText && (
+                    <button
+                      className="customer-header-search-clear"
+                      onClick={handleClearSearch}
+                      title="Xóa tìm kiếm"
+                      type="button"
+                    >
+                      <X size={14} />
+                    </button>
+                  )}
+                  <button
+                    className="customer-header-search-button"
+                    onClick={handleSearch}
+                    title="Tìm kiếm"
+                    type="button"
+                  >
+                    <Search size={16} strokeWidth={2} />
+                  </button>
+                </div>
+
+                {shouldShowDropdown && (
+                  <div className="customer-header-search-dropdown" id="customer-header-search-suggestions" role="listbox">
+                    {isSuggestionsLoading ? (
+                      <div className="customer-header-search-status">Đang tìm kiếm...</div>
+                    ) : suggestions.length === 0 ? (
+                      <div className="customer-header-search-status">Không tìm thấy kết quả</div>
+                    ) : (
+                      suggestions.map((suggestion, index) => {
+                        const SuggestionIcon = getSuggestionIcon(suggestion.type);
+                        const isActive = index === activeSuggestionIndex;
+
+                        return (
+                          <button
+                            key={`${suggestion.type}-${suggestion.id}-${index}`}
+                            type="button"
+                            className={`customer-header-search-item ${isActive ? 'is-active' : ''}`}
+                            onMouseEnter={() => setActiveSuggestionIndex(index)}
+                            onMouseDown={(event) => event.preventDefault()}
+                            onClick={() => handleSuggestionSelect(suggestion)}
+                            role="option"
+                            aria-selected={isActive}
+                          >
+                            <div className="customer-header-search-item-media">
+                              {suggestion.imageUrl ? (
+                                <img src={suggestion.imageUrl} alt="" className="customer-header-search-item-image" />
+                              ) : (
+                                <div className="customer-header-search-item-fallback" aria-hidden="true">
+                                  <SuggestionIcon size={20} />
+                                </div>
+                              )}
+                            </div>
+                            <div className="customer-header-search-item-content">
+                              <span className="customer-header-search-item-name">{suggestion.name}</span>
+                            </div>
+                            <span className={getSuggestionBadgeClassName(suggestion.type)}>{getSuggestionBadgeLabel(suggestion.type)}</span>
+                          </button>
+                        );
+                      })
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-    </nav>
+      )}
+    </>
   );
 };
