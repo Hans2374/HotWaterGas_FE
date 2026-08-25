@@ -265,8 +265,89 @@ export const CustomerHeader = () => {
           </div>
 
           <div className="customer-header-center">
+            <div className="customer-header-search-shell customer-header-search-shell--desktop" ref={searchContainerRef}>
+              <div className="customer-header-search-box">
+                <input
+                  type="text"
+                  className="customer-header-search-input"
+                  placeholder="Tìm theo tên game, nhà phát hành hoặc nhà làm game"
+                  value={searchInput}
+                  onChange={(e) => setSearchInput(e.target.value)}
+                  onFocus={() => {
+                    if (searchInput.trim().length >= 2) {
+                      setIsDropdownOpen(true);
+                    }
+                  }}
+                  onKeyDown={handleSearchKeyDown}
+                  aria-expanded={shouldShowDropdown}
+                  aria-autocomplete="list"
+                  aria-controls="customer-header-search-suggestions-desktop"
+                />
+                {hasSearchText && (
+                  <button
+                    className="customer-header-search-clear"
+                    onClick={handleClearSearch}
+                    title="Xóa tìm kiếm"
+                    type="button"
+                  >
+                    <X size={14} />
+                  </button>
+                )}
+                <button
+                  className="customer-header-search-button"
+                  onClick={handleSearch}
+                  title="Tìm kiếm"
+                  type="button"
+                >
+                  <Search size={16} strokeWidth={2} />
+                </button>
+              </div>
+
+              {shouldShowDropdown && (
+                <div className="customer-header-search-dropdown" id="customer-header-search-suggestions-desktop" role="listbox">
+                  {isSuggestionsLoading ? (
+                    <div className="customer-header-search-status">Đang tìm kiếm...</div>
+                  ) : suggestions.length === 0 ? (
+                    <div className="customer-header-search-status">Không tìm thấy kết quả</div>
+                  ) : (
+                    suggestions.map((suggestion, index) => {
+                      const SuggestionIcon = getSuggestionIcon(suggestion.type);
+                      const isActive = index === activeSuggestionIndex;
+
+                      return (
+                        <button
+                          key={`${suggestion.type}-${suggestion.id}-${index}`}
+                          type="button"
+                          className={`customer-header-search-item ${isActive ? 'is-active' : ''}`}
+                          onMouseEnter={() => setActiveSuggestionIndex(index)}
+                          onMouseDown={(event) => event.preventDefault()}
+                          onClick={() => handleSuggestionSelect(suggestion)}
+                          role="option"
+                          aria-selected={isActive}
+                        >
+                          <div className="customer-header-search-item-media">
+                            {suggestion.imageUrl ? (
+                              <img src={suggestion.imageUrl} alt="" className="customer-header-search-item-image" />
+                            ) : (
+                              <div className="customer-header-search-item-fallback" aria-hidden="true">
+                                <SuggestionIcon size={20} />
+                              </div>
+                            )}
+                          </div>
+                          <div className="customer-header-search-item-content">
+                            <span className="customer-header-search-item-name">{suggestion.name}</span>
+                          </div>
+                          <span className={getSuggestionBadgeClassName(suggestion.type)}>{getSuggestionBadgeLabel(suggestion.type)}</span>
+                        </button>
+                      );
+                    })
+                  )}
+                </div>
+              )}
+            </div>
+
             <button
-              className="customer-header-search-trigger"
+              className="customer-header-search-trigger customer-header-search-trigger--mobile"
               onClick={handleOpenSearchOverlay}
               title="Tìm kiếm"
               type="button"
