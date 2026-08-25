@@ -56,6 +56,8 @@ export const SearchResultsPage = () => {
 
   const [pendingWishlistProductIds, setPendingWishlistProductIds] = useState(new Set());
   const [pendingCartProductIds, setPendingCartProductIds] = useState(new Set());
+  
+  const [isFiltersPanelOpen, setIsFiltersPanelOpen] = useState(false);
 
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
@@ -419,6 +421,10 @@ export const SearchResultsPage = () => {
 
   const currentSortValue = `${sortBy}-${sortDirection}`;
 
+  const toggleFiltersPanel = () => {
+    setIsFiltersPanelOpen((prev) => !prev);
+  };
+
   return (
     <>
       <div className="search-results-page">
@@ -429,8 +435,16 @@ export const SearchResultsPage = () => {
           <p className="search-results-count">{totalItems} sản phẩm</p>
         </section>
 
+        <button 
+          type="button" 
+          className="search-filters-toggle"
+          onClick={toggleFiltersPanel}
+        >
+          {isFiltersPanelOpen ? 'Ẩn bộ lọc' : 'Hiện bộ lọc'}
+        </button>
+
         <div className="search-results-layout">
-          <aside className="search-filters-panel">
+          <aside className={`search-filters-panel ${isFiltersPanelOpen ? 'is-open' : ''}`}>
             <div className="search-filters-header">
               <h3>Bộ lọc</h3>
               {(filters.category || filters.tags.length > 0 || filters.minPrice || filters.maxPrice) && (
