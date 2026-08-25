@@ -41,15 +41,27 @@
 
 /* ── Responsive ─────────────────────────────────────────────────────────────── */
 
-@media (max-width: 600px) {
+@media (max-width: 1024px) {
   .storefront-navbar-inner {
-    padding: 0 8px;
+    padding: 0 16px;
     overflow-x: auto;
     scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
   }
 
   .storefront-navbar-inner::-webkit-scrollbar {
     display: none;
+  }
+
+  .storefront-navbar-tab {
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 600px) {
+  .storefront-navbar-inner {
+    padding: 0 8px;
   }
 
   .storefront-navbar-tab {
