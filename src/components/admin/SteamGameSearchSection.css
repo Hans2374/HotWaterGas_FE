@@ -1,0 +1,246 @@
+/* ============================================
+   Steam Game Search Section — Dark Theme
+   Matches the AI Description Draft section's
+   visual language.
+   ============================================ */
+
+.steam-search-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ── Header ─────────────────────────────────────────── */
+
+.steam-search-header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.steam-search-title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0;
+}
+
+.steam-search-hint {
+  color: var(--cat-text-muted, #8B949E);
+  font-size: 11.5px;
+  line-height: 1.4;
+}
+
+/* ── Controls ───────────────────────────────────────── */
+
+.steam-search-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.steam-search-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.steam-search-query {
+  color: var(--cat-text-muted, #8B949E);
+  font-size: 12px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+/* ── Status & errors ──────────────────────────────────── */
+
+.steam-search-status {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0;
+  color: var(--cat-text-muted, #8B949E);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+
+.steam-search-error {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(248, 113, 113, 0.35);
+  background: rgba(248, 113, 113, 0.08);
+  color: #FCA5A5;
+}
+
+.steam-search-error-message {
+  margin: 0;
+  font-size: 12.5px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+/* ── Selected candidate ──────────────────────────────── */
+
+.steam-selected {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(63, 185, 80, 0.4);
+  background: rgba(63, 185, 80, 0.09);
+  color: #7EE787;
+}
+
+.steam-selected-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.steam-selected-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--cat-text-muted, #8B949E);
+}
+
+.steam-selected-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--cat-text-primary, #E6EDF3);
+  overflow-wrap: anywhere;
+}
+
+.steam-selected-appid {
+  font-size: 11.5px;
+  color: var(--cat-text-muted, #8B949E);
+}
+
+.steam-selected-clear {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 9px;
+  border-radius: 6px;
+  border: 1px solid var(--cat-border-surface, rgba(255, 255, 255, 0.13));
+  background: transparent;
+  color: var(--cat-text-secondary, #C9D1D9);
+  font-size: 11.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.steam-selected-clear:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--cat-text-primary, #E6EDF3);
+}
+
+.steam-selected-clear:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ── Candidate list ──────────────────────────────────── */
+
+.steam-candidates {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.steam-candidate {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 7px 9px;
+  border-radius: 8px;
+  border: 1px solid var(--cat-border-surface, rgba(255, 255, 255, 0.13));
+  background: transparent;
+  color: var(--cat-text-primary, #E6EDF3);
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.steam-candidate:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.steam-candidate:focus-visible {
+  outline: 2px solid var(--cat-accent, #58A6FF);
+  outline-offset: 1px;
+}
+
+.steam-candidate.is-selected {
+  border-color: rgba(63, 185, 80, 0.55);
+  background: rgba(63, 185, 80, 0.1);
+}
+
+.steam-candidate-thumb {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 27px;
+  flex-shrink: 0;
+  border-radius: 4px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.steam-candidate-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.steam-candidate-image-fallback {
+  color: var(--cat-text-muted, #8B949E);
+}
+
+.steam-candidate-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  flex: 1;
+  min-width: 0;
+}
+
+.steam-candidate-name {
+  font-size: 12.5px;
+  font-weight: 500;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.steam-candidate-appid {
+  font-size: 11px;
+  color: var(--cat-text-muted, #8B949E);
+}
+
+.steam-candidate-state {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  color: #7EE787;
+}
+
+.steam-candidate-state-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}

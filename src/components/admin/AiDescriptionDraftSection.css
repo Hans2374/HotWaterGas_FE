@@ -1,0 +1,401 @@
+/* ============================================
+   AI Description Translation Section — Dark Theme
+   ============================================ */
+
+.ai-description-draft-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ── Unverified badge ──────────────────────────────────── */
+
+.ai-description-unverified-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 8px 0 0;
+  padding: 5px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(251, 191, 36, 0.4);
+  background: rgba(251, 191, 36, 0.08);
+  color: #FCD34D;
+  font-size: 11.5px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+/* ── Warnings ───────────────────────────────────────────── */
+
+.ai-description-warning-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ai-description-warning {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--cat-border-surface, rgba(255, 255, 255, 0.13));
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.ai-description-warning-warning {
+  border-color: rgba(251, 191, 36, 0.35);
+  background: rgba(251, 191, 36, 0.06);
+}
+
+.ai-description-warning-info {
+  border-color: rgba(96, 165, 250, 0.3);
+  background: rgba(96, 165, 250, 0.05);
+}
+
+.ai-description-warning-code {
+  color: var(--cat-text-muted, #8B949E);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.02em;
+}
+
+.ai-description-warning-label {
+  color: var(--cat-text-primary, #F3F4F6);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.ai-description-warning-detail {
+  color: var(--cat-text-secondary, #C9D1D9);
+  font-size: 11.5px;
+  line-height: 1.5;
+}
+
+/* ── Platform choices ───────────────────────────────────── */
+
+.ai-description-platform-choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.ai-description-platform-choice {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--cat-border-surface, rgba(255, 255, 255, 0.13));
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--cat-text-secondary, #C9D1D9);
+  font-size: 11.5px;
+  cursor: pointer;
+}
+
+.ai-description-platform-choice:hover:not(:disabled) {
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.ai-description-platform-choice.is-selected {
+  border-color: rgba(74, 222, 128, 0.4);
+  background: rgba(74, 222, 128, 0.1);
+  color: #86EFAC;
+}
+
+.ai-description-platform-choice:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.ai-description-platform-notice {
+  margin: 6px 0 0;
+  color: #FCD34D;
+  font-size: 11.5px;
+  line-height: 1.5;
+}
+
+/* ── Requirements ───────────────────────────────────────── */
+
+.ai-description-req-tier {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.ai-description-req-tier-title {
+  margin: 0;
+  color: var(--cat-text-secondary, #C9D1D9);
+  font-size: 11.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.ai-description-req-list {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin: 0;
+}
+
+.ai-description-req-row {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+}
+
+.ai-description-req-label {
+  flex: 0 0 74px;
+  color: var(--cat-text-muted, #8B949E);
+  font-size: 11.5px;
+}
+
+.ai-description-req-value {
+  margin: 0;
+  color: var(--cat-text-primary, #F3F4F6);
+  font-size: 11.5px;
+  line-height: 1.5;
+}
+
+.ai-description-unknown {
+  color: var(--cat-text-muted, #8B949E);
+  font-style: italic;
+}
+
+/* ── Regenerate confirmation ─────────────────────────────── */
+
+.ai-description-confirm {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 11px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(251, 191, 36, 0.4);
+  background: rgba(251, 191, 36, 0.07);
+  color: #FCD34D;
+}
+
+.ai-description-confirm-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ai-description-confirm-title {
+  margin: 0;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.ai-description-confirm-text {
+  margin: 0;
+  color: var(--cat-text-secondary, #C9D1D9);
+  font-size: 11.5px;
+  line-height: 1.5;
+}
+
+.ai-description-confirm-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+/* ============================================
+   Shared AI description draft panel styles
+   ============================================ */
+
+/* ── Header ─────────────────────────────────────────────── */
+
+.ai-draft-header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ai-draft-title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0;
+}
+
+.ai-draft-hint {
+  color: var(--cat-text-muted, #8B949E);
+  font-size: 11.5px;
+  line-height: 1.4;
+}
+
+/* ── Controls ──────────────────────────────────────────── */
+
+.ai-draft-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.ai-draft-apply-row {
+  padding-top: 4px;
+  border-top: 1px solid var(--cat-border-surface, rgba(255, 255, 255, 0.13));
+  margin-top: 2px;
+}
+
+/* ── Status & errors ───────────────────────────────────── */
+
+.ai-draft-status {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0;
+  color: var(--cat-text-muted, #8B949E);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+
+.ai-draft-error {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(248, 113, 113, 0.35);
+  background: rgba(248, 113, 113, 0.08);
+  color: #FCA5A5;
+}
+
+.ai-draft-error-message {
+  margin: 0;
+  font-size: 12.5px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.ai-draft-error-detail {
+  margin: 4px 0 0;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--cat-text-secondary, #C9D1D9);
+}
+
+/* ── Draft body ────────────────────────────────────────── */
+
+.ai-draft-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ai-draft-textarea {
+  min-height: 140px;
+}
+
+/* ── Review blocks ─────────────────────────────────────── */
+
+.ai-review-block {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 11px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--cat-border-surface, rgba(255, 255, 255, 0.13));
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.ai-review-block-warning {
+  border-color: rgba(251, 191, 36, 0.35);
+  background: rgba(251, 191, 36, 0.06);
+}
+
+.ai-review-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  color: var(--cat-text-primary, #F3F4F6);
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.ai-review-note {
+  margin: 0;
+  color: var(--cat-text-muted, #8B949E);
+  font-size: 11.5px;
+  line-height: 1.5;
+}
+
+/* ── Chips ─────────────────────────────────────────────── */
+
+.ai-chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ai-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 9px;
+  border-radius: 999px;
+  border: 1px solid var(--cat-border-surface, rgba(255, 255, 255, 0.13));
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--cat-text-secondary, #C9D1D9);
+  font-size: 11.5px;
+}
+
+.ai-chip-field {
+  color: var(--cat-text-primary, #F3F4F6);
+  font-weight: 500;
+}
+
+.ai-chip-status {
+  color: var(--cat-text-muted, #8B949E);
+}
+
+.ai-chip.is-conflicting {
+  border-color: rgba(251, 191, 36, 0.4);
+  background: rgba(251, 191, 36, 0.08);
+}
+
+.ai-chip.is-conflicting .ai-chip-status {
+  color: #FCD34D;
+}
+
+/* ── Model meta ────────────────────────────────────────── */
+
+.ai-draft-model {
+  margin: 0;
+  color: var(--cat-text-muted, #8B949E);
+  font-size: 11px;
+}
+
+/* ── Spinner ───────────────────────────────────────────── */
+
+.ai-spin {
+  animation: ai-draft-spin 1s linear infinite;
+}
+
+@keyframes ai-draft-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ai-spin {
+    animation: none;
+  }
+}

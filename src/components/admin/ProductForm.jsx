@@ -1,8 +1,46 @@
 import React, { useEffect, useMemo, useState, useRef, useCallback } from 'react';
 import { Plus, X, GripVertical, Image as ImageIcon, Layout, Flag, Images, Search, ChevronDown, Check, Upload } from 'lucide-react';
+import { toast } from 'sonner';
 import { getCategories, getTags, uploadProductImage, uploadBulkProductImages } from '../../services/productService';
 import { getPublishers } from '../../services/publisherService';
 import { getDevelopers } from '../../services/developerService';
+import { generateAiDescription } from '../../services/aiDescriptionService';
+import { searchSteamGames } from '../../services/steamSearchService';
+import { validateAiDescriptionRequest } from '../../utils/aiDescriptionRequest';
+import {
+  buildAiDescriptionApplyPatch,
+  extractAiDescriptionText,
+  mergeAiDescriptionRequirements
+} from '../../utils/aiDescriptionMapping';
+import {
+  cancelAiDescriptionReplaceConfirmation,
+  confirmAiDescriptionReplace,
+  createAiDescriptionState,
+  discardAiDescription,
+  editAiDescriptionText,
+  failAiDescriptionRequest,
+  requestAiDescriptionReplaceConfirmation,
+  selectAiDescriptionPlatform,
+  startAiDescriptionRequest,
+  succeedAiDescriptionRequest
+} from '../../utils/aiDescriptionState';
+import {
+  canSearchSteam,
+  selectedAppId
+} from '../../utils/steamSearchRequest';
+import {
+  clearSteamSearchForNewName,
+  clearSteamSelection,
+  createSteamSearchState,
+  failSteamSearch,
+  isStaleSteamResponse,
+  resetSteamSearch,
+  selectSteamCandidate,
+  startSteamSearch,
+  succeedSteamSearch
+} from '../../utils/steamSearchState';
+import { AiDescriptionDraftSection } from './AiDescriptionDraftSection';
+import { SteamGameSearchSection } from './SteamGameSearchSection';
 import './ProductForm.css';
 
 const createInitialErrors = () => ({
@@ -262,6 +300,35 @@ export const ProductForm = ({
   const [publisherSearchTerm, setPublisherSearchTerm] = useState('');
   const [isDeveloperMenuOpen, setIsDeveloperMenuOpen] = useState(false);
   const [developerSearchTerm, setDeveloperSearchTerm] = useState('');
+
+  // ── AI translation draft state ─────────────────────────────────────────
+  // A *translation*, held apart from `formData`. It reaches the product
+  // form only through an explicit Apply.
+  //
+  // The transitions live in `utils/aiDescriptionState.js` as pure
+  // functions, so the lifecycle rules are verifiable without a DOM.
+  const [aiDescription, setAiDescription] = useState(createAiDescriptionState);
+  // Monotonic request id. A response whose id is not the latest one is
+  // discarded, so a slow translation can never overwrite a newer draft,
+  // and a response for a previous product name or Steam selection can
+  // never replace the current draft.
+  const aiDescriptionRequestIdRef = useRef(0);
+  // A synchronous in-flight flag. It closes the window in which two
+  // clicks in the same tick would both issue a request: React has not
+  // re-rendered yet, so the state flag would still read `false`.
+  const aiDescriptionInFlightRef = useRef(false);
+  // ── Steam game search state ──────────────────────────────────────────
+  // The selected Steam candidate is deliberately held outside
+  // `formData`, so it can never reach the product payload and can never
+  // be written to the product database. It is transient request context
+  // for the AI translation endpoint only.
+  //
+  // The transitions live in `utils/steamSearchState.js` as pure
+  // functions, so the lifecycle rules are verifiable without a DOM.
+  const [steamSearch, setSteamSearch] = useState(createSteamSearchState);
+  // Monotonic request id. A response whose id is not the latest one is
+  // discarded, so a slow search can never overwrite newer results.
+  const steamSearchRequestIdRef = useRef(0);
   const categoryMenuRef = useRef(null);
   const tagsMenuRef = useRef(null);
   const publisherMenuRef = useRef(null);
@@ -343,6 +410,20 @@ export const ProductForm = ({
     setErrors(createInitialErrors());
     setUploadErrors({});
     setGalleryInputKey((prev) => prev + 1);
+
+    // A different product was loaded. The translation belongs to the
+    // previous product, so it is discarded rather than left to be
+    // applied to the new one.
+    aiDescriptionRequestIdRef.current += 1;
+    aiDescriptionInFlightRef.current = false;
+    setAiDescription(discardAiDescription);
+
+    // The same applies to the Steam selection: one product's selected
+    // App ID must never leak into another product's form session. The
+    // pending search is invalidated too, so its late response cannot
+    // repopulate the candidates for the wrong product.
+    steamSearchRequestIdRef.current += 1;
+    setSteamSearch(resetSteamSearch);
   }, [initialData]);
 
   useEffect(() => {
@@ -389,10 +470,108 @@ export const ProductForm = ({
     return () => document.removeEventListener('mousedown', handlePointerDown);
   }, []);
 
+  /**
+   * Search the Steam Store for candidates matching the product name.
+   *
+   * The request is guarded by a monotonic id, so a slow response for an
+   * older query can never replace newer results.
+   */
+  const handleSearchSteam = async () => {
+    if (!canSearchSteam({
+      productName: formData.name,
+      isSearching: steamSearch.isSearching
+    })) {
+      return;
+    }
+
+    const requestId = steamSearchRequestIdRef.current + 1;
+    steamSearchRequestIdRef.current = requestId;
+
+    setSteamSearch(startSteamSearch);
+
+    try {
+      const result = await searchSteamGames(formData.name);
+
+      // A newer search has started in the meantime, or the product name
+      // changed: discard this response rather than letting a stale one
+      // overwrite fresher state.
+      if (isStaleSteamResponse(requestId, steamSearchRequestIdRef.current)) return;
+
+      setSteamSearch((prev) => succeedSteamSearch(prev, result));
+    } catch (apiError) {
+      if (isStaleSteamResponse(requestId, steamSearchRequestIdRef.current)) return;
+
+      // A failed search does NOT clear an existing selection: the admin
+      // may have selected a candidate already, and losing it because a
+      // later search failed would be surprising. Only an explicit clear
+      // or a product-name change removes the selection.
+      setSteamSearch((prev) => failSteamSearch(
+        prev,
+        apiError?.message || 'Failed to search Steam. Please try again.'
+      ));
+    }
+  };
+
+  /**
+   * Select a Steam candidate.
+   *
+   * The selection is transient: it is request context for the AI
+   * translation endpoint, and it is never part of the product payload.
+   */
+  const handleSelectSteamCandidate = (candidate) => {
+    if (!candidate) return;
+
+    // Selecting invalidates any pending search response, so a late
+    // response cannot replace the candidate list the admin is choosing
+    // from.
+    steamSearchRequestIdRef.current += 1;
+
+    // The same applies to a pending translation: the response would
+    // describe the previously selected game, so it must not replace the
+    // current draft.
+    aiDescriptionRequestIdRef.current += 1;
+
+    setSteamSearch((prev) => selectSteamCandidate(prev, candidate));
+  };
+
+  /**
+   * Clear the Steam selection explicitly.
+   */
+  const handleClearSteamSelection = () => {
+    setSteamSearch((prev) => clearSteamSelection(prev));
+  };
+
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
     setErrors((prev) => ({ ...prev, [name]: '' }));
+
+    // The product name is the Steam search query. When it changes, the
+    // candidates on screen describe a different game, so the selection
+    // and the results are cleared and the admin must search again.
+    // Otherwise a stale App ID could be sent to the translation endpoint
+    // for a product it does not belong to.
+    if (name === 'name') {
+      // The name changed, so the old candidates describe a different
+      // game: clear the selection and the results, and invalidate any
+      // pending search so its late response is discarded.
+      steamSearchRequestIdRef.current += 1;
+      setSteamSearch(clearSteamSearchForNewName);
+
+      // A pending translation was made for the old name and the old
+      // Steam selection, so it can no longer describe this product.
+      aiDescriptionRequestIdRef.current += 1;
+
+      // The *settled* draft must go too, not just the pending request.
+      //
+      // A translation of the previous name describes a different game.
+      // Leaving it in place would let the administrator apply a
+      // translation of one game to a product that has been renamed to
+      // another — the exact leak the route-level product switch already
+      // prevents. So the draft is discarded here exactly as it is there.
+      aiDescriptionInFlightRef.current = false;
+      setAiDescription(discardAiDescription);
+    }
   };
 
   const handleCategoryChange = (event) => {
@@ -474,6 +653,188 @@ export const ProductForm = ({
         [tier]: { ...prev.systemRequirements[tier], [field]: value }
       }
     }));
+  };
+
+  /* ── AI translation handlers ─────────────────────────────────────────── */
+
+  /**
+   * Request a Vietnamese translation of the selected Steam description.
+   *
+   * This never saves anything. It only asks the backend for a
+   * translation and stores the result in the translation state for
+   * review.
+   *
+   * The Steam App ID is transient request context: it is sent with the
+   * translation request and never becomes part of the product payload.
+   */
+  const handleGenerateAiDescription = async () => {
+    // A duplicate request is refused before it is issued.
+    //
+    // The guard is a **ref**, not the state flag: two clicks in the same
+    // tick would both read the same stale `isGenerating` value, because
+    // React has not re-rendered yet. The ref is updated synchronously,
+    // so the second click sees it immediately.
+    if (aiDescriptionInFlightRef.current) return;
+
+    const appId = selectedAppId(steamSearch.selected);
+
+    const validation = validateAiDescriptionRequest({
+      productName: formData.name,
+      steamAppId: appId
+    });
+
+    if (!validation.ok) {
+      setAiDescription((prev) => failAiDescriptionRequest(prev, { status: 400, message: validation.reason }));
+      return;
+    }
+
+    const requestId = aiDescriptionRequestIdRef.current + 1;
+    aiDescriptionRequestIdRef.current = requestId;
+    aiDescriptionInFlightRef.current = true;
+
+    setAiDescription(startAiDescriptionRequest);
+
+    try {
+      const translation = await generateAiDescription(formData.name, appId);
+
+      // A newer request has started in the meantime: discard this one
+      // rather than letting a stale response replace a fresh draft.
+      // This is what stops a response for an old product name or an old
+      // Steam selection from replacing the current draft.
+      if (requestId !== aiDescriptionRequestIdRef.current) return;
+
+      setAiDescription((prev) => succeedAiDescriptionRequest(
+        prev,
+        translation,
+        extractAiDescriptionText(translation)
+      ));
+    } catch (apiError) {
+      // A failed translation preserves the existing draft and its edits:
+      // `failAiDescriptionRequest` only sets the error, and never clears the
+      // translation or the edited text.
+      if (requestId !== aiDescriptionRequestIdRef.current) return;
+
+      setAiDescription((prev) => failAiDescriptionRequest(prev, {
+        status: apiError?.status ?? 0,
+        message: apiError?.message || 'Failed to translate the Steam description.'
+      }));
+    } finally {
+      if (requestId === aiDescriptionRequestIdRef.current) {
+        aiDescriptionInFlightRef.current = false;
+      }
+    }
+  };
+
+  /**
+   * Discard the translation. The product form is left exactly as it was.
+   */
+  const handleDismissAiDescription = () => {
+    // Invalidate any in-flight request so its response is discarded.
+    aiDescriptionRequestIdRef.current += 1;
+    aiDescriptionInFlightRef.current = false;
+    setAiDescription(discardAiDescription);
+  };
+
+  /**
+   * The administrator edited the translated text.
+   *
+   * The edit lives in the translation state, not in the product form, so
+   * editing can never modify the form prematurely.
+   */
+  const handleeditAiDescriptionText = (text) => {
+    setAiDescription((prev) => editAiDescriptionText(prev, text));
+  };
+
+  /**
+   * Ask for confirmation before an edited translation is replaced.
+   *
+   * The administrator's edits are real work. Replacing them without
+   * asking would be the one failure mode this whole feature exists to
+   * avoid.
+   */
+  const handleRequestAiDescriptionReplace = () => {
+    setAiDescription(requestAiDescriptionReplaceConfirmation);
+  };
+
+  /**
+   * Keep the edited translation. The confirmation is dismissed and
+   * nothing else changes.
+   */
+  const handleCancelAiDescriptionReplace = () => {
+    setAiDescription(cancelAiDescriptionReplaceConfirmation);
+  };
+
+  /**
+   * Confirm the replacement. The edited text is replaced by the fresh
+   * translation.
+   */
+  const handleconfirmAiDescriptionReplace = () => {
+    setAiDescription(confirmAiDescriptionReplace);
+    handleGenerateAiDescription();
+  };
+
+  /**
+   * Record the administrator's explicit platform choice.
+   *
+   * The choice is `null` until they make one. It is never derived from
+   * the returned list by the frontend.
+   */
+  const handleselectAiDescriptionPlatform = (platform) => {
+    setAiDescription((prev) => selectAiDescriptionPlatform(prev, platform));
+  };
+
+  /**
+   * Apply the reviewed translation to the form fields.
+   *
+   * This is a deliberate action. It fills form fields only — it never
+   * saves, and the product is persisted solely by the form's own save
+   * action.
+   *
+   * `platform` is the value the administrator explicitly chose in the
+   * review panel. It is `null` when they have not chosen one, and then
+   * the platform field is left untouched: the product form has a single
+   * platform field, and the frontend never picks one of several
+   * platforms by itself.
+   */
+  const handleApplyAiDescription = (platform) => {
+    if (!aiDescription.translation) return;
+
+    const patch = buildAiDescriptionApplyPatch(aiDescription.translation, {
+      descriptionText: aiDescription.text,
+      platform
+    });
+    if (Object.keys(patch).length === 0) {
+      toast.error('There is nothing in the translation to apply.');
+      return;
+    }
+
+    setFormData((prev) => {
+      const next = { ...prev };
+
+      if (typeof patch.description === 'string') {
+        next.description = patch.description;
+      }
+
+      if (typeof patch.platform === 'string') {
+        next.platform = patch.platform;
+      }
+
+      if (typeof patch.releaseDate === 'string') {
+        next.releaseDate = patch.releaseDate;
+      }
+
+      if (patch.minimum || patch.recommended) {
+        next.systemRequirements = mergeAiDescriptionRequirements(prev.systemRequirements, patch);
+      }
+
+      return next;
+    });
+
+    // The applied fields are now the form's own; the translation's job
+    // is done.
+    setAiDescription(discardAiDescription);
+
+    toast.success('Translation applied to the form. Review it, then save the product.');
   };
 
   const uploadImage = async (file, slotKey) => {
@@ -715,6 +1076,51 @@ export const ProductForm = ({
           </div>
         </div>
       </section>
+
+      {/* Steam Game Search */}
+      <SteamGameSearchSection
+        productName={formData.name}
+        canSearch={canSearchSteam({
+          productName: formData.name,
+          isSearching: steamSearch.isSearching
+        })}
+        isSearching={steamSearch.isSearching}
+        candidates={steamSearch.candidates}
+        selectedCandidate={steamSearch.selected}
+        errorMessage={steamSearch.error}
+        emptyMessage={steamSearch.emptyMessage}
+        hasSearched={steamSearch.hasSearched}
+        onSearch={handleSearchSteam}
+        onSelect={handleSelectSteamCandidate}
+        onClearSelection={handleClearSteamSelection}
+        isDisabled={isSubmitting}
+      />
+
+      {/* AI Description Translation */}
+      <AiDescriptionDraftSection
+        isGenerating={aiDescription.isGenerating}
+        error={aiDescription.error}
+        translation={aiDescription.translation}
+        draftText={aiDescription.text}
+        onDraftTextChange={handleeditAiDescriptionText}
+        onGenerate={handleGenerateAiDescription}
+        onRegenerate={handleGenerateAiDescription}
+        onApply={handleApplyAiDescription}
+        onDismiss={handleDismissAiDescription}
+        canApply={Boolean(aiDescription.translation) && aiDescription.text.trim().length > 0}
+        hasSteamSelection={Boolean(steamSearch.selected)}
+        hasEditedDraft={
+          Boolean(aiDescription.translation)
+          && aiDescription.text.trim() !== extractAiDescriptionText(aiDescription.translation).trim()
+        }
+        isConfirmingReplace={aiDescription.isConfirmingReplace}
+        selectedPlatform={aiDescription.chosenPlatform}
+        onPlatformSelect={handleselectAiDescriptionPlatform}
+        onRequestReplace={handleRequestAiDescriptionReplace}
+        onConfirmReplace={handleconfirmAiDescriptionReplace}
+        onCancelReplace={handleCancelAiDescriptionReplace}
+        isDisabled={isSubmitting}
+      />
 
       {/* Pricing */}
       <section className="form-card">

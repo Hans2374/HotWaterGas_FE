@@ -7,10 +7,35 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Dependencies and build output
 node_modules
 dist
 dist-ssr
+
+# Local files
 *.local
+
+# Environment files
+# Local environment files may hold real credentials (API keys, tokens,
+# connection strings). Only the placeholder template is committed.
+.env
+.env.*
+!.env.example
+
+# Certificates and private keys
+*.pem
+*.key
+*.pfx
+*.p12
+*.crt
+*.cer
+*.jks
+
+# Credential files
+.npmrc
+service-account*.json
+secrets*.json
+credentials*.json
 
 # Editor directories and files
 .vscode/*
@@ -22,10 +47,3 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-
-node_modules
-dist
-.env
-.env.local
-.vscode
-.DS_Store
