@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { ProductForm } from '../../components/admin/ProductForm';
 import { createAdminProduct } from '../../services/productService';
+import { AI_JOB_OPERATION_TYPES } from '../../utils/aiJobRequest';
 import { toast } from 'sonner';
 import './AdminProductFormPage.css';
 
@@ -50,6 +51,7 @@ export const AdminProductCreatePage = () => {
         onSubmit={handleSubmit}
         onCancel={handleGoBack}
         isSubmitting={isSaving}
+        operationType={AI_JOB_OPERATION_TYPES.Create}
       />
     </div>
   );

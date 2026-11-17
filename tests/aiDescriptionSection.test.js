@@ -431,3 +431,148 @@ test('the busy state is announced politely', () => {
   assert.match(html, /role="status"/, 'the busy state is a live region');
   assert.match(html, /aria-live="polite"/, 'the busy state announces politely');
 });
+
+/* ── The asynchronous job states ─────────────────────────────────────── */
+
+test('a queued job that was never attempted shows the waiting message', () => {
+  const html = render({
+    jobStatus: 'Queued',
+    jobStage: null,
+    jobAttemptCount: 0,
+    jobNextAttemptAt: null
+  });
+
+  assert.match(html, /Waiting for the generation worker/,
+    'the queued message is shown');
+  assert.ok(!/%/.test(html), 'no percentage is invented');
+  assert.match(html, /role="status"/, 'the state is a live region');
+  assert.match(html, /aria-live="polite"/, 'the state announces politely');
+});
+
+test('a queued job waiting for a retry shows the attempt count and the next attempt', () => {
+  const html = render({
+    jobStatus: 'Queued',
+    jobAttemptCount: 2,
+    jobNextAttemptAt: '2024-01-16T10:05:00Z'
+  });
+
+  assert.match(html, /Retrying — next attempt at/,
+    'the retry message is shown');
+  assert.match(html, /Attempt 2 so far/,
+    'the attempt count is shown');
+});
+
+test('a processing job shows the backend progress message', () => {
+  const html = render({
+    jobStatus: 'Processing',
+    jobStage: 'FetchingData',
+    jobProgressMessage: 'Retrieving the Steam store description.'
+  });
+
+  assert.match(html, /Retrieving the Steam store description\./,
+    'the backend message is shown verbatim');
+  assert.ok(!/Generating\.\.\./.test(html),
+    'the client never substitutes its own "Generating…" wording');
+});
+
+test('the defensive Generating and Regenerating stages are rendered', () => {
+  const generating = render({ jobStatus: 'Processing', jobStage: 'Generating' });
+  assert.match(generating, /Generating/, 'the Generating stage has a label');
+
+  const regenerating = render({
+    jobStatus: 'Processing',
+    jobStage: 'Regenerating',
+    jobAttemptCount: 3
+  });
+  assert.match(regenerating, /Regenerating/, 'the Regenerating stage has a label');
+  assert.match(regenerating, /attempt 3/, 'the attempt count is shown');
+});
+
+test('a cancellation request says the upstream request is still awaited', () => {
+  const html = render({
+    jobStatus: 'Processing',
+    jobStage: 'FetchingData',
+    jobCancelRequested: true
+  });
+
+  assert.match(html, /Waiting for the current AI request to finish/,
+    'the wording says the request is still being awaited');
+  assert.ok(!/already stopped|has stopped/i.test(html),
+    'the wording never claims the work has already stopped');
+});
+
+test('a cancelled job says so', () => {
+  const html = render({ jobStatus: 'Cancelled' });
+
+  assert.match(html, /The generation was cancelled\./, 'the cancelled message is shown');
+});
+
+test('a failed job shows the error code and the message', () => {
+  const html = render({
+    jobStatus: 'Failed',
+    jobErrorCode: 'upstream_timeout',
+    jobErrorMessage: 'The provider did not respond in time.'
+  });
+
+  assert.match(html, /role="alert"/, 'the failure is an alert');
+  assert.match(html, /Error code: upstream_timeout/, 'the error code is shown');
+  assert.match(html, /did not respond in time/, 'the message is shown');
+});
+
+test('the draft save states are shown', () => {
+  const saving = render({ translation, draftText: 'x', draftSaveState: 'saving' });
+  assert.match(saving, /Saving…/, 'the saving state is shown');
+
+  const saved = render({ translation, draftText: 'x', draftSaveState: 'saved' });
+  assert.match(saved, /Saved/, 'the saved state is shown');
+
+  const error = render({ translation, draftText: 'x', draftSaveState: 'error' });
+  assert.match(error, /Could not save — retrying/, 'the retrying state is shown');
+});
+
+test('the persistent not-saved warning is shown once the retries are exhausted', () => {
+  const html = render({
+    translation,
+    draftText: 'x',
+    draftSaveState: 'error',
+    draftSaveExhausted: true
+  });
+
+  assert.match(html, /Not saved — copy your text before leaving/,
+    'the persistent warning is shown');
+  assert.match(html, /role="alert"/, 'the warning is an alert');
+});
+
+test('the elapsed time is derived from the backend timestamps', () => {
+  const html = render({
+    jobStatus: 'Completed',
+    translation,
+    draftText: translation.description.text,
+    jobElapsedMs: 30000
+  });
+
+  assert.match(html, /Elapsed: 30s/, 'the elapsed time is shown');
+
+  const unknown = render({
+    jobStatus: 'Processing',
+    jobElapsedMs: null
+  });
+
+  assert.ok(!/Elapsed:/.test(unknown),
+    'no elapsed time is invented when the backend supplied no start time');
+});
+
+test('the cancel control is offered while a job is running', () => {
+  const html = render({ jobStatus: 'Processing', jobStage: 'FetchingData' });
+
+  assert.match(html, />Cancel</, 'the cancel control is offered');
+});
+
+test('the retry control is offered only when a retry is possible', () => {
+  const offered = render({ jobStatus: 'Failed', canRetry: true });
+  assert.match(offered, /Try again/, 'the retry control is offered');
+
+  const notOffered = render({ jobStatus: 'Queued', canRetry: false });
+  assert.ok(!/Try again/.test(notOffered),
+    'the retry control is not offered for a running job');
+});

@@ -4,9 +4,7 @@ import { toast } from 'sonner';
 import { getCategories, getTags, uploadProductImage, uploadBulkProductImages } from '../../services/productService';
 import { getPublishers } from '../../services/publisherService';
 import { getDevelopers } from '../../services/developerService';
-import { generateAiDescription } from '../../services/aiDescriptionService';
 import { searchSteamGames } from '../../services/steamSearchService';
-import { validateAiDescriptionRequest } from '../../utils/aiDescriptionRequest';
 import {
   buildAiDescriptionApplyPatch,
   extractAiDescriptionText,
@@ -18,12 +16,19 @@ import {
   createAiDescriptionState,
   discardAiDescription,
   editAiDescriptionText,
-  failAiDescriptionRequest,
   requestAiDescriptionReplaceConfirmation,
-  selectAiDescriptionPlatform,
-  startAiDescriptionRequest,
-  succeedAiDescriptionRequest
+  selectAiDescriptionPlatform
 } from '../../utils/aiDescriptionState';
+import {
+  AI_JOB_OPERATION_TYPES,
+  validateAiJobRequest
+} from '../../utils/aiJobRequest';
+import {
+  canSubmitAiJob,
+  aiJobElapsedMs,
+  isTerminalAiJobStatus
+} from '../../utils/aiJobState';
+import { useAiJobs } from '../../hooks/useAiJobs';
 import {
   canSearchSteam,
   selectedAppId
@@ -270,7 +275,9 @@ export const ProductForm = ({
   initialData,
   onSubmit,
   onCancel,
-  isSubmitting = false
+  isSubmitting = false,
+  operationType = AI_JOB_OPERATION_TYPES.Create,
+  productId = null
 }) => {
   const [formData, setFormData] = useState(createInitialData(initialData));
   const [errors, setErrors] = useState(createInitialErrors());
@@ -317,6 +324,81 @@ export const ProductForm = ({
   // clicks in the same tick would both issue a request: React has not
   // re-rendered yet, so the state flag would still read `false`.
   const aiDescriptionInFlightRef = useRef(false);
+
+  // ── The asynchronous generation job ────────────────────────────────────
+  // The generation is asynchronous: the browser submits a job and the
+  // backend performs the generation later. The job state, the SignalR
+  // connection, the REST reconciliation and the debounced draft
+  // auto-save all live in the admin-scoped `AiJobContext`.
+  const jobContext = useAiJobs();
+
+  const {
+    status: jobStatus,    stage: jobStage,
+    progressMessage: jobProgressMessage,
+    attemptCount: jobAttemptCount,
+    cancelRequested: jobCancelRequested,
+    nextAttemptAt: jobNextAttemptAt,
+    errorCode: jobErrorCode,
+    errorMessage: jobErrorMessage,
+    error: jobError,
+    translation: jobTranslation,
+    editedDraft: jobEditedDraft,
+    draftSaveState,
+    draftSaveExhausted,
+    isSubmitting: isJobSubmitting,
+    isCancelling: isJobCancelling,
+    submitJob,
+    cancelJob,
+    retryJob,
+    editDraft,
+    discardDraft,
+    invalidateApplicability
+  } = jobContext;
+
+  /**
+   * The draft the panel shows.
+   *
+   * The job's draft is authoritative once the job has produced a
+   * result. Before that — while the job is queued or processing — the
+   * legacy translation state holds the draft, so the panel keeps
+   * rendering it.
+   */
+  const hasJobResult = Boolean(jobTranslation);
+  const panelTranslation = hasJobResult ? jobTranslation : aiDescription.translation;
+  const panelDraftText = hasJobResult ? jobEditedDraft : aiDescription.text;
+
+  /**
+   * Whether the administrator has edited the draft.
+   *
+   * The comparison is against the *generated* text, so an edit that
+   * happens to restore the original text is not reported as an edit.
+   */
+  const hasEditedDraft = hasJobResult
+    ? jobEditedDraft.trim() !== extractAiDescriptionText(jobTranslation).trim()
+    : Boolean(aiDescription.translation)
+      && aiDescription.text.trim() !== extractAiDescriptionText(aiDescription.translation).trim();
+
+  /**
+   * Whether a new job may be submitted.
+   *
+   * The rule is the backend's own one-active-job rule, plus the
+   * unacknowledged-cancellation window: a cancel-requested processing
+   * job still holds the upstream request, so the Generate control stays
+   * disabled until the cancellation is confirmed terminal.
+   */
+  const canGenerate = canSubmitAiJob({
+    status: jobStatus,
+    isCancelling: isJobCancelling,
+    cancelRequested: jobCancelRequested
+  }) && !isJobSubmitting;
+
+  /**
+   * Whether a retry may be offered.
+   *
+   * A retry creates a **new** job, so it is offered only for a
+   * terminal job — and only when no new job can already be created.
+   */
+  const canRetry = isTerminalAiJobStatus(jobStatus) && canGenerate;
   // ── Steam game search state ──────────────────────────────────────────
   // The selected Steam candidate is deliberately held outside
   // `formData`, so it can never reach the product payload and can never
@@ -425,7 +507,6 @@ export const ProductForm = ({
     steamSearchRequestIdRef.current += 1;
     setSteamSearch(resetSteamSearch);
   }, [initialData]);
-
   useEffect(() => {
     const loadLookups = async () => {
       setIsLookupLoading(true);
@@ -532,6 +613,12 @@ export const ProductForm = ({
     aiDescriptionRequestIdRef.current += 1;
 
     setSteamSearch((prev) => selectSteamCandidate(prev, candidate));
+
+    // The settled job no longer describes this product: a job
+    // generated for the previously selected game does not apply to the
+    // newly selected one. The job's result is invalidated, and its
+    // identity is preserved so it can still be cancelled or retried.
+    invalidateApplicability();
   };
 
   /**
@@ -539,6 +626,9 @@ export const ProductForm = ({
    */
   const handleClearSteamSelection = () => {
     setSteamSearch((prev) => clearSteamSelection(prev));
+
+    // The job described the game that is no longer selected.
+    invalidateApplicability();
   };
 
   const handleChange = (event) => {
@@ -571,6 +661,12 @@ export const ProductForm = ({
       // prevents. So the draft is discarded here exactly as it is there.
       aiDescriptionInFlightRef.current = false;
       setAiDescription(discardAiDescription);
+
+      // The settled job no longer describes this product either: it was
+      // generated for the previous name and the previous Steam
+      // selection. The job's identity is preserved so it can still be
+      // cancelled or retried.
+      invalidateApplicability();
     }
   };
 
@@ -655,74 +751,80 @@ export const ProductForm = ({
     }));
   };
 
-  /* ── AI translation handlers ─────────────────────────────────────────── */
+  /* ── AI generation job handlers ─────────────────────────────────────── */
 
   /**
-   * Request a Vietnamese translation of the selected Steam description.
+   * Submit an asynchronous AI description generation job.
    *
-   * This never saves anything. It only asks the backend for a
-   * translation and stores the result in the translation state for
-   * review.
+   * This never saves anything and it never awaits the generation. It
+   * validates the request, submits the job, and returns as soon as the
+   * backend has written the row. The job's `Queued` state, its stage and
+   * its eventual result all arrive afterwards — through the REST
+   * reconciliation the context performs.
    *
    * The Steam App ID is transient request context: it is sent with the
-   * translation request and never becomes part of the product payload.
+   * job request and never becomes part of the product payload.
    */
   const handleGenerateAiDescription = async () => {
     // A duplicate request is refused before it is issued.
     //
     // The guard is a **ref**, not the state flag: two clicks in the same
-    // tick would both read the same stale `isGenerating` value, because
-    // React has not re-rendered yet. The ref is updated synchronously,
-    // so the second click sees it immediately.
+    // tick would both read the same stale value, because React has not
+    // re-rendered yet. The ref is updated synchronously, so the second
+    // click sees it immediately.
     if (aiDescriptionInFlightRef.current) return;
+
+    // The backend enforces the one-active-job rule too, but the UI must
+    // not issue a doomed request in the first place.
+    if (!canGenerate) return;
 
     const appId = selectedAppId(steamSearch.selected);
 
-    const validation = validateAiDescriptionRequest({
+    const validation = validateAiJobRequest({
       productName: formData.name,
-      steamAppId: appId
+      steamAppId: appId,
+      operationType,
+      productId
     });
 
     if (!validation.ok) {
-      setAiDescription((prev) => failAiDescriptionRequest(prev, { status: 400, message: validation.reason }));
+      toast.error(validation.reason);
       return;
     }
 
-    const requestId = aiDescriptionRequestIdRef.current + 1;
-    aiDescriptionRequestIdRef.current = requestId;
     aiDescriptionInFlightRef.current = true;
 
-    setAiDescription(startAiDescriptionRequest);
-
     try {
-      const translation = await generateAiDescription(formData.name, appId);
-
-      // A newer request has started in the meantime: discard this one
-      // rather than letting a stale response replace a fresh draft.
-      // This is what stops a response for an old product name or an old
-      // Steam selection from replacing the current draft.
-      if (requestId !== aiDescriptionRequestIdRef.current) return;
-
-      setAiDescription((prev) => succeedAiDescriptionRequest(
-        prev,
-        translation,
-        extractAiDescriptionText(translation)
-      ));
-    } catch (apiError) {
-      // A failed translation preserves the existing draft and its edits:
-      // `failAiDescriptionRequest` only sets the error, and never clears the
-      // translation or the edited text.
-      if (requestId !== aiDescriptionRequestIdRef.current) return;
-
-      setAiDescription((prev) => failAiDescriptionRequest(prev, {
-        status: apiError?.status ?? 0,
-        message: apiError?.message || 'Failed to translate the Steam description.'
-      }));
+      await submitJob({
+        productName: formData.name,
+        steamAppId: appId,
+        operationType,
+        productId
+      });
     } finally {
-      if (requestId === aiDescriptionRequestIdRef.current) {
-        aiDescriptionInFlightRef.current = false;
-      }
+      aiDescriptionInFlightRef.current = false;
     }
+  };
+
+  /**
+   * Request the cancellation of the current job.
+   *
+   * The Generate control stays disabled until the backend confirms a
+   * terminal cancellation, because a cancel-requested processing job
+   * still holds the upstream request.
+   */
+  const handleCancelAiJob = async () => {
+    await cancelJob();
+  };
+
+  /**
+   * Retry the current job.
+   *
+   * A retry creates a **new** job, and the context tracks the new job
+   * id. The old job's history stays readable on the server.
+   */
+  const handleRetryAiJob = async () => {
+    await retryJob();
   };
 
   /**
@@ -733,15 +835,22 @@ export const ProductForm = ({
     aiDescriptionRequestIdRef.current += 1;
     aiDescriptionInFlightRef.current = false;
     setAiDescription(discardAiDescription);
+    discardDraft();
   };
 
   /**
    * The administrator edited the translated text.
    *
-   * The edit lives in the translation state, not in the product form, so
-   * editing can never modify the form prematurely.
+   * The edit lives in the job state, not in the product form, so editing
+   * can never modify the form prematurely. When a job result is present
+   * the edit also schedules the debounced auto-save.
    */
   const handleeditAiDescriptionText = (text) => {
+    if (hasJobResult) {
+      editDraft(text);
+      return;
+    }
+
     setAiDescription((prev) => editAiDescriptionText(prev, text));
   };
 
@@ -797,10 +906,15 @@ export const ProductForm = ({
    * platforms by itself.
    */
   const handleApplyAiDescription = (platform) => {
-    if (!aiDescription.translation) return;
+    // The job's translation is authoritative once the job has produced
+    // a result; before that the legacy translation state holds it.
+    const translation = hasJobResult ? jobTranslation : aiDescription.translation;
+    const text = hasJobResult ? jobEditedDraft : aiDescription.text;
 
-    const patch = buildAiDescriptionApplyPatch(aiDescription.translation, {
-      descriptionText: aiDescription.text,
+    if (!translation) return;
+
+    const patch = buildAiDescriptionApplyPatch(translation, {
+      descriptionText: text,
       platform
     });
     if (Object.keys(patch).length === 0) {
@@ -833,6 +947,7 @@ export const ProductForm = ({
     // The applied fields are now the form's own; the translation's job
     // is done.
     setAiDescription(discardAiDescription);
+    discardDraft();
 
     toast.success('Translation applied to the form. Review it, then save the product.');
   };
@@ -1098,21 +1213,18 @@ export const ProductForm = ({
 
       {/* AI Description Translation */}
       <AiDescriptionDraftSection
-        isGenerating={aiDescription.isGenerating}
-        error={aiDescription.error}
-        translation={aiDescription.translation}
-        draftText={aiDescription.text}
+        isGenerating={isJobSubmitting}
+        error={jobError}
+        translation={panelTranslation}
+        draftText={panelDraftText}
         onDraftTextChange={handleeditAiDescriptionText}
         onGenerate={handleGenerateAiDescription}
         onRegenerate={handleGenerateAiDescription}
         onApply={handleApplyAiDescription}
         onDismiss={handleDismissAiDescription}
-        canApply={Boolean(aiDescription.translation) && aiDescription.text.trim().length > 0}
+        canApply={Boolean(panelTranslation) && panelDraftText.trim().length > 0}
         hasSteamSelection={Boolean(steamSearch.selected)}
-        hasEditedDraft={
-          Boolean(aiDescription.translation)
-          && aiDescription.text.trim() !== extractAiDescriptionText(aiDescription.translation).trim()
-        }
+        hasEditedDraft={hasEditedDraft}
         isConfirmingReplace={aiDescription.isConfirmingReplace}
         selectedPlatform={aiDescription.chosenPlatform}
         onPlatformSelect={handleselectAiDescriptionPlatform}
@@ -1120,6 +1232,21 @@ export const ProductForm = ({
         onConfirmReplace={handleconfirmAiDescriptionReplace}
         onCancelReplace={handleCancelAiDescriptionReplace}
         isDisabled={isSubmitting}
+        jobStatus={jobStatus}
+        jobStage={jobStage}
+        jobProgressMessage={jobProgressMessage}
+        jobAttemptCount={jobAttemptCount}
+        jobNextAttemptAt={jobNextAttemptAt}
+        jobCancelRequested={jobCancelRequested}
+        jobErrorCode={jobErrorCode}
+        jobErrorMessage={jobErrorMessage}
+        jobElapsedMs={aiJobElapsedMs(jobContext)}
+        draftSaveState={draftSaveState}
+        draftSaveExhausted={draftSaveExhausted}
+        onCancelJob={handleCancelAiJob}
+        onRetryJob={handleRetryAiJob}
+        canRetry={canRetry}
+        isCancelling={isJobCancelling}
       />
 
       {/* Pricing */}

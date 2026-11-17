@@ -5,7 +5,6 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
 import {
-  AI_DESCRIPTION_ENDPOINT,
   AI_DESCRIPTION_MAX_PRODUCT_NAME_LENGTH,
   AI_DESCRIPTION_MAX_STEAM_APP_ID,
   AI_DESCRIPTION_MIN_STEAM_APP_ID,
@@ -146,13 +145,32 @@ const readSource = (...segments) => {
 
 /* ── The endpoint ─────────────────────────────────────────────────────── */
 
-test('the endpoint is the .NET admin route', () => {
-  assert.equal(AI_DESCRIPTION_ENDPOINT, '/api/admin/products/generate-description',
-    'React calls the .NET backend only — never Steam and never Python');
+test('the synchronous translation route is retired', () => {
+  // The translation is now produced by an asynchronous backend job, so
+  // the old synchronous route is gone. The browser calls the job route
+  // instead — see `aiJobRequest.test.js`.
+  const source = readSource('src', 'utils', 'aiDescriptionRequest.js');
+
+  assert.ok(!source.includes('/api/admin/products/generate-description'),
+    'the retired synchronous route is no longer declared');
 });
 
-test('the service module never contacts Python, Steam or Ollama directly', () => {
-  const source = readSource('src', 'services', 'aiDescriptionService.js');
+test('the retired synchronous service module is gone', () => {
+  // The synchronous transport is removed. The job transport lives in
+  // `services/aiJobService.js`.
+  let exists = true;
+
+  try {
+    readSource('src', 'services', 'aiDescriptionService.js');
+  } catch {
+    exists = false;
+  }
+
+  assert.equal(exists, false, 'the synchronous service module is removed');
+});
+
+test('the job service calls only the .NET backend', () => {
+  const source = readSource('src', 'services', 'aiJobService.js');
 
   assert.ok(!source.includes('/internal/'), 'no internal Python route is contacted');
   assert.ok(!source.includes('store.steampowered.com'), 'no Steam URL is contacted');
@@ -160,11 +178,11 @@ test('the service module never contacts Python, Steam or Ollama directly', () =>
   assert.ok(source.includes('axiosClient'), 'the shared authenticated client is used');
 });
 
-test('the service posts the built body to the translation route', () => {
-  const source = readSource('src', 'services', 'aiDescriptionService.js');
+test('the job service posts the built body to the job route', () => {
+  const source = readSource('src', 'services', 'aiJobService.js');
 
-  assert.ok(source.includes('AI_DESCRIPTION_ENDPOINT'), 'the route constant is used');
-  assert.ok(source.includes('buildAiDescriptionRequest'), 'the request builder is used');
+  assert.ok(source.includes('AI_JOB_ENDPOINT'), 'the route constant is used');
+  assert.ok(source.includes('buildAiJobRequest'), 'the request builder is used');
   assert.ok(source.includes('axiosClient.post'), 'the request is a POST');
 });
 

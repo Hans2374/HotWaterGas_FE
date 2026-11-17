@@ -56,7 +56,7 @@ const refreshAxios = axios.create({
  * @returns {Promise<{ accessToken: string }>} resolved with new token on success
  * @throws {Error} on network failure or non-2xx response
  */
-const refreshAccessToken = async () => {
+export const refreshAccessToken = async () => {
   const response = await refreshAxios.post('/api/auth/refresh');
   const { accessToken } = normalizeRefreshResponse(response.data);
 

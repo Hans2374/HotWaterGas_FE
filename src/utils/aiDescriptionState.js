@@ -1,9 +1,20 @@
 /**
- * The AI translation draft lifecycle — pure state transitions.
+ * The AI translation **draft** lifecycle — pure state transitions.
  *
  * This module is deliberately **dependency-free**, so the whole lifecycle
- * can be exercised offline by the test suite without a bundler, a
+ * can be exercised offline by the test suite without a DOM, a
  * browser, or a network — exactly like `utils/steamSearchState.js`.
+ *
+ * ── What this module owns, and what it does not ────────────────────────────
+ * The generation is now **asynchronous**: the browser submits a job and
+ * the backend performs the generation later. The request transitions —
+ * the submission, its success and its failure — therefore belong to the
+ * **job's** lifecycle, and they live in `utils/aiJobState.js`.
+ *
+ * What stays here is the **draft**: the text the administrator edits,
+ * the platform they choose, the replacement confirmation and the
+ * discard. Those rules are unchanged, because the asynchronous model
+ * did not alter them.
  *
  * ── The rules this module owns ────────────────────────────────────────────
  * The interesting rules of this feature are all about *when* state may
@@ -11,12 +22,9 @@
  *
  *   * a draft lives apart from the product form, and reaches it only
  *     through an explicit apply;
- *   * a failed translation must not destroy an existing draft or the
- *     administrator's edits to it;
  *   * an edited draft must never be replaced without a confirmation;
  *   * a response for an old product name or an old Steam selection must
  *     never replace the current draft;
- *   * a duplicate request must be refused;
  *   * a discarded draft must leave the product form exactly as it was;
  *   * a multi-platform result must never be reduced to one platform
  *     without the administrator's explicit choice.
@@ -28,13 +36,11 @@
  */
 
 /**
- * The initial translation state.
+ * The initial draft state.
  *
  * @returns {{
  *   translation: object|null,
  *   text: string,
- *   isGenerating: boolean,
- *   error: { status: number, message: string }|null,
  *   isConfirmingReplace: boolean,
  *   chosenPlatform: string|null
  * }}
@@ -42,8 +48,6 @@
 export const createAiDescriptionState = () => ({
   translation: null,
   text: '',
-  isGenerating: false,
-  error: null,
   isConfirmingReplace: false,
   chosenPlatform: null
 });
@@ -64,59 +68,27 @@ export const isStaleAiDescriptionResponse = (responseRequestId, currentRequestId
   responseRequestId !== currentRequestId;
 
 /**
- * A translation request has started.
+ * A translation was installed as the draft.
  *
- * The previous error is cleared, so a retry never shows a stale outcome,
- * and the replacement confirmation is dismissed.
+ * The **platform choice is reset**: the previous choice referred to the
+ * previous result's platform list, and carrying it over would apply a
+ * stale decision to a new set of platforms.
  *
- * @param {object} state
- * @returns {object} The next state.
- */
-export const startAiDescriptionRequest = (state) => ({
-  ...state,
-  isGenerating: true,
-  error: null,
-  isConfirmingReplace: false
-});
-
-/**
- * A translation succeeded.
- *
- * The draft and its text are replaced. The **platform choice is reset**:
- * the previous choice referred to the previous result's platform list,
- * and carrying it over would apply a stale decision to a new set of
- * platforms.
+ * This is a *draft* transition, not a request transition: it says what
+ * the draft becomes, and it never says how the result was obtained. The
+ * request's own transitions live in `utils/aiJobState.js`.
  *
  * @param {object} state
  * @param {object} translation The translation response.
  * @param {string} text The translated text.
  * @returns {object} The next state.
  */
-export const succeedAiDescriptionRequest = (state, translation, text) => ({
+export const installAiDescriptionTranslation = (state, translation, text) => ({
   ...state,
   translation,
   text: typeof text === 'string' ? text : '',
-  isGenerating: false,
-  error: null,
   isConfirmingReplace: false,
   chosenPlatform: null
-});
-
-/**
- * A translation failed.
- *
- * The existing draft **and the administrator's edits to it** are
- * preserved: the failure sets the error and nothing else. Losing a
- * draft because a retry failed would be the worst possible outcome.
- *
- * @param {object} state
- * @param {{ status: number, message: string }} error The controlled error.
- * @returns {object} The next state.
- */
-export const failAiDescriptionRequest = (state, error) => ({
-  ...state,
-  isGenerating: false,
-  error: error || null
 });
 
 /**
@@ -133,8 +105,6 @@ export const discardAiDescription = (state) => ({
   ...state,
   translation: null,
   text: '',
-  isGenerating: false,
-  error: null,
   isConfirmingReplace: false,
   chosenPlatform: null
 });

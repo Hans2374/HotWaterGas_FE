@@ -28,9 +28,10 @@ import './AiDescriptionDraftSection.css';
 /**
  * Review panel for the AI description translation draft.
  *
- * This component is strictly presentational: it renders the translation
- * and reports the administrator's intent through callbacks. It never
- * touches the product form, and it never persists anything.
+ * This component is strictly presentational: it renders the job state
+ * and the draft, and reports the administrator's intent through
+ * callbacks. It never touches the product form, and it never persists
+ * anything.
  *
  * ── What this panel reviews ─────────────────────────────────────────────────
  * The result is not a draft composed from scattered facts — it is a
@@ -48,6 +49,22 @@ import './AiDescriptionDraftSection.css';
  *   * the platform list is never joined behind the administrator's
  *     back. Because the product form has a **single** platform field,
  *     the administrator must explicitly choose what to persist.
+ *
+ * ── The asynchronous job states ─────────────────────────────────────────────
+ * The generation is asynchronous: the browser submits a job and the
+ * backend performs the generation later. The panel therefore renders the
+ * job's own state — queued, processing, failed, cancelled — and shows
+ * the **backend's** progress message verbatim.
+ *
+ * Two rules govern the wording, and both are load-bearing:
+ *
+ *   * **No percentage is ever invented.** The backend cannot supply
+ *     one, so the panel does not fabricate one.
+ *   * **The panel never claims that model inference has begun.** While
+ *     the backend's stage is `FetchingData`, the panel shows the
+ *     backend's own progress message and substitutes no wording of its
+ *     own. Claiming "Generating…" there would be a lie about work the
+ *     model has not started.
  */
 
 /**
@@ -104,6 +121,45 @@ const REQUIREMENT_ROWS = [
 const ALL_PLATFORMS = '__all__';
 
 /**
+ * The stage labels.
+ *
+ * `FetchingData` is the only stage the Phase 1 backend writes. The
+ * other two are reserved, and the panel renders them defensively so a
+ * future backend that emits them is already handled.
+ */
+const STAGE_LABELS = {
+  FetchingData: 'Fetching source data',
+  Generating: 'Generating',
+  Regenerating: 'Regenerating'
+};
+
+/**
+ * The message shown while a job is queued and has never been attempted.
+ */
+const QUEUED_MESSAGE = 'Waiting for the generation worker. This can take a while on a local model.';
+
+/**
+ * The message shown once a job has been cancelled.
+ */
+const CANCELLED_MESSAGE = 'The generation was cancelled.';
+
+/**
+ * The message shown when a cancellation has been requested but the
+ * backend has not yet confirmed a terminal cancellation.
+ *
+ * The wording is deliberate: the upstream request is **still being
+ * awaited**. It must never imply that the inference has already
+ * stopped, because it has not.
+ */
+const CANCEL_REQUESTED_MESSAGE =
+  'Cancellation requested. Waiting for the current AI request to finish before the job is marked cancelled.';
+
+/**
+ * The warning shown once the draft save has exhausted its retries.
+ */
+const DRAFT_NOT_SAVED_MESSAGE = 'Not saved — copy your text before leaving';
+
+/**
  * Render one requirement tier.
  *
  * A tier with no supplied value is shown as "not stated" rather than
@@ -146,6 +202,44 @@ const RequirementTier = ({ tier, title }) => {
   );
 };
 
+/**
+ * Format a timestamp for display.
+ *
+ * The timestamp is the backend's own; nothing is invented. An
+ * unparsable value is returned verbatim so no information is lost.
+ *
+ * @param {string|null|undefined} value
+ * @returns {string}
+ */
+const formatTimestamp = (value) => {
+  if (!value) return '';
+  const parsed = Date.parse(value);
+  if (Number.isNaN(parsed)) return String(value);
+  return new Date(parsed).toLocaleString();
+};
+
+/**
+ * Format a duration for display.
+ *
+ * The duration is derived from the **backend's** timestamps — never
+ * from a client-side progress estimate. When the backend has not
+ * supplied a start time, nothing is shown: an invented duration would
+ * be a fabricated measurement.
+ *
+ * @param {number|null|undefined} elapsedMs
+ * @returns {string} The formatted duration, or an empty string.
+ */
+const formatElapsed = (elapsedMs) => {
+  if (typeof elapsedMs !== 'number' || !Number.isFinite(elapsedMs) || elapsedMs < 0) return '';
+
+  const totalSeconds = Math.floor(elapsedMs / 1000);
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+
+  if (minutes === 0) return `${seconds}s`;
+  return `${minutes}m ${String(seconds).padStart(2, '0')}s`;
+};
+
 export const AiDescriptionDraftSection = ({
   isGenerating,
   error,
@@ -165,7 +259,22 @@ export const AiDescriptionDraftSection = ({
   onRequestReplace,
   onConfirmReplace,
   onCancelReplace,
-  isDisabled = false
+  isDisabled = false,
+  jobStatus = null,
+  jobStage = null,
+  jobProgressMessage = '',
+  jobAttemptCount = 0,
+  jobNextAttemptAt = null,
+  jobCancelRequested = false,
+  jobErrorCode = null,
+  jobErrorMessage = null,
+  jobElapsedMs = null,
+  draftSaveState = 'idle',
+  draftSaveExhausted = false,
+  onCancelJob,
+  onRetryJob,
+  canRetry = false,
+  isCancelling = false
 }) => {
   const meta = useMemo(() => extractAiDescriptionMeta(translation), [translation]);
   const source = useMemo(() => extractAiDescriptionSource(translation), [translation]);
@@ -176,6 +285,24 @@ export const AiDescriptionDraftSection = ({
   const modelMeta = useMemo(() => extractAiDescriptionModelMeta(translation), [translation]);
 
   const hasTranslation = Boolean(translation);
+
+  /**
+   * Whether the panel is in a busy state.
+   *
+   * The asynchronous job states are busy: the administrator is waiting.
+   * The legacy `isGenerating` prop remains supported so the panel can
+   * still be rendered standalone.
+   */
+  const isBusy = Boolean(isGenerating)
+    || jobStatus === 'Queued'
+    || jobStatus === 'Processing';
+
+  /**
+   * Whether the job is waiting for a backoff-delayed retry.
+   */
+  const isAwaitingRetry = jobStatus === 'Queued'
+    && Number(jobAttemptCount) > 0
+    && Boolean(jobNextAttemptAt);
 
   /**
    * The platform value the administrator has explicitly chosen to
@@ -216,6 +343,27 @@ export const AiDescriptionDraftSection = ({
     onRegenerate();
   };
 
+  /**
+   * The visible save-state line.
+   *
+   * @returns {string|null} The line, or null when there is nothing to say.
+   */
+  const saveStateLine = (() => {
+    if (draftSaveExhausted) return DRAFT_NOT_SAVED_MESSAGE;
+    if (draftSaveState === 'saving') return 'Saving…';
+    if (draftSaveState === 'saved') return 'Saved';
+    if (draftSaveState === 'error') return 'Could not save — retrying';
+    return null;
+  })();
+
+  /**
+   * The elapsed time, derived from the backend's timestamps.
+   *
+   * It is empty when the backend has not supplied a start time, because
+   * an invented duration would be a fabricated measurement.
+   */
+  const elapsedLine = formatElapsed(jobElapsedMs);
+
   return (
     <section className="form-card ai-description-draft-card">
       <div className="ai-draft-header">
@@ -236,28 +384,28 @@ export const AiDescriptionDraftSection = ({
             type="button"
             className="btn btn-secondary"
             onClick={handleRegenerateClick}
-            disabled={isGenerating || isDisabled}
+            disabled={isBusy || isDisabled}
           >
-            {isGenerating ? (
+            {isBusy ? (
               <Loader2 size={14} className="ai-spin" aria-hidden="true" />
             ) : (
               <RefreshCw size={14} aria-hidden="true" />
             )}
-            {isGenerating ? 'Translating...' : 'Regenerate Translation'}
+            {isBusy ? 'Translating...' : 'Regenerate Translation'}
           </button>
         ) : (
           <button
             type="button"
             className="btn btn-primary"
             onClick={onGenerate}
-            disabled={isGenerating || isDisabled}
+            disabled={isBusy || isDisabled}
           >
-            {isGenerating ? (
+            {isBusy ? (
               <Loader2 size={14} className="ai-spin" aria-hidden="true" />
             ) : (
-              <Sparkles size={14} aria-hidden="true" />
+              <Sparkles size={15} aria-hidden="true" />
             )}
-            {isGenerating ? 'Translating...' : 'Translate Steam Description'}
+            {isBusy ? 'Translating...' : 'Translate Steam Description'}
           </button>
         )}
 
@@ -266,24 +414,110 @@ export const AiDescriptionDraftSection = ({
             type="button"
             className="btn btn-secondary"
             onClick={onDismiss}
-            disabled={isGenerating || isDisabled}
+            disabled={isBusy || isDisabled}
           >
             <X size={14} aria-hidden="true" />
             Discard
           </button>
         )}
+
+        {/* The cancellation control. It is offered while a job is
+            running, and it is disabled while the cancellation request
+            is in flight. */}
+        {jobStatus && jobStatus !== 'Completed' && jobStatus !== 'Failed' && jobStatus !== 'Cancelled' && (
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={onCancelJob}
+            disabled={isCancelling || jobCancelRequested || isDisabled}
+          >
+            <X size={14} aria-hidden="true" />
+            {jobCancelRequested ? 'Cancellation requested' : 'Cancel'}
+          </button>
+        )}
+
+        {/* The retry control. It is offered only for a terminal job,
+            because a retry creates a *new* job. */}
+        {canRetry && (
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={onRetryJob}
+            disabled={isBusy || isDisabled}
+          >
+            <RefreshCw size={14} aria-hidden="true" />
+            Try again
+          </button>
+        )}
       </div>
 
-      {/* ── Busy state ───────────────────────────────────────────────────── */}
-      {isGenerating && (
+      {/* ── The busy state ───────────────────────────────────────────────── */}
+      {isBusy && (
         <p className="ai-draft-status" role="status" aria-live="polite">
           <Loader2 size={14} className="ai-spin" aria-hidden="true" />
-          Translating the Steam description. This can take a while on a local model — please wait.
+          {jobStatus === 'Queued'
+            ? (isAwaitingRetry
+              ? `The provider did not respond in time. Retrying — next attempt at ${formatTimestamp(jobNextAttemptAt)}.`
+              : QUEUED_MESSAGE)
+            : (jobStatus === 'Processing'
+              ? (jobCancelRequested
+                ? CANCEL_REQUESTED_MESSAGE
+                : `${STAGE_LABELS[jobStage] || 'Working'}${jobProgressMessage ? ` — ${jobProgressMessage}` : ''}${jobStage === 'Regenerating' && Number(jobAttemptCount) > 0 ? ` (attempt ${jobAttemptCount})` : ''}`)
+              : 'Translating the Steam description. This can take a while on a local model — please wait.')}
         </p>
       )}
 
+      {/* ── The elapsed time ──────────────────────────────────────────────── */}
+      {elapsedLine && (
+        <p className="ai-draft-status" role="status" aria-live="polite">
+          <Info size={14} aria-hidden="true" />
+          {`Elapsed: ${elapsedLine}`}
+        </p>
+      )}
+
+      {/* ── The waiting-for-a-retry detail ──────────────────────────────── */}
+      {isAwaitingRetry && (
+        <p className="ai-draft-status" role="status" aria-live="polite">
+          <Info size={14} aria-hidden="true" />
+          {`Attempt ${jobAttemptCount} so far. Next attempt at ${formatTimestamp(jobNextAttemptAt)}.`}
+        </p>
+      )}
+
+      {/* ── The cancellation-requested detail ───────────────────────────── */}
+      {jobCancelRequested && jobStatus === 'Processing' && (
+        <p className="ai-draft-status" role="status" aria-live="polite">
+          <Info size={14} aria-hidden="true" />
+          {CANCEL_REQUESTED_MESSAGE}
+        </p>
+      )}
+
+      {/* ── The cancelled state ─────────────────────────────────────────── */}
+      {jobStatus === 'Cancelled' && (
+        <p className="ai-draft-status" role="status" aria-live="polite">
+          <Info size={14} aria-hidden="true" />
+          {CANCELLED_MESSAGE}
+        </p>
+      )}
+
+      {/* ── The failed state ────────────────────────────────────────────── */}
+      {jobStatus === 'Failed' && (
+        <div className="ai-draft-error" role="alert">
+          <AlertTriangle size={15} aria-hidden="true" />
+          <div>
+            {jobErrorCode && (
+              <p className="ai-draft-error-detail">
+                {`Error code: ${jobErrorCode}`}
+              </p>
+            )}
+            <p className="ai-draft-error-message">
+              {jobErrorMessage || 'The AI description generation failed.'}
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* ── Error ────────────────────────────────────────────────────────── */}
-      {error && !isGenerating && (
+      {error && !isBusy && !jobStatus && (
         <div className="ai-draft-error" role="alert">
           <AlertTriangle size={15} aria-hidden="true" />
           <div>
@@ -331,7 +565,7 @@ export const AiDescriptionDraftSection = ({
       )}
 
       {/* ── Empty state ──────────────────────────────────────────────────── */}
-      {!hasTranslation && !isGenerating && !error && (
+      {!hasTranslation && !isBusy && !error && !jobStatus && (
         <p className="ai-draft-status">
           <Info size={14} aria-hidden="true" />
           Search Steam above and select the game, then translate its store description into
@@ -340,7 +574,7 @@ export const AiDescriptionDraftSection = ({
       )}
 
       {/* ── Steam retrieval hint ────────────────────────────────────────── */}
-      {!hasTranslation && !isGenerating && !error && !hasSteamSelection && (
+      {!hasTranslation && !isBusy && !error && !jobStatus && !hasSteamSelection && (
         <p className="ai-draft-status ai-draft-steam-hint">
           <Info size={14} aria-hidden="true" />
           No Steam game is selected. A translation needs the Steam store description as its
@@ -363,7 +597,7 @@ export const AiDescriptionDraftSection = ({
                 type="button"
                 className="btn btn-secondary"
                 onClick={onCancelReplace}
-                disabled={isGenerating || isDisabled}
+                disabled={isBusy || isDisabled}
               >
                 Keep My Edit
               </button>
@@ -371,7 +605,7 @@ export const AiDescriptionDraftSection = ({
                 type="button"
                 className="btn btn-primary"
                 onClick={onConfirmReplace}
-                disabled={isGenerating || isDisabled}
+                disabled={isBusy || isDisabled}
               >
                 Replace It
               </button>
@@ -394,8 +628,26 @@ export const AiDescriptionDraftSection = ({
               value={draftText}
               onChange={(event) => onDraftTextChange(event.target.value)}
               rows={10}
-              disabled={isGenerating}
+              disabled={isBusy}
             />
+
+            {/* The save-state line. It is a polite live region, so a
+                screen reader announces the change without interrupting
+                the administrator's typing. */}
+            {saveStateLine && (
+              <p className="ai-draft-status" role="status" aria-live="polite">
+                {saveStateLine}
+              </p>
+            )}
+
+            {/* After the retries are exhausted the warning is
+                persistent: the text is still unsaved, and it must be
+                copied before the administrator leaves. */}
+            {draftSaveExhausted && (
+              <p className="ai-draft-error-message" role="alert">
+                {DRAFT_NOT_SAVED_MESSAGE}
+              </p>
+            )}
 
             <span className="input-hint">
               <Languages size={12} aria-hidden="true" />
@@ -532,7 +784,7 @@ export const AiDescriptionDraftSection = ({
                       aria-checked={chosen === platform}
                       className={`ai-description-platform-choice ${chosen === platform ? 'is-selected' : ''}`}
                       onClick={() => onPlatformSelect(platform)}
-                      disabled={isGenerating || isDisabled}
+                      disabled={isBusy || isDisabled}
                     >
                       <Check size={13} aria-hidden="true" />
                       {platform}
@@ -545,7 +797,7 @@ export const AiDescriptionDraftSection = ({
                     aria-checked={chosen === ALL_PLATFORMS}
                     className={`ai-description-platform-choice ${chosen === ALL_PLATFORMS ? 'is-selected' : ''}`}
                     onClick={() => onPlatformSelect(ALL_PLATFORMS)}
-                    disabled={isGenerating || isDisabled}
+                    disabled={isBusy || isDisabled}
                   >
                     <Check size={13} aria-hidden="true" />
                     All of them (joined)
@@ -592,7 +844,7 @@ export const AiDescriptionDraftSection = ({
               type="button"
               className="btn btn-primary"
               onClick={() => onApply(resolvedPlatform)}
-              disabled={isGenerating || isDisabled || !canApply}
+              disabled={isBusy || isDisabled || !canApply}
             >
               <Check size={14} aria-hidden="true" />
               Apply to Form

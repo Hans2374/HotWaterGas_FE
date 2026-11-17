@@ -4,6 +4,7 @@ import { ArrowLeft } from 'lucide-react';
 import { toast } from 'sonner';
 import { ProductForm } from '../../components/admin/ProductForm';
 import { SteamKeySummaryMetrics } from '../../components/admin/SteamKeySummaryMetrics';
+import { AI_JOB_OPERATION_TYPES } from '../../utils/aiJobRequest';
 import {
   getAdminProductDetail,
   getAdminSteamKeySummary,
@@ -182,6 +183,8 @@ export const AdminProductEditPage = () => {
             onSubmit={handleSubmit}
             onCancel={handleGoBack}
             isSubmitting={isSaving}
+            operationType={AI_JOB_OPERATION_TYPES.Edit}
+            productId={id}
           />
         )}
       </div>

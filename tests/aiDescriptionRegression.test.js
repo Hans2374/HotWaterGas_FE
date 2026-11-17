@@ -178,8 +178,8 @@ test('the translation never writes to the form without an explicit apply', () =>
   const generateBlock = source.slice(generateIndex, applyIndex);
   assert.ok(!generateBlock.includes('setFormData'),
     'the generation handler never writes to the product form');
-  assert.ok(!generateBlock.includes('setAiDescription((prev) => succeedAiDescriptionRequest') === false,
-    'the generation handler does store the draft');
+  assert.ok(generateBlock.includes('submitJob'),
+    'the generation handler submits the job that carries the draft');
 });
 
 test('the translation draft state is separate from the form state', () => {
@@ -243,13 +243,20 @@ test('a duplicate translation request is guarded by a synchronous ref', () => {
 });
 
 test('the stale-response guard is in place for the translation', () => {
-  const source = readSource('src', 'components', 'admin', 'ProductForm.jsx');
+  // The asynchronous flow moved the guard into the job context, where
+  // the REST fetch carries a monotonic id and an older response is
+  // discarded. The form itself keeps a request-id ref for the
+  // synchronous draft transitions.
+  const context = readSource('src', 'context', 'AiJobProvider.jsx');
 
-  assert.ok(source.includes('aiDescriptionRequestIdRef'), 'the request-id ref exists');
+  assert.ok(context.includes('fetchIdRef'), 'the fetch-id ref exists in the context');
   assert.ok(
-    /if \(requestId !== aiDescriptionRequestIdRef\.current\) return;/.test(source),
+    /fetchId !== fetchIdRef\.current/.test(context),
     'a stale response is discarded in both the success and the failure path'
   );
+
+  const source = readSource('src', 'components', 'admin', 'ProductForm.jsx');
+  assert.ok(source.includes('aiDescriptionRequestIdRef'), 'the request-id ref still exists');
 });
 
 /* ── Renaming the product discards the translation draft ────────────────────────── */
